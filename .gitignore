@@ -1,0 +1,8 @@
+.Rproj.user
+*.Rproj
+*.o
+*.so
+*~
+inst/doc
+doc
+Meta
