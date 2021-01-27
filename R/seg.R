@@ -15,7 +15,8 @@
 #'     is the probability of exactly \code{i} pairs of IBDR alleles
 #'     being in the gamete. Note that \code{sum(alpha)} should be less than
 #'     1, as \code{1 - sum(alpha)} is the probability of no double reduction.
-#' @param G The dosage of the parent. Should be one of \code{seq(0, ploidy)}.
+#' @param G The dosage of the parent. Should be an integer between \code{0}
+#'     and \code{ploidy}.
 #' @param ploidy The ploidy of the species. This should be an even positive
 #'     integer.
 #' @param log_p A logical. Should we return the log-probability (\code{TRUE})
@@ -44,6 +45,7 @@ dgamete <- function(x, alpha, G, ploidy, log_p = FALSE) {
   stopifnot(length(alpha) == ibdr)
   stopifnot(alpha >= 0, sum(alpha) <= 1)
 
+  ## Get sequence of indices to sum over ----
   ijmat <- cbind(utils::combn(x = 0:ibdr, m = 2),
                  matrix(rep(0:ibdr, each = 2), nrow = 2))
   jvec <- ijmat[1, ]
@@ -51,6 +53,7 @@ dgamete <- function(x, alpha, G, ploidy, log_p = FALSE) {
   alpha <- c(1 - sum(alpha), alpha)
   alphavec <- alpha[ivec + 1]
 
+  ## Calculate probs ----
   retvec <- rep(NA_real_, length = length(x))
   for (k in seq_along(x)) {
     retvec[[k]] <- log_sum_exp(
@@ -70,4 +73,109 @@ dgamete <- function(x, alpha, G, ploidy, log_p = FALSE) {
   }
 
   return(retvec)
+}
+
+#' Zygote dosage probabiltites.
+#'
+#' Calculates the distribution of an offspring dosages given
+#' parental dosages (\code{G1} and \code{G2}), the ploidy of the
+#' species (\code{ploidy}), and the double reduction parameter
+#' (\code{alpha}).
+#'
+#' @inheritParams dgamete
+#' @param G1 The dosage of parent 1. Should be an integer between \code{0}
+#'     and \code{ploidy}.
+#' @param G2 The dosage of parent 2. Should be an integer between \code{0}
+#'     and \code{ploidy}.
+#'
+#' @return A vector of probabilities. The \code{i}th element is the
+#'     probability that the offspring will have dosage \code{i-1}.
+#'
+#' @author David Gerard
+#'
+#' @export
+#'
+#' @examples
+#' zygdist(alpha = c(0.5, 0.1), G1 = 4, G2 = 5, ploidy = 8)
+#'
+zygdist <- function(alpha, G1, G2, ploidy) {
+  ## Check parameters ----
+  stopifnot(length(G1) == 1L,
+            length(G2) == 1L,
+            length(ploidy) == 1L)
+  stopifnot(ploidy %% 2 == 0)
+  stopifnot(0 <= G1, G1 <= ploidy)
+  stopifnot(0 <= G2, G2 <= ploidy)
+  ibdr <- floor(ploidy / 4)
+  stopifnot(length(alpha) == ibdr)
+  stopifnot(alpha >= 0, sum(alpha) <= 1)
+
+  ## Get gamete probs ----
+  p1gamprob <- dgamete(x = 0:(ploidy / 2),
+                       alpha = alpha,
+                       G = G1,
+                       ploidy = ploidy,
+                       log_p = FALSE)
+  p2gamprob <- dgamete(x = 0:(ploidy / 2),
+                       alpha = alpha,
+                       G = G2,
+                       ploidy = ploidy,
+                       log_p = FALSE)
+
+  ## Convolve to get zygote probabilities ----
+  zygdist <- stats::convolve(p1gamprob, rev(p2gamprob), type = "open")
+
+  return(zygdist)
+}
+
+#' Zygote segregation distributions.
+#'
+#' Obtains offspring genotype probabilities given parental probabilities,
+#' the ploidy of the species, and the overdispersion parameter,
+#' for all possible parental genotypes.
+#'
+#' @inheritParams dgamete
+#'
+#' @return An array of probabilities. Element (i, j, k) contains the
+#'     probability of offspring dosage k-1 given parental dosages
+#'     i-1 and j-1.
+#'
+#' @author David Gerard
+#'
+#' @export
+#'
+#' @examples
+#' ploidy <- 10
+#' alpha <- c(0.5, 0.1)
+#' p1 <- 4
+#' p2 <- 3
+#' segarray <- zsegarray(alpha = alpha, ploidy = ploidy)
+#' graphics::plot(x = 0:10,
+#'                y = segarray[p1 + 1, p2 + 1, ],
+#'                type = "h",
+#'                ylab = "Pr(dosage)",
+#'                xlab = "dosage")
+#' graphics::mtext(paste0("P1 dosage = ",
+#'                        p1,
+#'                        ", ",
+#'                        "P2 dosage = ",
+#'                        p2))
+#'
+zsegarray <- function(alpha, ploidy) {
+  stopifnot(length(ploidy) == 1L)
+  stopifnot(ploidy %% 2 == 0)
+  stopifnot(length(alpha) == floor(ploidy / 4))
+  stopifnot(alpha >= 0, sum(alpha) <= 1)
+
+  segarray <- array(data = NA_real_, dim = rep(ploidy + 1, length.out = 3))
+  for (G1 in 0:ploidy) {
+    for (G2 in 0:ploidy) {
+      segarray[G1 + 1, G2 + 1, ] <- zygdist(alpha = alpha,
+                                            G1 = G1,
+                                            G2 = G2,
+                                            ploidy = ploidy)
+    }
+  }
+
+  return(segarray)
 }

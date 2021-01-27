@@ -16,7 +16,8 @@ is the probability of exactly \code{i} pairs of IBDR alleles
 being in the gamete. Note that \code{sum(alpha)} should be less than
 1, as \code{1 - sum(alpha)} is the probability of no double reduction.}
 
-\item{G}{The dosage of the parent. Should be one of \code{seq(0, ploidy)}.}
+\item{G}{The dosage of the parent. Should be an integer between \code{0}
+and \code{ploidy}.}
 
 \item{ploidy}{The ploidy of the species. This should be an even positive
 integer.}

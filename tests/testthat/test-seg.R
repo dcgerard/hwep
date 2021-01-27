@@ -71,3 +71,14 @@ test_that("Segregation probabilities are same as known proportions in hexaploids
 
 })
 
+
+test_that("zsegarray() works", {
+
+  segarray <- zsegarray(alpha = c(0.14, 0.1), ploidy = 10)
+
+  expect_equal(
+    segarray[1, 4, 1:6],
+    dgamete(x = 0:5, alpha = c(0.14, 0.1), G = 3, ploidy = 10)
+  )
+
+})

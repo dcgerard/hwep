@@ -12,8 +12,7 @@ v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org
 [![CRAN
 status](https://www.r-pkg.org/badges/version/hwep)](https://CRAN.R-project.org/package=hwep)
 [![R-CMD-check](https://github.com/dcgerard/hwep/workflows/R-CMD-check/badge.svg)](https://github.com/dcgerard/hwep/actions)
-[![Codecov test
-coverage](https://codecov.io/gh/dcgerard/hwep/branch/main/graph/badge.svg)](https://codecov.io/gh/dcgerard/hwep?branch=main)
+[![codecov](https://codecov.io/gh/dcgerard/hwep/branch/main/graph/badge.svg?token=X6QJRSQBXQ)](https://codecov.io/gh/dcgerard/hwep)
 <!-- badges: end -->
 
 Inference concerning Hardy-Weinberg equilibrium (HWE) in polyploids.
