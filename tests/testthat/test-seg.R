@@ -82,3 +82,9 @@ test_that("zsegarray() works", {
   )
 
 })
+
+test_that("hwe probs are asymptotically correct", {
+  freq1 <- hwesim(p = 0.3, alpha = c(0, 0), ploidy = 10, tol = sqrt(.Machine$double.eps))
+  freq2 <- stats::dbinom(x = 0:10, size = 10, prob = 0.3)
+  expect_equal(freq1, freq2, tolerance = 10^-4)
+})
