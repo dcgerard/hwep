@@ -50,15 +50,16 @@ freqnext <- function(freq, alpha, segarray = NULL) {
   return(freqnew)
 }
 
-#' Simulate HWE genotype frequencies
+#' Generate HWE genotype frequencies
 #'
-#' Simulate genotype frequencies under Hardy-Weinberg equilibrium
+#' Generate genotype frequencies under Hardy-Weinberg equilibrium
 #' given the allele frequency of the reference allele (\code{p}),
 #' the double reduction parameter (\code{alpha}), and the ploidy
 #' of the species (\code{ploidy}).
 #'
-#' This function repeatedly applies \code{\link{freqnext}()} to simulate
-#' genotype frequencies under HWE.
+#' If \code{alpha} is not all 0, then this function repeatedly
+#' applies \code{\link{freqnext}()} to simulate genotype frequencies
+#' under HWE. Otherwise, it uses \code{\link[stats]{dbinom}()}.
 #'
 #' @inheritParams dgamete
 #' @param p The allele frequency of the reference allele.
@@ -71,8 +72,8 @@ freqnext <- function(freq, alpha, segarray = NULL) {
 #' @export
 #'
 #' @examples
-#' freq1 <- hwesim(p = 0.5, alpha = 0, ploidy = 4)
-#' freq2 <- hwesim(p = 0.5, alpha = 1/4, ploidy = 4)
+#' freq1 <- hwefreq(p = 0.5, alpha = 0, ploidy = 4)
+#' freq2 <- hwefreq(p = 0.5, alpha = 1/4, ploidy = 4)
 #'
 #' plot(x = 0:4,
 #'      y = freq1,
@@ -87,7 +88,7 @@ freqnext <- function(freq, alpha, segarray = NULL) {
 #'      xlab = "dosage",
 #'      ylab = "Pr(dosage)")
 #'
-hwesim <- function(p, alpha, ploidy, niter = 100, tol = 10^-4) {
+hwefreq <- function(p, alpha, ploidy, niter = 100, tol = 10^-4) {
   stopifnot(length(p) == 1L, length(ploidy) == 1L, length(niter) == 1L)
   stopifnot(ploidy %% 2 == 0)
   stopifnot(ploidy > 1)
@@ -96,6 +97,13 @@ hwesim <- function(p, alpha, ploidy, niter = 100, tol = 10^-4) {
   stopifnot(p >= 0, p <= 1)
   stopifnot(niter >= 1)
 
+  ## Return theoretical result when no double reduction ----
+  if (all(alpha < sqrt(.Machine$double.eps))) {
+    freq <- stats::dbinom(x = 0:ploidy, size = ploidy, prob = p)
+    return(freq)
+  }
+
+  ## Iterate freqnext() if double reduction ----
   segarray <- zsegarray(alpha = alpha, ploidy = ploidy)
 
   freq <- c(1 - p, rep(0, length.out = ploidy - 1), p)

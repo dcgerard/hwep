@@ -18,9 +18,9 @@ status](https://www.r-pkg.org/badges/version/hwep)](https://CRAN.R-project.org/p
 Inference concerning Hardy-Weinberg equilibrium (HWE) in polyploids.
 Methods are available to test for HWE at any ploidy level in the
 presence of double reduction. For autopolyploid populations in HWE,
-methods are available to estimate the degree of doulbe reduction. We
+methods are available to estimate the degree of double reduction. We
 also provide functions to calculate genotype frequencies at equilibrium
-given rates of doulbe reduction.
+given rates of double reduction.
 
 ## Installation
 

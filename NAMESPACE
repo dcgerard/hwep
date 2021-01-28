@@ -2,6 +2,6 @@
 
 export(dgamete)
 export(freqnext)
-export(hwesim)
+export(hwefreq)
 export(zsegarray)
 export(zygdist)
