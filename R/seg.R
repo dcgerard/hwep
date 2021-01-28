@@ -45,6 +45,25 @@ dgamete <- function(x, alpha, G, ploidy, log_p = FALSE) {
   stopifnot(length(alpha) == ibdr)
   stopifnot(alpha >= 0, sum(alpha) <= 1)
 
+
+  ## Faster if ploidy is 2 or if no DR to use hypergeometric dist ----
+  if (ploidy == 2) {
+    retvec <- stats::dhyper(x = x,
+                            m = G,
+                            n = ploidy - G,
+                            k = ploidy / 2,
+                            log = log_p)
+    return(retvec)
+  }
+  if (all(alpha < sqrt(.Machine$double.eps))) {
+    retvec <- stats::dhyper(x = x,
+                            m = G,
+                            n = ploidy - G,
+                            k = ploidy / 2,
+                            log = log_p)
+    return(retvec)
+  }
+
   ## Get sequence of indices to sum over ----
   ijmat <- cbind(utils::combn(x = 0:ibdr, m = 2),
                  matrix(rep(0:ibdr, each = 2), nrow = 2))
