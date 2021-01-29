@@ -40,6 +40,41 @@ chisqdiv <- function(nvec, alpha, denom = c("expected", "observed")) {
   return(chisq)
 }
 
+#' Calculate \code{\link{chisqdiv}()} with real parameterization.
+#'
+#' Uses \code{\link{real_to_simplex}()} to convert \code{y} to
+#' \code{alpha}. Then calculates chi-square divergence with
+#' \code{\link{chisqdiv}()}. Transformation is that of
+#' Betancourt (2012).
+#'
+#' @inheritParams chisqdiv
+#' @param y A real vector of length at least 1.
+#'
+#' @author David Gerard
+#'
+#' @references
+#' \itemize{
+#'   \item{Betancourt, M. (2012, May). Cruising the simplex:
+#'         Hamiltonian Monte Carlo and the Dirichlet distribution.
+#'         In AIP Conference Proceedings 31st (Vol. 1443, No. 1, pp. 157-164).
+#'         American Institute of Physics.
+#'         \href{https://doi.org/10.1063/1.3703631}{doi:10.1063/1.3703631}}
+#'   \item{\url{https://mc-stan.org/docs/2_18/reference-manual/simplex-transform-section.html}}
+#' }
+#'
+#' @noRd
+obj_reals <- function(y, nvec, denom = c("expected", "observed")) {
+  ploidy <- length(nvec) - 1
+  stopifnot(floor(ploidy / 4) == length(y))
+  denom <- match.arg(denom)
+  if (length(y) == 0) {
+    return(chisqdiv(nvec = nvec, alpha = NULL, denom = denom))
+  } else {
+    alpha_full <- real_to_simplex(y)
+    return(chisqdiv(nvec = nvec, alpha = alpha_full[-1], denom = denom))
+  }
+}
+
 #' Estimate double reduction parameter and test for HWE
 #'
 #' Implements a generalized method-of-moments approach to test for
@@ -84,7 +119,19 @@ chisqdiv <- function(nvec, alpha, denom = c("expected", "observed")) {
 #' hwefit(nvec)
 #'
 #' ## Hexaploid with exact frequencies at HWE
-#' nvec <- round(hwefreq(p = 0.5, alpha = 0.4, ploidy = 6, niter = 100, tol = -Inf) * 100)
+#' nvec <- round(hwefreq(p = 0.5,
+#'                       alpha = 0.4,
+#'                       ploidy = 6,
+#'                       niter = 100,
+#'                       tol = -Inf) * 100)
+#' hwefit(nvec)
+#'
+#' ## Octoploid case with exact frequencies at HWE
+#' nvec <- round(hwefreq(p = 0.5,
+#'                       alpha = c(0.4, 0.1),
+#'                       ploidy = 8,
+#'                       niter = 100,
+#'                       tol = -Inf) * 100)
 #' hwefit(nvec)
 #'
 hwefit <- function(nvec, denom = c("expected", "observed")) {
@@ -131,7 +178,28 @@ hwefit <- function(nvec, denom = c("expected", "observed")) {
                     chisq_alpha = chisq_alpha,
                     p_alpha = pval_alpha)
   } else {
-    ## Higher Ploidy: Use L-BFGS-B on transformed space
+    ## Higher Ploidy: Use BFGS on transformed space
+    oout <- stats::optim(par = rep(0, length.out = ibdr),
+                         fn = obj_reals,
+                         method = "BFGS",
+                         nvec = nvec,
+                         denom = denom)
+    alpha <- real_to_simplex(oout$par)[-1]
+    pval_hwe <- stats::pchisq(q = oout$value,
+                              df = ploidy - ibdr - 1,
+                              lower.tail = FALSE)
+    chisq_null <- chisqdiv(nvec = nvec,
+                           alpha = rep(0, length.out = ibdr),
+                           denom = denom)
+    chisq_alpha <- 2 * (chisq_null - oout$value)
+    pval_alpha <- stats::pchisq(q = chisq_alpha,
+                                df = ibdr,
+                                lower.tail = FALSE) / 2
+    retlist <- list(alpha = alpha,
+                    chisq_hwe = oout$value,
+                    p_hwe = pval_hwe,
+                    chisq_alpha = chisq_alpha,
+                    p_alpha = pval_alpha)
   }
 
   return(retlist)
