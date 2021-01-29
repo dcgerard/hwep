@@ -18,15 +18,17 @@ observed genotype frequencies (\code{denom = "observed"})?}
 \value{
 A list with the following elements
 \describe{
-\item{\code{alpha}}{The estimated double reduction parameter(s).}
+\item{\code{alpha}}{The estimated double reduction parameter(s).
+In diploids, this value is \code{NULL}.}
 \item{\code{chisq_hwe}}{The chi-square test statistic for testing
 against the null of equilibrium.}
 \item{\code{p_hwe}}{The p-value against the null of equilibrium.}
 \item{\code{chisq_alpha}}{The chi-square test statistic for
 testing against the null of no double reduction (conditional
-on equilibrium).}
+on equilibrium). In diploids, this value is \code{NULL}.}
 \item{\code{p_alpha}}{The p-value against the null of no double
-reduction (conditional on equilibrium).}
+reduction (conditional on equilibrium). In diploids, this value
+is \code{NULL}.}
 }
 }
 \description{

@@ -56,15 +56,17 @@ chisqdiv <- function(nvec, alpha, denom = c("expected", "observed")) {
 #'
 #' @return A list with the following elements
 #' \describe{
-#'   \item{\code{alpha}}{The estimated double reduction parameter(s).}
+#'   \item{\code{alpha}}{The estimated double reduction parameter(s).
+#'       In diploids, this value is \code{NULL}.}
 #'   \item{\code{chisq_hwe}}{The chi-square test statistic for testing
 #'       against the null of equilibrium.}
 #'   \item{\code{p_hwe}}{The p-value against the null of equilibrium.}
 #'   \item{\code{chisq_alpha}}{The chi-square test statistic for
 #'       testing against the null of no double reduction (conditional
-#'       on equilibrium).}
+#'       on equilibrium). In diploids, this value is \code{NULL}.}
 #'   \item{\code{p_alpha}}{The p-value against the null of no double
-#'       reduction (conditional on equilibrium).}
+#'       reduction (conditional on equilibrium). In diploids, this value
+#'       is \code{NULL}.}
 #' }
 #'
 #' @author David Gerard
@@ -95,11 +97,11 @@ hwefit <- function(nvec, denom = c("expected", "observed")) {
 
   if (ibdr == 0) {
     ## Diploid: Just return chi-square
-    chisq <- chisqdiv(nvec = nvec, alpha = numeric(length = 0), denom = denom)
+    chisq <- chisqdiv(nvec = nvec, alpha = NULL, denom = denom)
     pval <- stats::pchisq(q = chisq,
                           df = ploidy - ibdr - 1,
                           lower.tail = FALSE)
-    retlist <- list(alpha = numeric(length = 0),
+    retlist <- list(alpha = NULL,
                     chisq_hwe = chisq,
                     p_hwe = pval,
                     chisq_alpha = NULL,
@@ -119,8 +121,8 @@ hwefit <- function(nvec, denom = c("expected", "observed")) {
     chisq_null <- chisqdiv(nvec = nvec,
                            alpha = rep(0, length.out = ibdr),
                            denom = denom)
-    chisq_alpha <- chisq_null - oout$value
-    pval_alpha <- stats::pchisq(q = 2 * chisq_alpha,
+    chisq_alpha <- 2 * (chisq_null - oout$value)
+    pval_alpha <- stats::pchisq(q = chisq_alpha,
                                 df = ibdr,
                                 lower.tail = FALSE) / 2
     retlist <- list(alpha = oout$par,
