@@ -57,9 +57,14 @@ chisqdiv <- function(nvec, alpha, denom = c("expected", "observed")) {
 #' @return A list with the following elements
 #' \describe{
 #'   \item{\code{alpha}}{The estimated double reduction parameter(s).}
-#'   \item{\code{chisq}}{The chi-square test statistic for testing
+#'   \item{\code{chisq_hwe}}{The chi-square test statistic for testing
 #'       against the null of equilibrium.}
-#'   \item{\code{p.value}}{The p-value against the null of equilibrium.}
+#'   \item{\code{p_hwe}}{The p-value against the null of equilibrium.}
+#'   \item{\code{chisq_alpha}}{The chi-square test statistic for
+#'       testing against the null of no double reduction (conditional
+#'       on equilibrium).}
+#'   \item{\code{p_alpha}}{The p-value against the null of no double
+#'       reduction (conditional on equilibrium).}
 #' }
 #'
 #' @author David Gerard
@@ -77,7 +82,7 @@ chisqdiv <- function(nvec, alpha, denom = c("expected", "observed")) {
 #' hwefit(nvec)
 #'
 #' ## Hexaploid with exact frequencies at HWE
-#' nvec <- round(hwefreq(p = 0.5, alpha = 0.4, ploidy = 6, niter = 100, tol = -Inf) * 50)
+#' nvec <- round(hwefreq(p = 0.5, alpha = 0.4, ploidy = 6, niter = 100, tol = -Inf) * 100)
 #' hwefit(nvec)
 #'
 hwefit <- function(nvec, denom = c("expected", "observed")) {
@@ -95,8 +100,10 @@ hwefit <- function(nvec, denom = c("expected", "observed")) {
                           df = ploidy - ibdr - 1,
                           lower.tail = FALSE)
     retlist <- list(alpha = numeric(length = 0),
-                    chisq = chisq,
-                    p.value = pval)
+                    chisq_hwe = chisq,
+                    p_hwe = pval,
+                    chisq_alpha = NULL,
+                    p_alpha = NULL)
   } else if (ibdr == 1) {
     ## Tetraploid or Hexaploid: Use Brent's method
     oout <- stats::optim(par = 0.1,
@@ -106,12 +113,21 @@ hwefit <- function(nvec, denom = c("expected", "observed")) {
                          upper = 1,
                          nvec = nvec,
                          denom = denom)
-    pval <- stats::pchisq(q = oout$value,
-                          df = ploidy - ibdr - 1,
-                          lower.tail = FALSE)
+    pval_hwe <- stats::pchisq(q = oout$value,
+                              df = ploidy - ibdr - 1,
+                              lower.tail = FALSE)
+    chisq_null <- chisqdiv(nvec = nvec,
+                           alpha = rep(0, length.out = ibdr),
+                           denom = denom)
+    chisq_alpha <- chisq_null - oout$value
+    pval_alpha <- stats::pchisq(q = 2 * chisq_alpha,
+                                df = ibdr,
+                                lower.tail = FALSE) / 2
     retlist <- list(alpha = oout$par,
-                    chisq = oout$value,
-                    p.value = pval)
+                    chisq_hwe = oout$value,
+                    p_hwe = pval_hwe,
+                    chisq_alpha = chisq_alpha,
+                    p_alpha = pval_alpha)
   } else {
     ## Higher Ploidy: Use L-BFGS-B on transformed space
   }

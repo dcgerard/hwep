@@ -19,9 +19,14 @@ observed genotype frequencies (\code{denom = "observed"})?}
 A list with the following elements
 \describe{
 \item{\code{alpha}}{The estimated double reduction parameter(s).}
-\item{\code{chisq}}{The chi-square test statistic for testing
+\item{\code{chisq_hwe}}{The chi-square test statistic for testing
 against the null of equilibrium.}
-\item{\code{p.value}}{The p-value against the null of equilibrium.}
+\item{\code{p_hwe}}{The p-value against the null of equilibrium.}
+\item{\code{chisq_alpha}}{The chi-square test statistic for
+testing against the null of no double reduction (conditional
+on equilibrium).}
+\item{\code{p_alpha}}{The p-value against the null of no double
+reduction (conditional on equilibrium).}
 }
 }
 \description{
@@ -41,7 +46,7 @@ nvec <- c(25, 0, 0, 0, 25)
 hwefit(nvec)
 
 ## Hexaploid with exact frequencies at HWE
-nvec <- round(hwefreq(p = 0.5, alpha = 0.4, ploidy = 6, niter = 100, tol = -Inf) * 50)
+nvec <- round(hwefreq(p = 0.5, alpha = 0.4, ploidy = 6, niter = 100, tol = -Inf) * 100)
 hwefit(nvec)
 
 }
