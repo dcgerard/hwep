@@ -82,6 +82,11 @@ obj_reals <- function(y, nvec, denom = c("expected", "observed")) {
 #' also provides an estimate of double reduction given that the population
 #' is at equilibrium.
 #'
+#' For ploides greater than 4, not all gametic frequencies are possible
+#' given rates of double reduction. That is, if the model for meiosis
+#' from Huang et. al. (2019) is incorrect, then this is not an appropriate
+#' test for HWE.
+#'
 #' @param nvec A vector containing the observed genotype counts,
 #'     where \code{nvec[[i]]} is the number of individuals with genotype
 #'     \code{i-1}. This should be of length \code{ploidy+1}.
@@ -111,6 +116,11 @@ obj_reals <- function(y, nvec, denom = c("expected", "observed")) {
 #' @author David Gerard
 #'
 #' @export
+#'
+#' @references
+#' \itemize{
+#'   \item{Huang, K., Wang, T., Dunn, D. W., Zhang, P., Cao, X., Liu, R., & Li, B. (2019). Genotypic frequencies at equilibrium for polysomic inheritance under double-reduction. G3: Genes, Genomes, Genetics, 9(5), 1693-1706.}
+#' }
 #'
 #' @examples
 #' ## Diploid at various levels of deviation from HWE

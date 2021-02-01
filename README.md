@@ -22,6 +22,21 @@ methods are available to estimate the degree of double reduction. We
 also provide functions to calculate genotype frequencies at equilibrium
 given rates of double reduction.
 
+The main functions are:
+
+-   `hwelike()`: Likelihood inference for HWE in polyploids. This
+    function tests for HWE and estimates gametic frequencies given HWE.
+    This function does not assume a model for meiosis.
+-   `hwemom()`: Generalized method of moments inference for double
+    reduction. This function tests for equilibrium given double
+    reduction rates and estimates these rates given equilibrium. Note
+    that for ploidies greater than four, not all gametic frequencies are
+    possible given this model for meiosis. That is, the test might
+    reject not because the population is not in HWE, but because the
+    model for meiosis is incorrect. So `hwelike()` is more general if
+    you just want to test for HWE and do not care about double
+    reduction.
+
 ## Installation
 
 You can install the released version of hwep from

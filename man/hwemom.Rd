@@ -41,6 +41,12 @@ Hardy-Weinberg equilibrium in the presence of double reduction. This
 also provides an estimate of double reduction given that the population
 is at equilibrium.
 }
+\details{
+For ploides greater than 4, not all gametic frequencies are possible
+given rates of double reduction. That is, if the model for meiosis
+from Huang et. al. (2019) is incorrect, then this is not an appropriate
+test for HWE.
+}
 \examples{
 ## Diploid at various levels of deviation from HWE
 hwemom(c(10, 20, 10))
@@ -67,6 +73,11 @@ nvec <- round(hwefreq(p = 0.5,
                       tol = -Inf) * 100)
 hwemom(nvec)
 
+}
+\references{
+\itemize{
+\item{Huang, K., Wang, T., Dunn, D. W., Zhang, P., Cao, X., Liu, R., & Li, B. (2019). Genotypic frequencies at equilibrium for polysomic inheritance under double-reduction. G3: Genes, Genomes, Genetics, 9(5), 1693-1706.}
+}
 }
 \author{
 David Gerard

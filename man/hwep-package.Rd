@@ -18,6 +18,22 @@ equilibrium given rates of double reduction.
 
 The main functions are:
 \describe{
+\item{\code{\link{hwelike}()}}{Likelihood inference for HWE in polyploids.
+This function tests for HWE and estimates gametic frequencies
+given HWE. This function does not assume a model for meiosis.}
+\item{\code{\link{hwemom}()}}{Generalized method of moments inference
+for double reduction. This function tests for equilibrium given
+double reduction rates and estimates these rates given equilibrium.
+Note that for ploidies greater than four, not all gametic
+frequencies are possible given this model for meiosis. That is,
+the test might reject not because the population is not in HWE,
+but because the model for meiosis is incorrect. So
+\code{\link{hwelike}()} is more general if you just want to
+test for HWE and do not care about double reduction.}
+}
+
+Other functions include:
+\describe{
 \item{\code{\link{dgamete}()}}{Gamete dosage probability given
 parental dosage.}
 \item{\code{\link{freqnext}()}}{Update genotype frequencies after one
