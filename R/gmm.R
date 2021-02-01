@@ -95,10 +95,14 @@ obj_reals <- function(y, nvec, denom = c("expected", "observed")) {
 #'       In diploids, this value is \code{NULL}.}
 #'   \item{\code{chisq_hwe}}{The chi-square test statistic for testing
 #'       against the null of equilibrium.}
+#'   \item{\code{df_hwe}}{The degrees of freedom associated with
+#'       \code{chisq_hwe}.}
 #'   \item{\code{p_hwe}}{The p-value against the null of equilibrium.}
 #'   \item{\code{chisq_alpha}}{The chi-square test statistic for
 #'       testing against the null of no double reduction (conditional
 #'       on equilibrium). In diploids, this value is \code{NULL}.}
+#'   \item{\code{df_alpha}}{The degrees of freedom associated with
+#'       \code{chisq_alpha}.}
 #'   \item{\code{p_alpha}}{The p-value against the null of no double
 #'       reduction (conditional on equilibrium). In diploids, this value
 #'       is \code{NULL}.}
@@ -110,13 +114,13 @@ obj_reals <- function(y, nvec, denom = c("expected", "observed")) {
 #'
 #' @examples
 #' ## Diploid at various levels of deviation from HWE
-#' hwefit(c(10, 20, 10))
-#' hwefit(c(12, 16, 12))
-#' hwefit(c(14, 12, 14))
+#' hwemom(c(10, 20, 10))
+#' hwemom(c(12, 16, 12))
+#' hwemom(c(14, 12, 14))
 #'
 #' ## Tetraploid with strong deviation from HWE
 #' nvec <- c(25, 0, 0, 0, 25)
-#' hwefit(nvec)
+#' hwemom(nvec)
 #'
 #' ## Hexaploid with exact frequencies at HWE
 #' nvec <- round(hwefreq(p = 0.5,
@@ -124,7 +128,7 @@ obj_reals <- function(y, nvec, denom = c("expected", "observed")) {
 #'                       ploidy = 6,
 #'                       niter = 100,
 #'                       tol = -Inf) * 100)
-#' hwefit(nvec)
+#' hwemom(nvec)
 #'
 #' ## Octoploid case with exact frequencies at HWE
 #' nvec <- round(hwefreq(p = 0.5,
@@ -132,9 +136,9 @@ obj_reals <- function(y, nvec, denom = c("expected", "observed")) {
 #'                       ploidy = 8,
 #'                       niter = 100,
 #'                       tol = -Inf) * 100)
-#' hwefit(nvec)
+#' hwemom(nvec)
 #'
-hwefit <- function(nvec, denom = c("expected", "observed")) {
+hwemom <- function(nvec, denom = c("expected", "observed")) {
   ## Check parameters ----
   ploidy <- length(nvec) - 1
   stopifnot(ploidy %% 2 == 0)
@@ -150,8 +154,10 @@ hwefit <- function(nvec, denom = c("expected", "observed")) {
                           lower.tail = FALSE)
     retlist <- list(alpha = NULL,
                     chisq_hwe = chisq,
+                    df_hwe = ploidy - ibdr - 1,
                     p_hwe = pval,
                     chisq_alpha = NULL,
+                    df_alpha = NULL,
                     p_alpha = NULL)
   } else if (ibdr == 1) {
     ## Tetraploid or Hexaploid: Use Brent's method
@@ -174,8 +180,10 @@ hwefit <- function(nvec, denom = c("expected", "observed")) {
                                 lower.tail = FALSE) / 2
     retlist <- list(alpha = oout$par,
                     chisq_hwe = oout$value,
+                    df_hwe = ploidy - ibdr - 1,
                     p_hwe = pval_hwe,
                     chisq_alpha = chisq_alpha,
+                    df_alpha = ibdr,
                     p_alpha = pval_alpha)
   } else {
     ## Higher Ploidy: Use BFGS on transformed space
@@ -197,8 +205,10 @@ hwefit <- function(nvec, denom = c("expected", "observed")) {
                                 lower.tail = FALSE) / 2
     retlist <- list(alpha = alpha,
                     chisq_hwe = oout$value,
+                    df_hwe = ploidy - ibdr - 1,
                     p_hwe = pval_hwe,
                     chisq_alpha = chisq_alpha,
+                    df_alpha = ibdr,
                     p_alpha = pval_alpha)
   }
 

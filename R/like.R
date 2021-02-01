@@ -109,6 +109,72 @@ hweem <- function(nvec, tol = 10^-3, maxit = 100) {
 }
 
 
+#' Likelihood inference for HWE
+#'
+#' Estimates gamete genotype frequencies using a maximum likelihood approach
+#' and runs a likelihood ratio test for HWE.
+#'
+#' @inheritParams hwemom
+#'
+#' @return A list with the following elements:
+#' \describe{
+#'   \item{\code{p}}{The estimated gamete genotype frequencies. \code{p[[i}
+#'       is the estimated frequency for gamete genotype \code{i-1}.}
+#'   \item{\code{chisq_hwe}}{The likelihood ratio test statistic for testing
+#'       against the null of HWE.}
+#'   \item{\code{df_hwe}}{The degrees of freedom associated with
+#'       \code{chisq_hwe}.}
+#'   \item{\code{p_hwe}}{The p-value against the null of HWE.}
+#' }
+#'
+#' @author David Gerard
+#'
+#' @export
+#'
+#' @examples
+#' ## Randomly generate gamete frequencies
+#' set.seed(1)
+#' ploidy <- 10
+#' pvec <- stats::runif(ploidy / 2 + 1)
+#' pvec <- pvec / sum(pvec)
+#'
+#' ## Genotype frequencies from gamete frequencies under HWE
+#' qvec <- stats::convolve(pvec, rev(pvec), type = "open")
+#'
+#' ## Generate data
+#' nvec <- c(stats::rmultinom(n = 1, size = 100, prob = qvec))
+#'
+#' ## Run hwelike()
+#' hwelike(nvec = nvec)
+#'
+hwelike <- function(nvec) {
+  ploidy <- length(nvec) - 1
+  stopifnot(ploidy %% 2 == 0)
+  stopifnot(nvec >= 0)
+
+  ## Estimate gametic frequencies ----
+  hout <- hweem(nvec = nvec)
+  names(hout) <- 0:(ploidy / 2)
+
+  ## Get log-likelihood under null ----
+  ll0 <- llike(nvec = nvec, pvec = hout)
+
+  ## Get log-likelihood under alternative ----
+  qmle <- nvec / sum(nvec)
+  lla <- stats::dmultinom(x = nvec, prob = qmle, log = TRUE)
+
+  ## Run likelihood ratio test ----
+  chisq <- -2 * (ll0 - lla)
+  pval <- stats::pchisq(q = chisq, df = ploidy / 2, lower.tail = FALSE)
+
+  retlist <- list(p = hout,
+                  chisq_hwe = chisq,
+                  df_hwe = ploidy / 2,
+                  p_hwe = pval)
+  return(retlist)
+}
+
+
 
 
 
