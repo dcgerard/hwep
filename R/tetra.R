@@ -2,28 +2,6 @@
 ## Likelihood inference for tetraploids
 ####################################
 
-# ## Estimate DR if ploidy = 4 ----
-# if (ploidy == 4) {
-#   p0 <- hout[[1]]
-#   p1 <- hout[[2]]
-#   p2 <- hout[[3]]
-#   retlist$alpha <- ((p2 - p0)^2 - (1 - 2 * p1)) / ((p2 - p0)^2 - (1 + p1))
-#   r0 <- sum(nvec * 0:ploidy) / (sum(nvec) * ploidy)
-#   q0 <- stats::dbinom(x = 0:ploidy, size = ploidy, prob = r0)
-#   llnodr <- stats::dmultinom(x = nvec, prob = q0, log = TRUE)
-#   chisq_alpha <- -2 * (llnodr - ll0)
-#   p_alpha <- stats::pchisq(q = chisq_alpha, df = 1, lower.tail = FALSE)
-#   retlist$chisq_alpha <- chisq_alpha
-#   retlist$df_alpha <- 1
-#   retlist$p_alpha <- p_alpha
-# } else {
-#   retlist["alpha"] <- list(NULL)
-#   retlist["chisq_alpha"] <- list(NULL)
-#   retlist["df_alpha"] <- list(NULL)
-#   retlist["p_alpha"] <- list(NULL)
-# }
-
-
 #' Gamete frequencies from double reduction and allele frequency for tetraploids
 #'
 #' @param a The rate of double reduction
@@ -43,7 +21,7 @@ gam_from_a <- function(a, r) {
     p2 = (3 * a / (2 + a) + 2 * r * (1 - a) / (2 + a)) * r)
 }
 
-#' Double reductiona and allele frequency from gamete frequencies
+#' Double reduction and allele frequency from gamete frequencies
 #'
 #' @param p The gamete frequencies.  \code{p[[i]]} is the probability a gamete
 #'     has dosage \code{i-1}

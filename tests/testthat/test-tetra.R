@@ -17,3 +17,12 @@ test_that("sim and closed form are same", {
   cf <- gam_from_a(a = 0.1, r = 0.1)
   expect_equal(sim, cf, tolerance = 10^-4, ignore_attr = TRUE)
 })
+
+test_that("random mating same for tetraploids", {
+  nvec <- c(1, 4, 2, 3, 1)
+
+  tout <- hwetetra(nvec = nvec)
+  rout <- rmlike(nvec = nvec)
+
+  expect_equal(rout$chisq_rm, tout$chisq_rm)
+})
