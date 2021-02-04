@@ -38,6 +38,8 @@ Other functions include:
 \describe{
 \item{\code{\link{dgamete}()}}{Gamete dosage probability given
 parental dosage.}
+\item{\code{\link{drbounds}()}}{Upper bounds on the rates of double
+reduction given the complete equational segregation model.}
 \item{\code{\link{freqnext}()}}{Update genotype frequencies after one
 generation of random mating.}
 \item{\code{\link{hwefreq}()}}{Generate Hardy-Weinberg equilibrium

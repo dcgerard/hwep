@@ -2,6 +2,51 @@
 ## Functions for Generalized Method of Moments
 ###############################
 
+#' Upper bounds on rates of double reduction
+#'
+#' These are according to the complete equation segregation model. See
+#' Huang et. al. (2019) for details.
+#'
+#' @param ploidy The ploidy of the species. Should be even and at least 4.
+#'
+#' @return A vector of length \code{floor(ploidy/4)}. Element \code{i} is
+#'     the upper bound on the probability of \code{i} pairs of
+#'     identical-by-double-reduction alleles being in an individual.
+#'
+#' @author David Gerard
+#'
+#' @export
+#'
+#' @examples
+#' drbounds(4)
+#' drbounds(6)
+#' drbounds(8)
+#' drbounds(10)
+#' drbounds(12)
+#' drbounds(14)
+#' drbounds(16)
+#'
+drbounds <- function(ploidy) {
+  stopifnot(ploidy > 2)
+  stopifnot(ploidy %% 2 == 0)
+  ibdr <- floor(ploidy / 4)
+  alpha <- rep(NA_real_, length = ibdr)
+  for (i in seq_along(alpha)) {
+    jvec <- i:ibdr
+    alpha[[i]] <-
+      exp(
+        log_sum_exp(
+          (ploidy / 2 - 3 * jvec) * log(2) +
+            lchoose(jvec, i) +
+            lchoose(ploidy / 2, jvec) +
+            lchoose(ploidy / 2 - jvec, ploidy / 2 - 2 * jvec) -
+            lchoose(ploidy, ploidy / 2)
+          )
+      )
+  }
+  return(alpha)
+}
+
 #' Chi-square divergence between empirical proportions and updated proportions.
 #'
 #' @param nvec A vector of length ploidy + 1. \code{nvec[i]} is the observed
