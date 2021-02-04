@@ -179,7 +179,7 @@ obj_reals <- function(y, nvec, denom = c("expected", "observed")) {
 #'
 #' ## Hexaploid with exact frequencies at HWE
 #' nvec <- round(hwefreq(r = 0.5,
-#'                       alpha = 0.4,
+#'                       alpha = 0.2,
 #'                       ploidy = 6,
 #'                       niter = 100,
 #'                       tol = -Inf) * 100)
@@ -187,7 +187,7 @@ obj_reals <- function(y, nvec, denom = c("expected", "observed")) {
 #'
 #' ## Octoploid case with exact frequencies at HWE
 #' nvec <- round(hwefreq(r = 0.5,
-#'                       alpha = c(0.4, 0.1),
+#'                       alpha = c(0.1, 0.01),
 #'                       ploidy = 8,
 #'                       niter = 100,
 #'                       tol = -Inf) * 100)
@@ -249,13 +249,16 @@ hwemom <- function(nvec, denom = c("expected", "observed")) {
                     df_alpha = ibdr,
                     p_alpha = pval_alpha)
   } else {
-    ## Higher Ploidy: Use BFGS on transformed space
-    oout <- stats::optim(par = rep(0, length.out = ibdr),
-                         fn = obj_reals,
-                         method = "BFGS",
+    ## Higher Ploidy: Use L-BFGS-B using boundaries from CES model
+    upper_alpha <- drbounds(ploidy = ploidy)
+    oout <- stats::optim(par = upper_alpha / 2,
+                         fn = chisqdiv,
+                         method = "L-BFGS-B",
+                         lower = rep(0, ibdr),
+                         upper = upper_alpha,
                          nvec = nvec,
                          denom = denom)
-    alpha <- real_to_simplex(oout$par)[-1]
+    alpha <- oout$par
     pval_hwe <- stats::pchisq(q = oout$value,
                               df = ploidy - ibdr - 1,
                               lower.tail = FALSE)

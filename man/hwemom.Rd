@@ -59,7 +59,7 @@ hwemom(nvec)
 
 ## Hexaploid with exact frequencies at HWE
 nvec <- round(hwefreq(r = 0.5,
-                      alpha = 0.4,
+                      alpha = 0.2,
                       ploidy = 6,
                       niter = 100,
                       tol = -Inf) * 100)
@@ -67,7 +67,7 @@ hwemom(nvec)
 
 ## Octoploid case with exact frequencies at HWE
 nvec <- round(hwefreq(r = 0.5,
-                      alpha = c(0.4, 0.1),
+                      alpha = c(0.1, 0.01),
                       ploidy = 8,
                       niter = 100,
                       tol = -Inf) * 100)
