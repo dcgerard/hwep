@@ -1,4 +1,4 @@
-test_that("hweem works", {
+test_that("rmem works", {
   set.seed(1)
   pvec <- stats::runif(6)
   pvec <- pvec / sum(pvec)
@@ -10,7 +10,7 @@ test_that("hweem works", {
   nvec <- round(100000000 * qvec)
 
   ## Estimate pvec
-  pest <- hweem(nvec = nvec, tol = 10^-6)
+  pest <- rmem(nvec = nvec, tol = 10^-6)
 
   expect_equal(pest, pvec, tolerance = 10^-4)
 })

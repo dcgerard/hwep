@@ -10,7 +10,8 @@
 #'
 #' @param x A vector of numerics in \code{seq(0, ploidy/2)}. The dosage of the
 #'     gametes.
-#' @param alpha The double reduction parameter(s). This should be a
+#' @param alpha A numeric vector containing the double reduction parameter(s).
+#'     This should be a
 #'     vector of length \code{floor(ploidy/4)} where \code{alpha[i]}
 #'     is the probability of exactly \code{i} pairs of IBDR alleles
 #'     being in the gamete. Note that \code{sum(alpha)} should be less than

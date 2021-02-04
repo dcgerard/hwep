@@ -11,18 +11,20 @@
 #' @section Functions:
 #' The main functions are:
 #' \describe{
-#'   \item{\code{\link{hwelike}()}}{Likelihood inference for HWE in polyploids.
-#'       This function tests for HWE and estimates gametic frequencies
-#'       given HWE. This function does not assume a model for meiosis.}
+#'   \item{\code{\link{hwetetra}()}}{Likelihood inference for tetraploids.
+#'       Includes tests for random mating, only small deviations from HWE,
+#'       and the presence of double reduction.}
+#'   \item{\code{\link{rmlike}()}}{Likelihood inference for random
+#'       mating in polyploids. This function tests for random mating
+#'       and estimates gametic frequencies given random mating.
+#'       This function does not assume a model for meiosis.}
 #'   \item{\code{\link{hwemom}()}}{Generalized method of moments inference
 #'       for double reduction. This function tests for equilibrium given
 #'       double reduction rates and estimates these rates given equilibrium.
 #'       Note that for ploidies greater than four, not all gametic
 #'       frequencies are possible given this model for meiosis. That is,
 #'       the test might reject not because the population is not in HWE,
-#'       but because the model for meiosis is incorrect. So
-#'       \code{\link{hwelike}()} is more general if you just want to
-#'       test for HWE and do not care about double reduction.}
+#'       but because the model for meiosis is incorrect.}
 #' }
 #'
 #' Other functions include:
@@ -33,6 +35,8 @@
 #'       generation of random mating.}
 #'   \item{\code{\link{hwefreq}()}}{Generate Hardy-Weinberg equilibrium
 #'       genotype frequencies.}
+#'   \item{\code{\link{p_from_alpha}()}}{Obtain gamete frequencies from
+#'       the major allele frequency and double reduction rates.}
 #'   \item{\code{\link{zsegarray}()}}{All zygote dosage distributions
 #'       given all possible parental dosages.}
 #'   \item{\code{\link{zygdist}()}}{Zygote dosage distribution given

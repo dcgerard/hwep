@@ -4,12 +4,13 @@
 \alias{hwefreq}
 \title{Generate HWE genotype frequencies}
 \usage{
-hwefreq(p, alpha, ploidy, niter = 100, tol = 10^-4)
+hwefreq(r, alpha, ploidy, niter = 100, tol = sqrt(.Machine$double.eps))
 }
 \arguments{
-\item{p}{The allele frequency of the reference allele.}
+\item{r}{The allele frequency of the reference allele.}
 
-\item{alpha}{The double reduction parameter(s). This should be a
+\item{alpha}{A numeric vector containing the double reduction parameter(s).
+This should be a
 vector of length \code{floor(ploidy/4)} where \code{alpha[i]}
 is the probability of exactly \code{i} pairs of IBDR alleles
 being in the gamete. Note that \code{sum(alpha)} should be less than
@@ -25,7 +26,7 @@ old and new genotype frequencies.}
 }
 \description{
 Generate genotype frequencies under Hardy-Weinberg equilibrium
-given the allele frequency of the reference allele (\code{p}),
+given the allele frequency of the reference allele (\code{r}),
 the double reduction parameter (\code{alpha}), and the ploidy
 of the species (\code{ploidy}).
 }
@@ -35,8 +36,8 @@ applies \code{\link{freqnext}()} to simulate genotype frequencies
 under HWE. Otherwise, it uses \code{\link[stats]{dbinom}()}.
 }
 \examples{
-freq1 <- hwefreq(p = 0.5, alpha = 0, ploidy = 4)
-freq2 <- hwefreq(p = 0.5, alpha = 1/4, ploidy = 4)
+freq1 <- hwefreq(r = 0.5, alpha = 0, ploidy = 4)
+freq2 <- hwefreq(r = 0.5, alpha = 1/6, ploidy = 4)
 
 plot(x = 0:4,
      y = freq1,

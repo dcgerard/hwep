@@ -7,7 +7,8 @@
 zsegarray(alpha, ploidy)
 }
 \arguments{
-\item{alpha}{The double reduction parameter(s). This should be a
+\item{alpha}{A numeric vector containing the double reduction parameter(s).
+This should be a
 vector of length \code{floor(ploidy/4)} where \code{alpha[i]}
 is the probability of exactly \code{i} pairs of IBDR alleles
 being in the gamete. Note that \code{sum(alpha)} should be less than

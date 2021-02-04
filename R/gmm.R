@@ -133,7 +133,7 @@ obj_reals <- function(y, nvec, denom = c("expected", "observed")) {
 #' hwemom(nvec)
 #'
 #' ## Hexaploid with exact frequencies at HWE
-#' nvec <- round(hwefreq(p = 0.5,
+#' nvec <- round(hwefreq(r = 0.5,
 #'                       alpha = 0.4,
 #'                       ploidy = 6,
 #'                       niter = 100,
@@ -141,7 +141,7 @@ obj_reals <- function(y, nvec, denom = c("expected", "observed")) {
 #' hwemom(nvec)
 #'
 #' ## Octoploid case with exact frequencies at HWE
-#' nvec <- round(hwefreq(p = 0.5,
+#' nvec <- round(hwefreq(r = 0.5,
 #'                       alpha = c(0.4, 0.1),
 #'                       ploidy = 8,
 #'                       niter = 100,
@@ -156,16 +156,24 @@ hwemom <- function(nvec, denom = c("expected", "observed")) {
   ibdr <- floor(ploidy / 4)
   denom <- match.arg(denom)
 
+  if (ploidy == 4) {
+    message("You should use `hwetetra()` for tetraploids")
+  } else if (ploidy == 2) {
+    message("Don't use this function. There are far better packages for diploids.")
+  }
+
   if (ibdr == 0) {
     ## Diploid: Just return chi-square
     chisq <- chisqdiv(nvec = nvec, alpha = NULL, denom = denom)
     pval <- stats::pchisq(q = chisq,
                           df = ploidy - ibdr - 1,
                           lower.tail = FALSE)
-    retlist <- list(alpha = NULL,
+    phat <- sum(0:ploidy * nvec) / (ploidy * sum(nvec))
+    retlist <- list(p = c(1 - phat, phat),
                     chisq_hwe = chisq,
                     df_hwe = ploidy - ibdr - 1,
                     p_hwe = pval,
+                    alpha = NULL,
                     chisq_alpha = NULL,
                     df_alpha = NULL,
                     p_alpha = NULL)
@@ -188,10 +196,10 @@ hwemom <- function(nvec, denom = c("expected", "observed")) {
     pval_alpha <- stats::pchisq(q = chisq_alpha,
                                 df = ibdr,
                                 lower.tail = FALSE) / 2
-    retlist <- list(alpha = oout$par,
-                    chisq_hwe = oout$value,
+    retlist <- list(chisq_hwe = oout$value,
                     df_hwe = ploidy - ibdr - 1,
                     p_hwe = pval_hwe,
+                    alpha = oout$par,
                     chisq_alpha = chisq_alpha,
                     df_alpha = ibdr,
                     p_alpha = pval_alpha)
@@ -213,10 +221,10 @@ hwemom <- function(nvec, denom = c("expected", "observed")) {
     pval_alpha <- stats::pchisq(q = chisq_alpha,
                                 df = ibdr,
                                 lower.tail = FALSE) / 2
-    retlist <- list(alpha = alpha,
-                    chisq_hwe = oout$value,
+    retlist <- list(chisq_hwe = oout$value,
                     df_hwe = ploidy - ibdr - 1,
                     p_hwe = pval_hwe,
+                    alpha = alpha,
                     chisq_alpha = chisq_alpha,
                     df_alpha = ibdr,
                     p_alpha = pval_alpha)

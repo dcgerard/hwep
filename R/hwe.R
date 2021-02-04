@@ -53,7 +53,7 @@ freqnext <- function(freq, alpha, segarray = NULL) {
 #' Generate HWE genotype frequencies
 #'
 #' Generate genotype frequencies under Hardy-Weinberg equilibrium
-#' given the allele frequency of the reference allele (\code{p}),
+#' given the allele frequency of the reference allele (\code{r}),
 #' the double reduction parameter (\code{alpha}), and the ploidy
 #' of the species (\code{ploidy}).
 #'
@@ -62,7 +62,7 @@ freqnext <- function(freq, alpha, segarray = NULL) {
 #' under HWE. Otherwise, it uses \code{\link[stats]{dbinom}()}.
 #'
 #' @inheritParams dgamete
-#' @param p The allele frequency of the reference allele.
+#' @param r The allele frequency of the reference allele.
 #' @param niter The maximum number of iterations to simulate.
 #' @param tol The stopping criterion on the Chi-square divergence between
 #'     old and new genotype frequencies.
@@ -72,8 +72,8 @@ freqnext <- function(freq, alpha, segarray = NULL) {
 #' @export
 #'
 #' @examples
-#' freq1 <- hwefreq(p = 0.5, alpha = 0, ploidy = 4)
-#' freq2 <- hwefreq(p = 0.5, alpha = 1/4, ploidy = 4)
+#' freq1 <- hwefreq(r = 0.5, alpha = 0, ploidy = 4)
+#' freq2 <- hwefreq(r = 0.5, alpha = 1/6, ploidy = 4)
 #'
 #' plot(x = 0:4,
 #'      y = freq1,
@@ -88,25 +88,32 @@ freqnext <- function(freq, alpha, segarray = NULL) {
 #'      xlab = "dosage",
 #'      ylab = "Pr(dosage)")
 #'
-hwefreq <- function(p, alpha, ploidy, niter = 100, tol = 10^-4) {
-  stopifnot(length(p) == 1L, length(ploidy) == 1L, length(niter) == 1L)
+hwefreq <- function(r, alpha, ploidy, niter = 100, tol = sqrt(.Machine$double.eps)) {
+  stopifnot(length(r) == 1L, length(ploidy) == 1L, length(niter) == 1L)
   stopifnot(ploidy %% 2 == 0)
   stopifnot(ploidy > 1)
   stopifnot(length(alpha) == floor(ploidy / 4))
   stopifnot(alpha >= 0, sum(alpha) <= 1)
-  stopifnot(p >= 0, p <= 1)
+  stopifnot(r >= 0, r <= 1)
   stopifnot(niter >= 1)
 
   ## Return theoretical result when no double reduction ----
   if (all(alpha < sqrt(.Machine$double.eps))) {
-    freq <- stats::dbinom(x = 0:ploidy, size = ploidy, prob = p)
+    freq <- stats::dbinom(x = 0:ploidy, size = ploidy, prob = r)
     return(freq)
+  }
+
+  ## Special code for tetraplolids ----
+  if (ploidy == 4) {
+    pgam <- gam_from_a(a = alpha, r = r)
+    names(pgam) <- NULL
+    return(stats::convolve(pgam, rev(pgam), type = "open"))
   }
 
   ## Iterate freqnext() if double reduction ----
   segarray <- zsegarray(alpha = alpha, ploidy = ploidy)
 
-  freq <- c(1 - p, rep(0, length.out = ploidy - 1), p)
+  freq <- c(1 - r, rep(0, length.out = ploidy - 1), r)
   i <- 1
   err <- Inf
   while (i < niter && err > tol) {
@@ -117,5 +124,47 @@ hwefreq <- function(p, alpha, ploidy, niter = 100, tol = 10^-4) {
   }
 
   return(freq)
+}
+
+
+#' Obtain gamete frequencies at equilibrium given rates of double reduction.
+#'
+#' Given the rate of doulbe reduction and the major allele frequency, this
+#' function will calculate the gametic frequencies.
+#'
+#' @inheritParams dgamete
+#' @param p The allele frequency of the major allele.
+#' @param ploidy The ploidy of the species.
+#'
+#' @return A numeric vector of length \code{ploidy / 2 + 1}, where element
+#' \code{i} is the probability that a gamete carries \code{i-1} copies of
+#' the major allele.
+#'
+#' @author David Gerard
+#'
+#' @export
+#'
+#' @examples
+#' p_from_alpha(0.2, 0.5, 4)
+#'
+p_from_alpha <- function(alpha, p, ploidy) {
+  stopifnot(length(ploidy) == 1, length(p) == 1)
+  stopifnot(ploidy %% 2 == 0)
+  stopifnot(length(alpha) == floor(ploidy / 4))
+  stopifnot(alpha > 0)
+  stopifnot(sum(alpha) <= 1)
+  stopifnot(p >= 0, p <= 1)
+
+  q <- hwefreq(r = p, alpha = alpha, ploidy = ploidy)
+
+  pgamete <- rep(0, ploidy / 2 + 1)
+  for (i in 0:ploidy) {
+    pgamete <- pgamete + dgamete(x = 0:(ploidy/2),
+                                 alpha = alpha,
+                                 G = i,
+                                 ploidy = ploidy,
+                                 log_p = FALSE) * q[[i + 1]]
+  }
+  return(pgamete)
 }
 

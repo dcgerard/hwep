@@ -12,7 +12,8 @@ vector of length K+1, where K is the ploidy of the species.
 \code{freq[i]} could contain the proportion of individuals
 that have genotype \code{i-1}.}
 
-\item{alpha}{The double reduction parameter(s). This should be a
+\item{alpha}{A numeric vector containing the double reduction parameter(s).
+This should be a
 vector of length \code{floor(ploidy/4)} where \code{alpha[i]}
 is the probability of exactly \code{i} pairs of IBDR alleles
 being in the gamete. Note that \code{sum(alpha)} should be less than

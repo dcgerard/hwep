@@ -1,7 +1,7 @@
 test_that("hwemom() works", {
   set.seed(11)
   alpha <- stats::runif(1)
-  nvec <- round(hwefreq(p = 0.5,
+  nvec <- round(hwefreq(r = 0.5,
                         alpha = alpha,
                         ploidy = 6,
                         niter = 100,

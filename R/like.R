@@ -2,7 +2,7 @@
 ## Functions for likelihood inference
 ############################
 
-#' Log-likelihood of gamete frequencies under HWE
+#' Log-likelihood of gamete frequencies under random mating
 #'
 #' @param nvec Of a vector of counts. \code{nvec[[i]]} is the number of
 #'     individuals that have genotype \code{i-1}. The ploidy is assumed
@@ -26,7 +26,7 @@ llike <- function(nvec, pvec) {
                    log = TRUE)
 }
 
-#' Estimate gametic proportions under HWE
+#' Estimate gametic proportions under random mating
 #'
 #' This uses an EM algorithm.
 #'
@@ -50,16 +50,16 @@ llike <- function(nvec, pvec) {
 #' nvec <- round(100000000 * qvec)
 #'
 #' ## Estimate pvec
-#' hweem(nvec = nvec)
+#' rmem(nvec = nvec)
 #' pvec
 #'
 #' @noRd
-hweem <- function(nvec, tol = 10^-3, maxit = 100) {
+rmem <- function(nvec, tol = 10^-3, maxit = 100) {
   ploidy <- length(nvec) - 1
   stopifnot(ploidy %% 2 == 0)
   stopifnot(nvec >= 0)
 
-  ## Initialize under assumption of HWE with alpha = 0 ----
+  ## Initialize under assumption of random mating with alpha = 0 ----
   pvec <- stats::dbinom(x = 0:(ploidy / 2),
                         size = ploidy / 2,
                         prob = sum(nvec * 0:ploidy) / (sum(nvec) * ploidy))
@@ -97,7 +97,7 @@ hweem <- function(nvec, tol = 10^-3, maxit = 100) {
     ll <- llike(nvec = nvec, pvec = pvec)
 
     if (ll - llold < -10^-6) {
-      stop("hweem: log-likelihood is not increasing")
+      stop("rmem: log-likelihood is not increasing")
     }
 
     err <- ll - llold
@@ -109,10 +109,15 @@ hweem <- function(nvec, tol = 10^-3, maxit = 100) {
 }
 
 
-#' Likelihood inference for HWE
+#' Likelihood inference for random mating
 #'
 #' Estimates gamete genotype frequencies using a maximum likelihood approach
-#' and runs a likelihood ratio test for HWE.
+#' and runs a likelihood ratio test for random mating.
+#'
+#' Let \code{q} be the genotype frequencies. Let \code{p} be the gamete
+#' frequencies. Then random mating occurs if
+#' \code{q == stats::convolve(p, rev(p), type = "open")}. We test for
+#' this hypothesis using likelihood inference, while estimating \code{p}.
 #'
 #' @inheritParams hwemom
 #'
@@ -120,11 +125,11 @@ hweem <- function(nvec, tol = 10^-3, maxit = 100) {
 #' \describe{
 #'   \item{\code{p}}{The estimated gamete genotype frequencies. \code{p[[i}
 #'       is the estimated frequency for gamete genotype \code{i-1}.}
-#'   \item{\code{chisq_hwe}}{The likelihood ratio test statistic for testing
-#'       against the null of HWE.}
-#'   \item{\code{df_hwe}}{The degrees of freedom associated with
-#'       \code{chisq_hwe}.}
-#'   \item{\code{p_hwe}}{The p-value against the null of HWE.}
+#'   \item{\code{chisq_rm}}{The likelihood ratio test statistic for testing
+#'       against the null of random mating.}
+#'   \item{\code{df_rm}}{The degrees of freedom associated with
+#'       \code{chisq_rm}.}
+#'   \item{\code{p_rm}}{The p-value against the null of random mating.}
 #' }
 #'
 #' @author David Gerard
@@ -138,22 +143,28 @@ hweem <- function(nvec, tol = 10^-3, maxit = 100) {
 #' pvec <- stats::runif(ploidy / 2 + 1)
 #' pvec <- pvec / sum(pvec)
 #'
-#' ## Genotype frequencies from gamete frequencies under HWE
+#' ## Genotype frequencies from gamete frequencies under random mating
 #' qvec <- stats::convolve(pvec, rev(pvec), type = "open")
 #'
 #' ## Generate data
 #' nvec <- c(stats::rmultinom(n = 1, size = 100, prob = qvec))
 #'
-#' ## Run hwelike()
-#' hwelike(nvec = nvec)
+#' ## Run rmlike()
+#' rmlike(nvec = nvec)
 #'
-hwelike <- function(nvec) {
+rmlike <- function(nvec) {
   ploidy <- length(nvec) - 1
   stopifnot(ploidy %% 2 == 0)
   stopifnot(nvec >= 0)
 
+  if (ploidy == 4) {
+    message("You should use `hwetetra()` for tetraploids")
+  } else if (ploidy == 2) {
+    message("Don't use this function. There are far better packages for diploids.")
+  }
+
   ## Estimate gametic frequencies ----
-  hout <- hweem(nvec = nvec)
+  hout <- rmem(nvec = nvec)
   names(hout) <- 0:(ploidy / 2)
 
   ## Get log-likelihood under null ----
@@ -163,14 +174,15 @@ hwelike <- function(nvec) {
   qmle <- nvec / sum(nvec)
   lla <- stats::dmultinom(x = nvec, prob = qmle, log = TRUE)
 
-  ## Run likelihood ratio test ----
+  ## Run likelihood ratio test against null of random mating ----
   chisq <- -2 * (ll0 - lla)
   pval <- stats::pchisq(q = chisq, df = ploidy / 2, lower.tail = FALSE)
 
   retlist <- list(p = hout,
-                  chisq_hwe = chisq,
-                  df_hwe = ploidy / 2,
-                  p_hwe = pval)
+                  chisq_rm = chisq,
+                  df_rm = ploidy / 2,
+                  p_rm = pval)
+
   return(retlist)
 }
 
