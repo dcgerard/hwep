@@ -4,7 +4,7 @@
 \alias{hwefit}
 \title{HWE and random mating estimation and testing for many loci.}
 \usage{
-hwefit(nmat, type = c("hwe", "rm"))
+hwefit(nmat, type = c("hwe", "rm"), ...)
 }
 \arguments{
 \item{nmat}{A matrix of counts. The rows index the loci and the columns
@@ -16,6 +16,9 @@ assumed to be \code{ncol(nmat)-1}.}
 or equilibrium (\code{type = "hwe"}). For tetraploids, both
 tests will be run, so this is only applicable for ploidies greater
 than 4.}
+
+\item{...}{Any other parameters to send to \code{\link{hwetetra}()},
+\code{\link{hwemom}()}, or \code{\link{rmlike}()}.}
 }
 \value{
 A data frame. The columns of which can are described in

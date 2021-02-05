@@ -19,6 +19,8 @@
 #'     or equilibrium (\code{type = "hwe"}). For tetraploids, both
 #'     tests will be run, so this is only applicable for ploidies greater
 #'     than 4.
+#' @param ... Any other parameters to send to \code{\link{hwetetra}()},
+#'     \code{\link{hwemom}()}, or \code{\link{rmlike}()}.
 #'
 #' @return A data frame. The columns of which can are described in
 #'     \code{\link{hwetetra}()}, \code{\link{hwemom}()},
@@ -45,7 +47,7 @@
 #' ## Shut down parallel workers
 #' future::plan("sequential")
 #'
-hwefit <- function(nmat, type = c("hwe", "rm")) {
+hwefit <- function(nmat, type = c("hwe", "rm"), ...) {
   stopifnot(is.matrix(nmat))
   ploidy <- ncol(nmat) - 1
   stopifnot(ploidy %% 2 == 0, ploidy > 2)
@@ -68,7 +70,7 @@ hwefit <- function(nmat, type = c("hwe", "rm")) {
   nvec <- NULL
   outdf <- foreach (nvec = iterators::iter(nmat, by = "row"),
                     .combine = rbind) %dopar% {
-                      hout <- fun(nvec = c(nvec))
+                      hout <- fun(nvec = c(nvec), ...)
                       unlist(hout)
                     }
 
