@@ -85,6 +85,40 @@ chisqdiv <- function(nvec, alpha, denom = c("expected", "observed")) {
   return(chisq)
 }
 
+neymandiv <- function(nvec, alpha) {
+  chisqdiv(nvec = nvec, alpha = alpha, denom = "observed")
+}
+
+pearsondiv <- function(nvec, alpha) {
+  chisqdiv(nvec = nvec, alpha = alpha, denom = "expected")
+}
+
+
+#' G-test statistic. I.e. likelihood ratio of multinomial
+#'
+#' @inheritParams chisqdiv
+#'
+#' @author David Gerard
+#'
+#' @noRd
+gdiv <- function(nvec, alpha) {
+  ## Check parameters ----
+  ploidy <- length(nvec) - 1
+  stopifnot(ploidy %% 2 == 0, ploidy > 0)
+  stopifnot(length(alpha) == floor(ploidy / 4))
+  stopifnot(alpha >= 0, sum(alpha) <= 1)
+  stopifnot(nvec >= 0)
+
+  ## Calculate statistic ----
+  n <- sum(nvec)
+  qhat <- nvec / n
+  ei <- freqnext(freq = qhat, alpha = alpha) * n
+  notzero <- nvec > 0
+  gstat <- 2 * sum(nvec[notzero] * log(nvec[notzero] / ei[notzero]))
+
+  return(gstat)
+}
+
 #' Calculate \code{\link{chisqdiv}()} with real parameterization.
 #'
 #' Uses \code{\link{real_to_simplex}()} to convert \code{y} to
@@ -135,9 +169,13 @@ obj_reals <- function(y, nvec, denom = c("expected", "observed")) {
 #' @param nvec A vector containing the observed genotype counts,
 #'     where \code{nvec[[i]]} is the number of individuals with genotype
 #'     \code{i-1}. This should be of length \code{ploidy+1}.
-#' @param denom What should we use for the denominator? The expected
-#'     genotype frequencies (\code{denom = "expected"}) or the
-#'     observed genotype frequencies (\code{denom = "observed"})?
+#' @param obj What chi-square function should we minimize?
+#'     \describe{
+#'       \item{\code{pearson}}{\deqn{\sum (o-e)^2/e}}
+#'       \item{\code{g}}{\deqn{2\sum o \log(o/2)}}
+#'       \item{\code{neyman}}{\deqn{\sum (o-e)^2/o}}
+#'     }
+#'     See Berkson (1980) for a description.
 #'
 #' @return A list with the following elements
 #' \describe{
@@ -164,6 +202,7 @@ obj_reals <- function(y, nvec, denom = c("expected", "observed")) {
 #'
 #' @references
 #' \itemize{
+#'   \item{Berkson, J. (1980). Minimum chi-square, not maximum likelihood!. The Annals of Statistics, 8(3), 457-487.}
 #'   \item{Huang, K., Wang, T., Dunn, D. W., Zhang, P., Cao, X., Liu, R., & Li, B. (2019). Genotypic frequencies at equilibrium for polysomic inheritance under double-reduction. G3: Genes, Genomes, Genetics, 9(5), 1693-1706.}
 #' }
 #'
@@ -190,27 +229,39 @@ obj_reals <- function(y, nvec, denom = c("expected", "observed")) {
 #'                       alpha = c(0.1, 0.01),
 #'                       ploidy = 8,
 #'                       niter = 100,
-#'                       tol = -Inf) * 100)
+#'                       tol = -Inf) * 1000)
 #' hwemom(nvec)
 #'
-hwemom <- function(nvec, denom = c("expected", "observed")) {
+hwemom <- function(nvec,
+                   obj = c("pearson", "g", "neyman")) {
   ## Check parameters ----
   ploidy <- length(nvec) - 1
   stopifnot(ploidy %% 2 == 0, ploidy > 0)
   stopifnot(nvec >= 0)
   stopifnot(is.vector(nvec))
   ibdr <- floor(ploidy / 4)
-  denom <- match.arg(denom)
+  obj <- match.arg(obj)
 
+  ## Choose objective function ----
+  if (obj == "pearson") {
+    divfun <- pearsondiv
+  } else if (obj == "g") {
+    divfun <- gdiv
+  } else if (obj == "neyman") {
+    divfun <- neymandiv
+  }
+
+  ## tell folks to use other stuff ----
   if (ploidy == 4) {
     message("You should use `hwetetra()` for tetraploids")
   } else if (ploidy == 2) {
     message("Don't use this function. There are far better packages for diploids.")
   }
 
+  ## optimize ----
   if (ibdr == 0) {
     ## Diploid: Just return chi-square
-    chisq <- chisqdiv(nvec = nvec, alpha = NULL, denom = denom)
+    chisq <- divfun(nvec = nvec, alpha = NULL)
     pval <- stats::pchisq(q = chisq,
                           df = ploidy - ibdr - 1,
                           lower.tail = FALSE)
@@ -226,18 +277,16 @@ hwemom <- function(nvec, denom = c("expected", "observed")) {
   } else if (ibdr == 1) {
     ## Tetraploid or Hexaploid: Use Brent's method
     oout <- stats::optim(par = 0.1,
-                         fn = chisqdiv,
+                         fn = divfun,
                          method = "Brent",
                          lower = 0,
                          upper = 1,
-                         nvec = nvec,
-                         denom = denom)
+                         nvec = nvec)
     pval_hwe <- stats::pchisq(q = oout$value,
                               df = ploidy - ibdr - 1,
                               lower.tail = FALSE)
-    chisq_null <- chisqdiv(nvec = nvec,
-                           alpha = rep(0, length.out = ibdr),
-                           denom = denom)
+    chisq_null <- divfun(nvec = nvec,
+                         alpha = rep(0, length.out = ibdr))
     chisq_alpha <- 2 * (chisq_null - oout$value)
     pval_alpha <- stats::pchisq(q = chisq_alpha,
                                 df = ibdr,
@@ -253,19 +302,17 @@ hwemom <- function(nvec, denom = c("expected", "observed")) {
     ## Higher Ploidy: Use L-BFGS-B using boundaries from CES model
     upper_alpha <- drbounds(ploidy = ploidy)
     oout <- stats::optim(par = upper_alpha / 2,
-                         fn = chisqdiv,
+                         fn = divfun,
                          method = "L-BFGS-B",
                          lower = rep(0, ibdr),
                          upper = upper_alpha,
-                         nvec = nvec,
-                         denom = denom)
+                         nvec = nvec)
     alpha <- oout$par
     pval_hwe <- stats::pchisq(q = oout$value,
                               df = ploidy - ibdr - 1,
                               lower.tail = FALSE)
-    chisq_null <- chisqdiv(nvec = nvec,
-                           alpha = rep(0, length.out = ibdr),
-                           denom = denom)
+    chisq_null <- divfun(nvec = nvec,
+                         alpha = rep(0, length.out = ibdr))
     chisq_alpha <- 2 * (chisq_null - oout$value)
     pval_alpha <- stats::pchisq(q = chisq_alpha,
                                 df = ibdr,

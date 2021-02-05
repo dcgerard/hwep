@@ -4,16 +4,20 @@
 \alias{hwemom}
 \title{Estimate double reduction parameter and test for HWE}
 \usage{
-hwemom(nvec, denom = c("expected", "observed"))
+hwemom(nvec, obj = c("pearson", "g", "neyman"))
 }
 \arguments{
 \item{nvec}{A vector containing the observed genotype counts,
 where \code{nvec[[i]]} is the number of individuals with genotype
 \code{i-1}. This should be of length \code{ploidy+1}.}
 
-\item{denom}{What should we use for the denominator? The expected
-genotype frequencies (\code{denom = "expected"}) or the
-observed genotype frequencies (\code{denom = "observed"})?}
+\item{obj}{What chi-square function should we minimize?
+\describe{
+\item{\code{pearson}}{\deqn{\sum (o-e)^2/e}}
+\item{\code{g}}{\deqn{2\sum o \log(o/2)}}
+\item{\code{neyman}}{\deqn{\sum (o-e)^2/o}}
+}
+See Berkson (1980) for a description.}
 }
 \value{
 A list with the following elements
@@ -70,12 +74,13 @@ nvec <- round(hwefreq(r = 0.5,
                       alpha = c(0.1, 0.01),
                       ploidy = 8,
                       niter = 100,
-                      tol = -Inf) * 100)
+                      tol = -Inf) * 1000)
 hwemom(nvec)
 
 }
 \references{
 \itemize{
+\item{Berkson, J. (1980). Minimum chi-square, not maximum likelihood!. The Annals of Statistics, 8(3), 457-487.}
 \item{Huang, K., Wang, T., Dunn, D. W., Zhang, P., Cao, X., Liu, R., & Li, B. (2019). Genotypic frequencies at equilibrium for polysomic inheritance under double-reduction. G3: Genes, Genomes, Genetics, 9(5), 1693-1706.}
 }
 }
