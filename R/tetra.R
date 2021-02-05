@@ -120,6 +120,7 @@ lltetra <- function(a, r, nvec) {
 hwetetra <- function(nvec, upperdr = 1/6) {
   stopifnot(length(nvec) == 5)
   stopifnot(nvec >= 0)
+  stopifnot(is.vector(nvec))
 
   ## Unconstrained ---------------------------
   q_u <- nvec / sum(nvec)

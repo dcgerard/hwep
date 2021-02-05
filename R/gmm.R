@@ -65,7 +65,7 @@ drbounds <- function(ploidy) {
 chisqdiv <- function(nvec, alpha, denom = c("expected", "observed")) {
   ## Check parameters ----
   ploidy <- length(nvec) - 1
-  stopifnot(ploidy %% 2 == 0)
+  stopifnot(ploidy %% 2 == 0, ploidy > 0)
   stopifnot(length(alpha) == floor(ploidy / 4))
   stopifnot(alpha >= 0, sum(alpha) <= 1)
   stopifnot(nvec >= 0)
@@ -196,8 +196,9 @@ obj_reals <- function(y, nvec, denom = c("expected", "observed")) {
 hwemom <- function(nvec, denom = c("expected", "observed")) {
   ## Check parameters ----
   ploidy <- length(nvec) - 1
-  stopifnot(ploidy %% 2 == 0)
+  stopifnot(ploidy %% 2 == 0, ploidy > 0)
   stopifnot(nvec >= 0)
+  stopifnot(is.vector(nvec))
   ibdr <- floor(ploidy / 4)
   denom <- match.arg(denom)
 

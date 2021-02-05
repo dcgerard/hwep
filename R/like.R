@@ -156,6 +156,7 @@ rmlike <- function(nvec) {
   ploidy <- length(nvec) - 1
   stopifnot(ploidy %% 2 == 0)
   stopifnot(nvec >= 0)
+  stopifnot(is.vector(nvec))
 
   if (ploidy == 4) {
     message("You should use `hwetetra()` for tetraploids")

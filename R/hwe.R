@@ -29,7 +29,7 @@
 #'
 freqnext <- function(freq, alpha, segarray = NULL) {
   ploidy <- length(freq) - 1
-  stopifnot(ploidy %% 2 == 0)
+  stopifnot(ploidy %% 2 == 0, ploidy > 0)
   stopifnot(length(alpha) == floor(ploidy / 4))
   stopifnot(alpha >= 0, sum(alpha) <= 1)
 
