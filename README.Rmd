@@ -27,7 +27,10 @@ Inference concerning Hardy-Weinberg equilibrium (HWE) in polyploids. Methods are
 
 The main functions are:
 
-- `hwetetra()`Likelihood inference for tetraploids. Includes tests for 
+- `hwefit()`: Fit either `hwetetra()`,`rmlike()`, or `hwemom()` across many 
+  loci. Parallelization is supported through the 
+  [future](https://cran.r-project.org/package=future) package.
+- `hwetetra()`: Likelihood inference for tetraploids. Includes tests for 
   random mating, only small deviations from HWE, and the presence
   of double reduction.
 - `rmlike()`: Likelihood inference for random mating in polyploids. 

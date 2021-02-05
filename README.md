@@ -24,9 +24,12 @@ given rates of double reduction.
 
 The main functions are:
 
--   `hwetetra()`Likelihood inference for tetraploids. Includes tests for
-    random mating, only small deviations from HWE, and the presence of
-    double reduction.
+-   `hwefit()`: Fit either `hwetetra()`,`rmlike()`, or `hwemom()` across
+    many loci. Parallelization is supported through the
+    [future](https://cran.r-project.org/package=future) package.
+-   `hwetetra()`: Likelihood inference for tetraploids. Includes tests
+    for random mating, only small deviations from HWE, and the presence
+    of double reduction.
 -   `rmlike()`: Likelihood inference for random mating in polyploids.
     This function tests for random mating and estimates gametic
     frequencies given random mating. This function does not assume a

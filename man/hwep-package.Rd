@@ -18,6 +18,10 @@ equilibrium given rates of double reduction.
 
 The main functions are:
 \describe{
+\item{\code{\link{hwefit}()}}{Fit either \code{\link{hwetetra}()},
+\code{\link{rmlike}()}, or \code{\link{hwemom}()} across
+many loci. Parallelization is supported through the
+\link{future} package.}
 \item{\code{\link{hwetetra}()}}{Likelihood inference for tetraploids.
 Includes tests for random mating, only small deviations from HWE,
 and the presence of double reduction.}

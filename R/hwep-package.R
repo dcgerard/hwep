@@ -11,6 +11,10 @@
 #' @section Functions:
 #' The main functions are:
 #' \describe{
+#'   \item{\code{\link{hwefit}()}}{Fit either \code{\link{hwetetra}()},
+#'       \code{\link{rmlike}()}, or \code{\link{hwemom}()} across
+#'       many loci. Parallelization is supported through the
+#'       \link{future} package.}
 #'   \item{\code{\link{hwetetra}()}}{Likelihood inference for tetraploids.
 #'       Includes tests for random mating, only small deviations from HWE,
 #'       and the presence of double reduction.}
@@ -48,6 +52,10 @@
 #' @section Citation:
 #' If you find the methods in this package useful, please run the following
 #' in R for citation information: \code{citation("hwep")}
+#'
+#' @importFrom foreach %dopar%
+#' @import doFuture
+#' @importFrom foreach foreach
 #'
 #' @docType package
 #' @name hwep-package

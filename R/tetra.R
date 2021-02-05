@@ -151,6 +151,12 @@ hwetetra <- function(nvec, upperdr = 1/6) {
   q_ndr <- stats::convolve(p_ndr, rev(p_ndr), type = "open")
   ll_ndr <- stats::dmultinom(x = nvec, prob = q_ndr, log = TRUE)
 
+  ## q names
+  names(q_u) <- 0:4
+  names(q_rm) <- 0:4
+  names(q_hw) <- 0:4
+  names(q_ndr) <- 0:4
+
   ## Chi square tests -------------------------
   chisq_rm <- -2 * (ll_rm - ll_u)
   pval_rm <- stats::pchisq(q = chisq_rm, df = 2, lower.tail = FALSE)
