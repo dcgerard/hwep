@@ -60,18 +60,18 @@ devtools::install_github("dcgerard/hwep")
 ``` r
 citation("hwep")
 
-To cite package 'hwep' in publications use:
+To cite hwep in publications use:
 
-  David Gerard (2021). hwep: Hardy-Weinberg Equilibrium in Polyploids.
-  R package version 0.0.0.9000.
+Gerard D (2021). "Double reduction estimation and equilibrium tests in
+natural autopolyploid populations." _Unpublished Manuscript_.
 
 A BibTeX entry for LaTeX users is
 
-  @Manual{,
-    title = {hwep: Hardy-Weinberg Equilibrium in Polyploids},
+  @Article{,
+    title = {Double reduction estimation and equilibrium tests in natural autopolyploid populations},
     author = {David Gerard},
+    journal = {Unpublished Manuscript},
     year = {2021},
-    note = {R package version 0.0.0.9000},
   }
 ```
 
