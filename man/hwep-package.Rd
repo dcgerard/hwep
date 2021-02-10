@@ -28,14 +28,12 @@ and the presence of double reduction.}
 \item{\code{\link{rmlike}()}}{Likelihood inference for random
 mating in polyploids. This function tests for random mating
 and estimates gametic frequencies given random mating.
-This function does not assume a model for meiosis.}
+This function does not assume a model for meiosis.
+You should use \code{\link{hwetetra}()} for tetraploids.}
 \item{\code{\link{hwemom}()}}{Generalized method of moments inference
 for double reduction. This function tests for equilibrium given
 double reduction rates and estimates these rates given equilibrium.
-Note that for ploidies greater than four, not all gametic
-frequencies are possible given this model for meiosis. That is,
-the test might reject not because the population is not in HWE,
-but because the model for meiosis is incorrect.}
+You should use \code{\link{hwetetra}()} for tetraploids.}
 }
 
 Other functions include:

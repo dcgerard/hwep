@@ -33,14 +33,11 @@ The main functions are:
 -   `rmlike()`: Likelihood inference for random mating in polyploids.
     This function tests for random mating and estimates gametic
     frequencies given random mating. This function does not assume a
-    model for meiosis.
+    model for meiosis. You should use `hwetetra()` for tetraploids.
 -   `hwemom()`: Generalized method of moments inference for double
     reduction. This function tests for equilibrium given double
-    reduction rates and estimates these rates given equilibrium. Note
-    that for ploidies greater than four, not all gametic frequencies are
-    possible given this model for meiosis. That is, the test might
-    reject not because the population is not in HWE, but because the
-    model for meiosis is incorrect.
+    reduction rates and estimates these rates given equilibrium. You
+    should use `hwetetra()` for tetraploids.
 
 ## Installation
 
@@ -56,6 +53,26 @@ You can install the development version from GitHub with:
 ``` r
 # install.packages("devtools")
 devtools::install_github("dcgerard/hwep")
+```
+
+## Citation
+
+``` r
+citation("hwep")
+
+To cite package 'hwep' in publications use:
+
+  David Gerard (2021). hwep: Hardy-Weinberg Equilibrium in Polyploids.
+  R package version 0.0.0.9000.
+
+A BibTeX entry for LaTeX users is
+
+  @Manual{,
+    title = {hwep: Hardy-Weinberg Equilibrium in Polyploids},
+    author = {David Gerard},
+    year = {2021},
+    note = {R package version 0.0.0.9000},
+  }
 ```
 
 ## Code of Conduct

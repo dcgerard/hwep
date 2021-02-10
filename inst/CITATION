@@ -1,0 +1,17 @@
+bibentry(
+  bibtype  = "Article",
+  title    = "Double reduction estimation and equilibrium tests in natural autopolyploid populations",
+  author   = person(given  = "David",
+                    family = "Gerard",
+                    email  = "gerard.1787@gmail.com",
+                    comment = c(ORCID = "0000-0001-9450-5023")),
+  journal  = "Unpublished Manuscript",
+  year     = "2021",
+  doi      = "",
+  volume   = "",
+  number   = "",
+  pages    = "",
+  url      = "",
+  header   = "To cite hwep in publications use:"
+)
+

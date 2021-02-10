@@ -258,6 +258,7 @@ hwemom <- function(nvec,
     message("Don't use this function. There are far better packages for diploids.")
   }
 
+  minval <- sqrt(.Machine$double.eps) ## minimum DR to explore
   ## optimize ----
   if (ibdr == 0) {
     ## Diploid: Just return chi-square
@@ -276,18 +277,19 @@ hwemom <- function(nvec,
                     p_alpha = NULL)
   } else if (ibdr == 1) {
     ## Tetraploid or Hexaploid: Use Brent's method
+    upper_alpha <- drbounds(ploidy = ploidy)
     oout <- stats::optim(par = 0.1,
                          fn = divfun,
                          method = "Brent",
-                         lower = 0,
-                         upper = 1,
+                         lower = minval,
+                         upper = upper_alpha,
                          nvec = nvec)
     pval_hwe <- stats::pchisq(q = oout$value,
                               df = ploidy - ibdr - 1,
                               lower.tail = FALSE)
     chisq_null <- divfun(nvec = nvec,
                          alpha = rep(0, length.out = ibdr))
-    chisq_alpha <- 2 * (chisq_null - oout$value)
+    chisq_alpha <- (chisq_null - oout$value)
     pval_alpha <- stats::pchisq(q = chisq_alpha,
                                 df = ibdr,
                                 lower.tail = FALSE) / 2
@@ -304,7 +306,7 @@ hwemom <- function(nvec,
     oout <- stats::optim(par = upper_alpha / 2,
                          fn = divfun,
                          method = "L-BFGS-B",
-                         lower = rep(0, ibdr),
+                         lower = rep(minval, ibdr),
                          upper = upper_alpha,
                          nvec = nvec)
     alpha <- oout$par
@@ -313,7 +315,7 @@ hwemom <- function(nvec,
                               lower.tail = FALSE)
     chisq_null <- divfun(nvec = nvec,
                          alpha = rep(0, length.out = ibdr))
-    chisq_alpha <- 2 * (chisq_null - oout$value)
+    chisq_alpha <- (chisq_null - oout$value)
     pval_alpha <- stats::pchisq(q = chisq_alpha,
                                 df = ibdr,
                                 lower.tail = FALSE) / 2

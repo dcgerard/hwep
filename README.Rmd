@@ -36,12 +36,11 @@ The main functions are:
 - `rmlike()`: Likelihood inference for random mating in polyploids. 
   This function tests for random mating and estimates gametic frequencies 
   given random mating. This function does not assume a model for meiosis.
+  You should use `hwetetra()` for tetraploids.
 - `hwemom()`: Generalized method of moments inference for double reduction.
   This function tests for equilibrium given double reduction rates and
-  estimates these rates given equilibrium. Note that for ploidies 
-  greater than four, not all gametic frequencies are possible given this
-  model for meiosis. That is, the test might reject not because the 
-  population is not in HWE, but because the model for meiosis is incorrect.
+  estimates these rates given equilibrium.  You should use
+  `hwetetra()` for tetraploids.
 
 ## Installation
 
@@ -55,6 +54,12 @@ You can install the development version from GitHub with:
 ```{r, eval = FALSE}
 # install.packages("devtools")
 devtools::install_github("dcgerard/hwep")
+```
+
+## Citation
+
+```{r, comment="", warning=FALSE}
+citation("hwep")
 ```
 
 ## Code of Conduct
