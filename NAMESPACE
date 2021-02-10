@@ -3,6 +3,7 @@
 export(dgamete)
 export(drbounds)
 export(freqnext)
+export(gsegmat)
 export(hwefit)
 export(hwefreq)
 export(hwemom)

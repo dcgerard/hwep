@@ -91,3 +91,21 @@ test_that("hwe probs are asymptotically correct", {
   freq3 <- hwefreq(r = 0.3, alpha = c(0.5, 0.1), ploidy = 10, tol = sqrt(.Machine$double.eps))
 
 })
+
+test_that("freqnext() and freqnext2() give same results", {
+  set.seed(8)
+  ploidy <- 8
+  freq <- runif(ploidy + 1)
+  freq <- freq / sum(freq)
+  alpha <- c(0.3, 0.1)
+
+  expect_equal(
+    freqnext(freq = freq, alpha = alpha),
+    freqnext2(freq = freq, alpha = alpha)
+  )
+
+  # microbenchmark::microbenchmark(
+  #   freqnext(freq = freq, alpha = alpha),
+  #   freqnext2(freq = freq, alpha = alpha)
+  # )
+})

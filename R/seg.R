@@ -95,6 +95,38 @@ dgamete <- function(x, alpha, G, ploidy, log_p = FALSE) {
   return(retvec)
 }
 
+#' Segregation probabilities of gametes
+#'
+#' Produces the segregation probabilities for gamete dosages given
+#' parental dosages and the double reduction rate.
+#'
+#' @inheritParams dgamete
+#'
+#' @return A matrix of dimension \code{ploidy + 1} by \code{ploidy / 2 + 1}.
+#'     Element (i, j) is the probability that a parent carying dosage
+#'     j - 1 produces a gamete with dosage i - 1.
+#'
+#' @author David Gerard
+#'
+#' @export
+#'
+#' @examples
+#' gsegmat(alpha = 1/6, ploidy = 4)
+#'
+gsegmat <- function(alpha, ploidy) {
+  stopifnot(ploidy %% 2 == 0, ploidy > 0)
+  stopifnot(length(alpha) == floor(ploidy / 4))
+  stopifnot(alpha >= 0, sum(alpha) <= 1)
+  segmat <- matrix(NA_real_, nrow = ploidy + 1, ncol = ploidy / 2 + 1)
+  for (i in 0:ploidy) {
+    segmat[i + 1, ] <- dgamete(x = 0:(ploidy / 2),
+                               alpha = alpha,
+                               G = i,
+                               ploidy = ploidy)
+  }
+  return(segmat)
+}
+
 #' Zygote dosage probabiltites.
 #'
 #' Calculates the distribution of an offspring dosages given

@@ -21,13 +21,12 @@
 #'
 #' @author David Gerard
 #'
-#' @export
-#'
 #' @examples
 #' freq <- c(0.5, 0, 0, 0, 0.5)
-#' freqnext(freq = freq, alpha = 0)
+#' freqnext2(freq = freq, alpha = 0)
 #'
-freqnext <- function(freq, alpha, segarray = NULL) {
+#' @noRd
+freqnext2 <- function(freq, alpha, segarray = NULL) {
   ploidy <- length(freq) - 1
   stopifnot(ploidy %% 2 == 0, ploidy > 0)
   stopifnot(length(alpha) == floor(ploidy / 4))
@@ -45,6 +44,53 @@ freqnext <- function(freq, alpha, segarray = NULL) {
                     FUN = `*`)
 
   freqnew <- apply(mararray, 3, sum)
+  freqnew <- freqnew / sum(freqnew) ## to resolve numerical issues
+
+  return(freqnew)
+}
+
+
+#' Update genotype frequencies after one generation
+#'
+#' After one generation of random mating, update the genotype
+#' frequencies.
+#'
+#' @inheritParams dgamete
+#' @param freq The current genotype frequencies. This should be a
+#'     vector of length K+1, where K is the ploidy of the species.
+#'     \code{freq[i]} could contain the proportion of individuals
+#'     that have genotype \code{i-1}.
+#' @param segmat You can provide your own segregation matrix.
+#'     \code{segmat[i, j]} is the probability that a parent with
+#'     dosage \code{i-1} produces a gamete with dosage \code{j-1}.
+#'
+#' @return A vector of length \code{lenght(freq)} that contains the
+#'     updated genotype frequencies after one generation of random mating.
+#'
+#' @author David Gerard
+#'
+#' @export
+#'
+#' @examples
+#' freq <- c(0.5, 0, 0, 0, 0.5)
+#' freqnext(freq = freq, alpha = 0)
+#'
+freqnext <- function(freq, alpha, segmat = NULL) {
+  ploidy <- length(freq) - 1
+  stopifnot(ploidy %% 2 == 0, ploidy > 0)
+  stopifnot(length(alpha) == floor(ploidy / 4))
+  stopifnot(alpha >= 0, sum(alpha) <= 1)
+
+  if (is.null(segmat)) {
+    segmat <- gsegmat(alpha = alpha, ploidy = ploidy)
+  } else {
+    stopifnot(dim(segmat) == c(ploidy + 1, ploidy / 2 + 1))
+    stopifnot(abs(rowSums(segmat) - 1) < 10^-6)
+  }
+
+  p <- c(t(freq) %*% segmat)
+
+  freqnew <- stats::convolve(p, rev(p), type = "open")
   freqnew <- freqnew / sum(freqnew) ## to resolve numerical issues
 
   return(freqnew)
@@ -110,17 +156,19 @@ hwefreq <- function(r, alpha, ploidy, niter = 100, tol = sqrt(.Machine$double.ep
     return(stats::convolve(pgam, rev(pgam), type = "open"))
   }
 
-  ## Iterate freqnext() if double reduction ----
-  segarray <- zsegarray(alpha = alpha, ploidy = ploidy)
+  ## Create segregation matrix so don't need to remake it each iteration
+  segmat <- gsegmat(alpha = alpha, ploidy = ploidy)
 
+  ## Iterate freqnext() if double reduction ----
   freq <- c(1 - r, rep(0, length.out = ploidy - 1), r)
   i <- 1
   err <- Inf
   while (i < niter && err > tol) {
     oldfreq <- freq
-    freq <- freqnext(freq = freq, alpha = alpha, segarray = segarray)
+    freq <- freqnext(freq = freq, alpha = alpha, segmat = segmat)
+    pos <- freq > sqrt(.Machine$double.eps)
     i <- i + 1
-    err <- sum((oldfreq - freq) ^ 2 / freq) * (ploidy + 1)
+    err <- sum((oldfreq[pos] - freq[pos]) ^ 2 / freq[pos]) * (ploidy + 1)
   }
 
   return(freq)

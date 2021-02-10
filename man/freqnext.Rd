@@ -4,7 +4,7 @@
 \alias{freqnext}
 \title{Update genotype frequencies after one generation}
 \usage{
-freqnext(freq, alpha, segarray = NULL)
+freqnext(freq, alpha, segmat = NULL)
 }
 \arguments{
 \item{freq}{The current genotype frequencies. This should be a
@@ -19,9 +19,9 @@ is the probability of exactly \code{i} pairs of IBDR alleles
 being in the gamete. Note that \code{sum(alpha)} should be less than
 1, as \code{1 - sum(alpha)} is the probability of no double reduction.}
 
-\item{segarray}{The output of \code{\link{zsegarray}()}. We will calculate
-it if \code{segarray = NULL}. It is just an option so we don't
-have to recalculate it very often if \code{alpha} is known.}
+\item{segmat}{You can provide your own segregation matrix.
+\code{segmat[i, j]} is the probability that a parent with
+dosage \code{i-1} produces a gamete with dosage \code{j-1}.}
 }
 \value{
 A vector of length \code{lenght(freq)} that contains the
