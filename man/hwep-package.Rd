@@ -14,9 +14,8 @@ to estimate the degree of double reduction. We also
 provide functions to calculate genotype frequencies at
 equilibrium given rates of double reduction.
 }
-\section{Functions}{
+\section{Main Functions}{
 
-The main functions are:
 \describe{
 \item{\code{\link{hwefit}()}}{Fit either \code{\link{hwetetra}()},
 \code{\link{rmlike}()}, or \code{\link{hwemom}()} across
@@ -35,8 +34,10 @@ for double reduction. This function tests for equilibrium given
 double reduction rates and estimates these rates given equilibrium.
 You should use \code{\link{hwetetra}()} for tetraploids.}
 }
+}
 
-Other functions include:
+\section{Other Functions}{
+
 \describe{
 \item{\code{\link{dgamete}()}}{Gamete dosage probability given
 parental dosage.}
@@ -44,6 +45,8 @@ parental dosage.}
 reduction given the complete equational segregation model.}
 \item{\code{\link{freqnext}()}}{Update genotype frequencies after one
 generation of random mating.}
+\item{\code{\link{gsegmat}()}}{Gamete dosage probabilities for all
+possible parental dosages.}
 \item{\code{\link{hwefreq}()}}{Generate Hardy-Weinberg equilibrium
 genotype frequencies.}
 \item{\code{\link{p_from_alpha}()}}{Obtain gamete frequencies from
