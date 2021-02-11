@@ -50,7 +50,8 @@ You can install the released version of hwep from [CRAN](https://CRAN.R-project.
 install.packages("hwep")
 ```
 
-You can install the development version from GitHub with:
+You can install the development version from [GitHub](https://github.com/dcgerard/hwep) with:
+
 ```{r, eval = FALSE}
 # install.packages("devtools")
 devtools::install_github("dcgerard/hwep")
@@ -58,8 +59,19 @@ devtools::install_github("dcgerard/hwep")
 
 ## Citation
 
-```{r, comment="", warning=FALSE}
-citation("hwep")
+To cite hwep in publications use:
+
+> Gerard D (2021). "Double reduction estimation and equilibrium tests in natural autopolyploid populations." _Unpublished Manuscript_.
+
+A BibTeX entry for LaTeX users is
+
+``` tex
+@Article{,
+  title = {Double reduction estimation and equilibrium tests in natural autopolyploid populations},
+  author = {David Gerard},
+  journal = {Unpublished Manuscript},
+  year = {2021},
+}
 ```
 
 ## Code of Conduct

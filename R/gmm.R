@@ -233,7 +233,7 @@ obj_reals <- function(y, nvec, denom = c("expected", "observed")) {
 #' hwemom(nvec)
 #'
 hwemom <- function(nvec,
-                   obj = c("pearson", "g", "neyman")) {
+                   obj = c("g", "pearson", "neyman")) {
   ## Check parameters ----
   ploidy <- length(nvec) - 1
   stopifnot(ploidy %% 2 == 0, ploidy > 0)
@@ -245,10 +245,13 @@ hwemom <- function(nvec,
   ## Choose objective function ----
   if (obj == "pearson") {
     divfun <- pearsondiv
+    grfun <- dpearsondiv_dalpha
   } else if (obj == "g") {
     divfun <- gdiv
+    grfun <- dgdiv_dalpha
   } else if (obj == "neyman") {
     divfun <- neymandiv
+    grfun <- dneymandiv_dalpha
   }
 
   ## tell folks to use other stuff ----
@@ -305,6 +308,7 @@ hwemom <- function(nvec,
     upper_alpha <- drbounds(ploidy = ploidy)
     oout <- stats::optim(par = upper_alpha / 2,
                          fn = divfun,
+                         gr = grfun,
                          method = "L-BFGS-B",
                          lower = rep(minval, ibdr),
                          upper = upper_alpha,

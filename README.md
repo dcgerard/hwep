@@ -48,7 +48,8 @@ You can install the released version of hwep from
 install.packages("hwep")
 ```
 
-You can install the development version from GitHub with:
+You can install the development version from
+[GitHub](https://github.com/dcgerard/hwep) with:
 
 ``` r
 # install.packages("devtools")
@@ -57,22 +58,20 @@ devtools::install_github("dcgerard/hwep")
 
 ## Citation
 
-``` r
-citation("hwep")
-
 To cite hwep in publications use:
 
-Gerard D (2021). "Double reduction estimation and equilibrium tests in
-natural autopolyploid populations." _Unpublished Manuscript_.
+> Gerard D (2021). “Double reduction estimation and equilibrium tests in
+> natural autopolyploid populations.” *Unpublished Manuscript*.
 
 A BibTeX entry for LaTeX users is
 
-  @Article{,
-    title = {Double reduction estimation and equilibrium tests in natural autopolyploid populations},
-    author = {David Gerard},
-    journal = {Unpublished Manuscript},
-    year = {2021},
-  }
+``` tex
+@Article{,
+  title = {Double reduction estimation and equilibrium tests in natural autopolyploid populations},
+  author = {David Gerard},
+  journal = {Unpublished Manuscript},
+  year = {2021},
+}
 ```
 
 ## Code of Conduct

@@ -4,7 +4,7 @@
 \alias{hwemom}
 \title{Estimate double reduction parameter and test for HWE}
 \usage{
-hwemom(nvec, obj = c("pearson", "g", "neyman"))
+hwemom(nvec, obj = c("g", "pearson", "neyman"))
 }
 \arguments{
 \item{nvec}{A vector containing the observed genotype counts,
