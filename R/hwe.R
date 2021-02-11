@@ -163,7 +163,7 @@ hwefreq <- function(r, alpha, ploidy, niter = 100, tol = sqrt(.Machine$double.ep
   freq <- c(1 - r, rep(0, length.out = ploidy - 1), r)
   i <- 1
   err <- Inf
-  while (i < niter && err > tol) {
+  while (i <= niter && err > tol) {
     oldfreq <- freq
     freq <- freqnext(freq = freq, alpha = alpha, segmat = segmat)
     pos <- freq > sqrt(.Machine$double.eps)

@@ -76,11 +76,11 @@ hwefit <- function(nmat, type = c("hwe", "rm"), ...) {
 
   ## Run foreach
   nvec <- NULL
-  outdf <- foreach (nvec = iterators::iter(nmat, by = "row"),
-                    .combine = rbind) %dopar% {
-                      hout <- fun(nvec = c(nvec), ...)
-                      unlist(hout)
-                    }
+  outdf <- foreach(nvec = iterators::iter(nmat, by = "row"),
+                   .combine = rbind) %dopar% {
+                     hout <- fun(nvec = c(nvec), ...)
+                     unlist(hout)
+                     }
 
   return(as.data.frame(outdf))
 }

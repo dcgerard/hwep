@@ -136,8 +136,7 @@ gdiv <- function(nvec, alpha) {
 #'   \item{Betancourt, M. (2012, May). Cruising the simplex:
 #'         Hamiltonian Monte Carlo and the Dirichlet distribution.
 #'         In AIP Conference Proceedings 31st (Vol. 1443, No. 1, pp. 157-164).
-#'         American Institute of Physics.
-#'         \href{https://doi.org/10.1063/1.3703631}{doi:10.1063/1.3703631}}
+#'         American Institute of Physics. \doi{10.1063/1.3703631}}
 #'   \item{\url{https://mc-stan.org/docs/2_18/reference-manual/simplex-transform-section.html}}
 #' }
 #'
