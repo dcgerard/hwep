@@ -109,3 +109,18 @@ test_that("freqnext() and freqnext2() give same results", {
   #   freqnext2(freq = freq, alpha = alpha)
   # )
 })
+
+test_that("gsegmat() and gsegmat2() give same results", {
+  alpha <- c(1/6, 1/5)
+  ploidy <- 10
+  expect_equal(
+    gsegmat(alpha = alpha, ploidy = ploidy),
+    gsegmat2(alpha = alpha, ploidy = ploidy),
+    tolerance = 10^-6
+  )
+
+  # microbenchmark::microbenchmark(
+  #   gsegmat(alpha = alpha, ploidy = ploidy),
+  #   gsegmat2(alpha = alpha, ploidy = ploidy)
+  # )
+})

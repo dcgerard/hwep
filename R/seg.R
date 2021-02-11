@@ -127,6 +127,41 @@ gsegmat <- function(alpha, ploidy) {
   return(segmat)
 }
 
+
+#' Alternative way to do \code{\link{gsegmat}()}
+#'
+#' @inheritParams gsegmat
+#'
+#' @author David Gerard
+#'
+#' @noRd
+gsegmat2 <- function(alpha, ploidy) {
+  stopifnot(ploidy %% 2 == 0, ploidy >=4, length(ploidy) == 1)
+  stopifnot(length(alpha) == floor(ploidy / 4))
+  stopifnot(alpha >= 0, sum(alpha) <= 1)
+  ibdr <- floor(ploidy / 4)
+  alphavec <- c(1 - sum(alpha), alpha)
+  ellvec <- 0:ploidy
+  kvec <- 0:(ploidy / 2)
+
+  segmat <- matrix(0, nrow = ploidy + 1, ncol = ploidy / 2 + 1)
+  for (i in 0:ibdr) {
+    for (j in 0:i) {
+      segmat <- segmat +
+        exp(
+          outer(X = lchoose(ellvec, j), Y = rep(1, ploidy / 2 + 1), FUN = `*`) +
+            outer(X = ellvec, Y = kvec, FUN = function(x, y) lchoose(x - j, y - 2 * j)) +
+            outer(X = lchoose(n = ploidy - ellvec, i - j), Y = rep(1, ploidy / 2 + 1), FUN = `*`) +
+            outer(X = ellvec, Y = kvec, FUN = function(x, y) lchoose(ploidy - x - (i - j), ploidy / 2 - y - 2 * (i - j))) -
+            matrix(lchoose(ploidy, i), nrow = ploidy + 1, ncol = ploidy / 2 + 1) -
+            matrix(lchoose(ploidy - i, ploidy / 2 - 2 * i), nrow = ploidy + 1, ncol = ploidy / 2 + 1) +
+            log(alphavec[[i + 1]])
+        )
+    }
+  }
+  return(segmat)
+}
+
 #' Zygote dosage probabiltites.
 #'
 #' Calculates the distribution of an offspring dosages given
