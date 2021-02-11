@@ -145,8 +145,54 @@ test_that("freqnext() and freqnext2() give same results", {
 })
 
 test_that("gsegmat() and gsegmat2() give same results", {
-  alpha <- c(1/6, 1/5)
+  set.seed(1)
+  ploidy <- 2
+  alpha <- NULL
+  expect_equal(
+    gsegmat(alpha = alpha, ploidy = ploidy),
+    gsegmat2(alpha = alpha, ploidy = ploidy),
+    tolerance = 10^-6
+  )
+
+  ploidy <- 4
+  alpha <- stats::runif(n = floor(ploidy / 4))
+  alpha <- alpha / sum(alpha) * 0.5
+  expect_equal(
+    gsegmat(alpha = alpha, ploidy = ploidy),
+    gsegmat2(alpha = alpha, ploidy = ploidy),
+    tolerance = 10^-6
+  )
+
+  ploidy <- 6
+  alpha <- stats::runif(n = floor(ploidy / 4))
+  alpha <- alpha / sum(alpha) * 0.5
+  expect_equal(
+    gsegmat(alpha = alpha, ploidy = ploidy),
+    gsegmat2(alpha = alpha, ploidy = ploidy),
+    tolerance = 10^-6
+  )
+
+  ploidy <- 8
+  alpha <- stats::runif(n = floor(ploidy / 4))
+  alpha <- alpha / sum(alpha) * 0.5
+  expect_equal(
+    gsegmat(alpha = alpha, ploidy = ploidy),
+    gsegmat2(alpha = alpha, ploidy = ploidy),
+    tolerance = 10^-6
+  )
+
   ploidy <- 10
+  alpha <- stats::runif(n = floor(ploidy / 4))
+  alpha <- alpha / sum(alpha) * 0.5
+  expect_equal(
+    gsegmat(alpha = alpha, ploidy = ploidy),
+    gsegmat2(alpha = alpha, ploidy = ploidy),
+    tolerance = 10^-6
+  )
+
+  ploidy <- 12
+  alpha <- stats::runif(n = floor(ploidy / 4))
+  alpha <- alpha / sum(alpha) * 0.5
   expect_equal(
     gsegmat(alpha = alpha, ploidy = ploidy),
     gsegmat2(alpha = alpha, ploidy = ploidy),

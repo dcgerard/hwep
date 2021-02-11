@@ -95,6 +95,39 @@ dgamete <- function(x, alpha, G, ploidy, log_p = FALSE) {
   return(retvec)
 }
 
+#' Less computationally efficient version of \code{\link{gsegmat}()}
+#'
+#' Produces the segregation probabilities for gamete dosages given
+#' parental dosages and the double reduction rate.
+#'
+#' @inheritParams dgamete
+#'
+#' @return A matrix of dimension \code{ploidy + 1} by \code{ploidy / 2 + 1}.
+#'     Element (i, j) is the probability that a parent carying dosage
+#'     j - 1 produces a gamete with dosage i - 1.
+#'
+#' @author David Gerard
+#'
+#' @noRd
+#'
+#' @examples
+#' gsegmat(alpha = 1/6, ploidy = 4)
+#'
+gsegmat2 <- function(alpha, ploidy) {
+  stopifnot(ploidy %% 2 == 0, ploidy > 0)
+  stopifnot(length(alpha) == floor(ploidy / 4))
+  stopifnot(alpha >= 0, sum(alpha) <= 1)
+  segmat <- matrix(NA_real_, nrow = ploidy + 1, ncol = ploidy / 2 + 1)
+  for (i in 0:ploidy) {
+    segmat[i + 1, ] <- dgamete(x = 0:(ploidy / 2),
+                               alpha = alpha,
+                               G = i,
+                               ploidy = ploidy)
+  }
+  return(segmat)
+}
+
+
 #' Segregation probabilities of gametes
 #'
 #' Produces the segregation probabilities for gamete dosages given
@@ -111,39 +144,39 @@ dgamete <- function(x, alpha, G, ploidy, log_p = FALSE) {
 #' @export
 #'
 #' @examples
+#' gsegmat(alpha = NULL, ploidy = 2)
+#'
 #' gsegmat(alpha = 1/6, ploidy = 4)
 #'
+#' gsegmat(alpha = 0.3, ploidy = 6)
+#'
+#' gsegmat(alpha = c(0.35, 0.02), ploidy = 8)
+#'
+#' gsegmat(alpha = c(0.4, 0.05), ploidy = 10)
+#'
 gsegmat <- function(alpha, ploidy) {
-  stopifnot(ploidy %% 2 == 0, ploidy > 0)
+
+  ## Check lengths ----
+  stopifnot(ploidy %% 2 == 0, ploidy >=2, length(ploidy) == 1)
   stopifnot(length(alpha) == floor(ploidy / 4))
-  stopifnot(alpha >= 0, sum(alpha) <= 1)
-  segmat <- matrix(NA_real_, nrow = ploidy + 1, ncol = ploidy / 2 + 1)
-  for (i in 0:ploidy) {
-    segmat[i + 1, ] <- dgamete(x = 0:(ploidy / 2),
-                               alpha = alpha,
-                               G = i,
-                               ploidy = ploidy)
+
+  ## Early return for special cases ----
+  if (ploidy == 2) {
+    return(gsegmat_diploid())
+  } else if (ploidy == 4) {
+    return(gsegmat_tetraploid(alpha = alpha))
+  } else if (ploidy == 6) {
+    return(gsegmat_hexaploid(alpha = alpha))
   }
-  return(segmat)
-}
 
-
-#' Alternative way to do \code{\link{gsegmat}()}
-#'
-#' @inheritParams gsegmat
-#'
-#' @author David Gerard
-#'
-#' @noRd
-gsegmat2 <- function(alpha, ploidy) {
-  stopifnot(ploidy %% 2 == 0, ploidy >=4, length(ploidy) == 1)
-  stopifnot(length(alpha) == floor(ploidy / 4))
+  ## Keep checking ----
   stopifnot(alpha >= 0, sum(alpha) <= 1)
   ibdr <- floor(ploidy / 4)
   alphavec <- c(1 - sum(alpha), alpha)
   ellvec <- 0:ploidy
   kvec <- 0:(ploidy / 2)
 
+  ## Calculate segregation matrix for higher ploidies ----
   segmat <- matrix(0, nrow = ploidy + 1, ncol = ploidy / 2 + 1)
   for (i in 0:ibdr) {
     for (j in 0:i) {

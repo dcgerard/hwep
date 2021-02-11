@@ -27,7 +27,15 @@ Produces the segregation probabilities for gamete dosages given
 parental dosages and the double reduction rate.
 }
 \examples{
+gsegmat(alpha = NULL, ploidy = 2)
+
 gsegmat(alpha = 1/6, ploidy = 4)
+
+gsegmat(alpha = 0.3, ploidy = 6)
+
+gsegmat(alpha = c(0.35, 0.02), ploidy = 8)
+
+gsegmat(alpha = c(0.4, 0.05), ploidy = 10)
 
 }
 \author{

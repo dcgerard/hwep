@@ -32,8 +32,8 @@
 #'
 #' @examples
 #' ## Generate random data where there is no double reduction at HWE
-#' set.seed(1)
-#' ploidy <- 4
+#' set.seed(2)
+#' ploidy <- 8
 #' nloc <- 100
 #' size <- 1000
 #' r <- runif(nloc)
@@ -46,6 +46,14 @@
 #'
 #' ## Shut down parallel workers
 #' future::plan("sequential")
+#'
+#' ## Show that test statistic follows theoretical distribution
+#' plot(x = qchisq(ppoints(n = nrow(hout)), df = hout$df_hwe),
+#'      y = sort(hout$chisq_hwe),
+#'      xlab = "theoretical",
+#'      ylab = "observed",
+#'      main = "qqplot")
+#' abline(0, 1, col = 2, lty = 2)
 #'
 hwefit <- function(nmat, type = c("hwe", "rm"), ...) {
   stopifnot(is.matrix(nmat))
