@@ -4,7 +4,7 @@
 \alias{hwemom}
 \title{Estimate double reduction parameter and test for HWE}
 \usage{
-hwemom(nvec, obj = c("g", "pearson", "neyman"))
+hwemom(nvec, obj = c("g", "pearson", "neyman"), addval = 4/length(nvec))
 }
 \arguments{
 \item{nvec}{A vector containing the observed genotype counts,
@@ -18,6 +18,10 @@ where \code{nvec[[i]]} is the number of individuals with genotype
 \item{\code{neyman}}{\deqn{\sum (o-e)^2/o}}
 }
 See Berkson (1980) for a description.}
+
+\item{addval}{How many counts should we add to each genotype before
+implementing our procedures? Defaults to \code{4 / length(nvec)},
+which corresponds to the "add two" rule of Agresti and Coull (1998).}
 }
 \value{
 A list with the following elements
@@ -80,8 +84,9 @@ hwemom(nvec)
 }
 \references{
 \itemize{
-\item{Berkson, J. (1980). Minimum chi-square, not maximum likelihood!. The Annals of Statistics, 8(3), 457-487.}
-\item{Huang, K., Wang, T., Dunn, D. W., Zhang, P., Cao, X., Liu, R., & Li, B. (2019). Genotypic frequencies at equilibrium for polysomic inheritance under double-reduction. G3: Genes, Genomes, Genetics, 9(5), 1693-1706.}
+\item{Agresti, A., & Coull, B. A. (1998). Approximate is better than "exact" for interval estimation of binomial proportions. The American Statistician, 52(2), 119-126. \doi{10.1080/00031305.1998.10480550}}
+\item{Berkson, J. (1980). Minimum chi-square, not maximum likelihood!. The Annals of Statistics, 8(3), 457-487. \doi{10.1214/aos/1176345003}}
+\item{Huang, K., Wang, T., Dunn, D. W., Zhang, P., Cao, X., Liu, R., & Li, B. (2019). Genotypic frequencies at equilibrium for polysomic inheritance under double-reduction. G3: Genes, Genomes, Genetics, 9(5), 1693-1706. \doi{10.1534/g3.119.400132}}
 }
 }
 \author{

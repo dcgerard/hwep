@@ -175,6 +175,9 @@ obj_reals <- function(y, nvec, denom = c("expected", "observed")) {
 #'       \item{\code{neyman}}{\deqn{\sum (o-e)^2/o}}
 #'     }
 #'     See Berkson (1980) for a description.
+#' @param addval How many counts should we add to each genotype before
+#'     implementing our procedures? Defaults to \code{4 / length(nvec)},
+#'     which corresponds to the "add two" rule of Agresti and Coull (1998).
 #'
 #' @return A list with the following elements
 #' \describe{
@@ -201,8 +204,9 @@ obj_reals <- function(y, nvec, denom = c("expected", "observed")) {
 #'
 #' @references
 #' \itemize{
-#'   \item{Berkson, J. (1980). Minimum chi-square, not maximum likelihood!. The Annals of Statistics, 8(3), 457-487.}
-#'   \item{Huang, K., Wang, T., Dunn, D. W., Zhang, P., Cao, X., Liu, R., & Li, B. (2019). Genotypic frequencies at equilibrium for polysomic inheritance under double-reduction. G3: Genes, Genomes, Genetics, 9(5), 1693-1706.}
+#'   \item{Agresti, A., & Coull, B. A. (1998). Approximate is better than "exact" for interval estimation of binomial proportions. The American Statistician, 52(2), 119-126. \doi{10.1080/00031305.1998.10480550}}
+#'   \item{Berkson, J. (1980). Minimum chi-square, not maximum likelihood!. The Annals of Statistics, 8(3), 457-487. \doi{10.1214/aos/1176345003}}
+#'   \item{Huang, K., Wang, T., Dunn, D. W., Zhang, P., Cao, X., Liu, R., & Li, B. (2019). Genotypic frequencies at equilibrium for polysomic inheritance under double-reduction. G3: Genes, Genomes, Genetics, 9(5), 1693-1706. \doi{10.1534/g3.119.400132}}
 #' }
 #'
 #' @examples
@@ -232,7 +236,8 @@ obj_reals <- function(y, nvec, denom = c("expected", "observed")) {
 #' hwemom(nvec)
 #'
 hwemom <- function(nvec,
-                   obj = c("g", "pearson", "neyman")) {
+                   obj = c("g", "pearson", "neyman"),
+                   addval = 4 / length(nvec)) {
   ## Check parameters ----
   ploidy <- length(nvec) - 1
   stopifnot(ploidy %% 2 == 0, ploidy > 0)
@@ -240,6 +245,9 @@ hwemom <- function(nvec,
   stopifnot(is.vector(nvec))
   ibdr <- floor(ploidy / 4)
   obj <- match.arg(obj)
+
+  ## Add counts to each cell ----
+  nvec <- nvec + addval
 
   ## Choose objective function ----
   if (obj == "pearson") {
