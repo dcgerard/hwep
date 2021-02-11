@@ -67,6 +67,9 @@ lltetra <- function(a, r, nvec) {
 #' @param upperdr The upper bound on the double reduction rate. Defaults
 #'     to 1/6, which is the maximum value under the complete equational
 #'     segregation model (Mather, 1935).
+#' @param addval The penalization applied to each genotype for the random
+#'     mating hypothesis. This corresponds to the number of counts each
+#'     genotype has \emph{a priori}. Defaults to \code{1 / 100}.
 #'
 #' @return A list with the following elements
 #' \describe{
@@ -102,7 +105,7 @@ lltetra <- function(a, r, nvec) {
 #'
 #' @references
 #' \itemize{
-#'   \item{Mather, K. (1935). Reductional and equational separation of the chromosomes in bivalents and multivalents. Journal of Genetics, 30(1), 53-78.}
+#'   \item{Mather, K. (1935). Reductional and equational separation of the chromosomes in bivalents and multivalents. Journal of Genetics, 30(1), 53-78. \doi{10.1007/BF02982205}}
 #' }
 #'
 #' @export
@@ -117,17 +120,18 @@ lltetra <- function(a, r, nvec) {
 #' hwetetra(nvec = nvec)
 #'
 #'
-hwetetra <- function(nvec, upperdr = 1/6) {
+hwetetra <- function(nvec, upperdr = 1/6, addval = 1 / 100) {
   stopifnot(length(nvec) == 5)
   stopifnot(nvec >= 0)
   stopifnot(is.vector(nvec))
+  stopifnot(addval >= 0, length(addval) == 1)
 
   ## Unconstrained ---------------------------
   q_u <- nvec / sum(nvec)
   ll_u <- stats::dmultinom(x = nvec, prob = q_u, log = TRUE)
 
   ## Random mating ---------------------------
-  p_rm <- rmem(nvec = nvec)
+  p_rm <- rmem(nvec = nvec, addval = addval)
   q_rm <- stats::convolve(p_rm, rev(p_rm), type = "open")
   ll_rm <- stats::dmultinom(x = nvec, prob = q_rm, log = TRUE)
 

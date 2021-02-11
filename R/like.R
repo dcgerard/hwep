@@ -10,20 +10,25 @@
 #' @param pvec The vector of gamete frequencies. \code{pvec[[i]]} is the
 #'     probability that a gamete will have dosage \code{i-1}. This should
 #'     be of length \code{ploidy/2 + 1}.
+#' @param addval The penalization applied to each genotype for the random
+#'     mating hypothesis. This corresponds to the number of counts each
+#'     genotype has \emph{a priori}.
 #'
 #' @author David Gerard
 #'
 #' @noRd
-llike <- function(nvec, pvec) {
+llike <- function(nvec, pvec, addval = 0) {
   ploidy <- length(nvec) - 1
   stopifnot(ploidy %% 2 == 0)
   stopifnot(length(pvec) == ploidy / 2 + 1)
   stopifnot(abs(sum(pvec) - 1) < 10^-6)
   stopifnot(nvec >= 0)
+  stopifnot(addval >= 0, length(addval) == 1)
 
   stats::dmultinom(x = nvec,
                    prob = stats::convolve(pvec, rev(pvec), type = "open"),
-                   log = TRUE)
+                   log = TRUE) +
+    addval * sum(log(pvec[pvec > sqrt(.Machine$double.eps)]))
 }
 
 #' Estimate gametic proportions under random mating
@@ -35,6 +40,9 @@ llike <- function(nvec, pvec) {
 #'     to be \code{length(nvec)-1}.
 #' @param tol The stopping criterion tolerance.
 #' @param maxit The maximum number of EM iterations to run.
+#' @param addval The penalization applied to each genotype for the random
+#'     mating hypothesis. This corresponds to the number of counts each
+#'     genotype has \emph{a priori}.
 #'
 #' @author David Gerard
 #'
@@ -54,16 +62,17 @@ llike <- function(nvec, pvec) {
 #' pvec
 #'
 #' @noRd
-rmem <- function(nvec, tol = 10^-3, maxit = 100) {
+rmem <- function(nvec, tol = 10^-3, maxit = 100, addval = 1 / 100) {
   ploidy <- length(nvec) - 1
   stopifnot(ploidy %% 2 == 0)
   stopifnot(nvec >= 0)
+  stopifnot(addval >= 0, length(addval) == 1)
 
   ## Initialize under assumption of random mating with alpha = 0 ----
   pvec <- stats::dbinom(x = 0:(ploidy / 2),
                         size = ploidy / 2,
                         prob = sum(nvec * 0:ploidy) / (sum(nvec) * ploidy))
-  ll <- llike(nvec = nvec, pvec = pvec)
+  ll <- llike(nvec = nvec, pvec = pvec, addval = addval)
 
   ## Initialize parameters -----
   paramdf <- as.data.frame(which(upper.tri(matrix(nrow = ploidy / 2 + 1, ncol = ploidy / 2 + 1), diag = TRUE), arr.ind = TRUE))
@@ -91,10 +100,14 @@ rmem <- function(nvec, tol = 10^-3, maxit = 100) {
       etavec[[j]] <- sum(paramdf$xi[paramdf$i == j | paramdf$j == j])
     }
 
+    ## Add penalty to etavec ----
+    etavec <- etavec + addval
+
+    ## normalize ----
     pvec <- etavec / sum(etavec)
 
-    ## calculate log-likelihood ----
-    ll <- llike(nvec = nvec, pvec = pvec)
+    ## calculate (penalized) log-likelihood ----
+    ll <- llike(nvec = nvec, pvec = pvec, addval = addval)
 
     if (ll - llold < -10^-6) {
       stop("rmem: log-likelihood is not increasing")

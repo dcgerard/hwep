@@ -243,6 +243,7 @@ hwemom <- function(nvec,
   stopifnot(ploidy %% 2 == 0, ploidy > 0)
   stopifnot(nvec >= 0)
   stopifnot(is.vector(nvec))
+  stopifnot(addval >= 0, length(addval) == 1)
   ibdr <- floor(ploidy / 4)
   obj <- match.arg(obj)
 

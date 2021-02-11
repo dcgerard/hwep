@@ -91,7 +91,10 @@ freqnext <- function(freq, alpha, segmat = NULL) {
   p <- c(t(freq) %*% segmat)
 
   freqnew <- stats::convolve(p, rev(p), type = "open")
-  freqnew <- freqnew / sum(freqnew) ## to resolve numerical issues
+
+  ## resolve numerical issues
+  freqnew[freqnew < 0] <- 0
+  freqnew <- freqnew / sum(freqnew)
 
   return(freqnew)
 }
@@ -143,14 +146,14 @@ hwefreq <- function(r, alpha, ploidy, niter = 100, tol = sqrt(.Machine$double.ep
   stopifnot(r >= 0, r <= 1)
   stopifnot(niter >= 1)
 
-  ## Return theoretical result when no double reduction ----
-  if (all(alpha < sqrt(.Machine$double.eps))) {
+  ## Return theoretical result when no double reduction and large niter ----
+  if (all(alpha < sqrt(.Machine$double.eps)) & niter >= 6) {
     freq <- stats::dbinom(x = 0:ploidy, size = ploidy, prob = r)
     return(freq)
   }
 
-  ## Special code for tetraplolids ----
-  if (ploidy == 4) {
+  ## Special code for tetraplolids at equilibrium and large niter ----
+  if (ploidy == 4 & niter >= 6) {
     pgam <- gam_from_a(a = alpha, r = r)
     names(pgam) <- NULL
     return(stats::convolve(pgam, rev(pgam), type = "open"))

@@ -4,7 +4,7 @@
 \alias{hwetetra}
 \title{HWE likelihood inference for tetraploids}
 \usage{
-hwetetra(nvec, upperdr = 1/6)
+hwetetra(nvec, upperdr = 1/6, addval = 1/100)
 }
 \arguments{
 \item{nvec}{A vector containing the observed genotype counts,
@@ -14,6 +14,10 @@ where \code{nvec[[i]]} is the number of individuals with genotype
 \item{upperdr}{The upper bound on the double reduction rate. Defaults
 to 1/6, which is the maximum value under the complete equational
 segregation model (Mather, 1935).}
+
+\item{addval}{The penalization applied to each genotype for the random
+mating hypothesis. This corresponds to the number of counts each
+genotype has \emph{a priori}. Defaults to \code{1 / 100}.}
 }
 \value{
 A list with the following elements
@@ -63,7 +67,7 @@ hwetetra(nvec = nvec)
 }
 \references{
 \itemize{
-\item{Mather, K. (1935). Reductional and equational separation of the chromosomes in bivalents and multivalents. Journal of Genetics, 30(1), 53-78.}
+\item{Mather, K. (1935). Reductional and equational separation of the chromosomes in bivalents and multivalents. Journal of Genetics, 30(1), 53-78. \doi{10.1007/BF02982205}}
 }
 }
 \author{
