@@ -71,6 +71,40 @@ test_that("Segregation probabilities are same as known proportions in hexaploids
 
 })
 
+test_that("gsegmat() and gsegmat2() are same as special cases", {
+  alpha <- 0.112
+
+  expect_equal(
+    gsegmat(alpha = NULL, ploidy = 2),
+    gsegmat_diploid()
+  )
+
+  expect_equal(
+    gsegmat(alpha = alpha, ploidy = 4),
+    gsegmat_tetraploid(alpha = alpha)
+  )
+
+  expect_equal(
+    gsegmat2(alpha = alpha, ploidy = 4),
+    gsegmat_tetraploid(alpha = alpha)
+  )
+
+  expect_equal(
+    gsegmat(alpha = alpha, ploidy = 6),
+    gsegmat_hexaploid(alpha = alpha)
+  )
+
+  expect_equal(
+    gsegmat2(alpha = alpha, ploidy = 6),
+    gsegmat_hexaploid(alpha = alpha)
+  )
+
+  # microbenchmark::microbenchmark(
+  #   gsegmat2(alpha = alpha, ploidy = 6),
+  #   gsegmat_hexaploid(alpha = alpha)
+  # )
+})
+
 
 test_that("zsegarray() works", {
 

@@ -162,6 +162,59 @@ gsegmat2 <- function(alpha, ploidy) {
   return(segmat)
 }
 
+
+#' Special case of gsegmat() for diploids.
+#'
+#' @author David Gerard
+#'
+#' @noRd
+gsegmat_diploid <- function() {
+  matrix(c(1.0, 0.0,
+           0.5, 0.5,
+           0.0, 1.0),
+         byrow = TRUE,
+         ncol = 2,
+         nrow = 3)
+}
+
+#' Special case of gsegmat() for tetraploids
+#'
+#' @author David Gerard
+#'
+#' @noRd
+gsegmat_tetraploid <- function(alpha) {
+  stopifnot(length(alpha) == 1)
+  stopifnot(alpha >= 0, alpha <= 1)
+  matrix(c(1, 0, 0,
+           0.25 * (2 + alpha), 0.5 * (1 - alpha), 0.25 * alpha,
+           (1 + 2 * alpha) / 6, 4 * (1 - alpha) / 6, (1 + 2 * alpha) / 6,
+           0.25 * alpha, 0.5 * (1 - alpha), 0.25 * (2 + alpha),
+           0, 0, 1),
+         byrow = TRUE,
+         ncol = 3,
+         nrow = 5)
+}
+
+#' Special case of gsegmat() for tetraploids
+#'
+#' @author David Gerard
+#'
+#' @noRd
+gsegmat_hexaploid <- function(alpha) {
+  stopifnot(length(alpha) == 1)
+  stopifnot(alpha >= 0, alpha <= 1)
+  matrix(c(1, 0, 0, 0,
+           (3 + alpha) / 6, (3 - 2 * alpha) / 6, alpha / 6, 0,
+           (3 + 3 * alpha) / 15, (9 - 5 * alpha) / 15, (3 + alpha) / 15, alpha / 15,
+           (1 + 3 * alpha) / 20, (9 - 3 * alpha) / 20, (9 - 3 * alpha) / 20, (1 + 3 * alpha) / 20,
+           alpha / 15, (3 + alpha) / 15, (9 - 5 * alpha) / 15, (3 + 3 * alpha) / 15,
+           0, alpha / 6, (3 - 2 * alpha) / 6, (3 + alpha) / 6,
+           0, 0, 0, 1),
+         byrow = TRUE,
+         ncol = 4,
+         nrow = 7)
+}
+
 #' Zygote dosage probabiltites.
 #'
 #' Calculates the distribution of an offspring dosages given
