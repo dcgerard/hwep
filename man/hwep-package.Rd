@@ -33,6 +33,8 @@ You should use \code{\link{hwetetra}()} for tetraploids.}
 for double reduction. This function tests for equilibrium given
 double reduction rates and estimates these rates given equilibrium.
 You should use \code{\link{hwetetra}()} for tetraploids.}
+\item{\code{\link{hwenodr}()}}{Implements a likelihood ratio test
+that tests for HWE in autopolyploids given no double reduction.}
 }
 }
 

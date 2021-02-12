@@ -340,5 +340,8 @@ hwemom <- function(nvec,
                     p_alpha = pval_alpha)
   }
 
+  ## get estimate of allele frequency ----
+  retlist$r <- sum(0:ploidy * nvec) / (ploidy * sum(nvec))
+
   return(retlist)
 }

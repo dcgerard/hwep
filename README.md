@@ -6,7 +6,7 @@
 <!-- badges: start -->
 
 [![Lifecycle:
-experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
+experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html)
 [![License: GPL
 v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![CRAN
@@ -38,6 +38,8 @@ The main functions are:
     reduction. This function tests for equilibrium given double
     reduction rates and estimates these rates given equilibrium. You
     should use `hwetetra()` for tetraploids.
+-   `hwenodr()`: Implements a likelihood ratio test that tests for HWE
+    in autopolyploids given no double reduction.
 
 ## Installation
 

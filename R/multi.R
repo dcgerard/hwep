@@ -6,7 +6,7 @@
 #'
 #' Estimates and tests for either random mating or HWE across many loci
 #' using \code{\link{hwetetra}()}, \code{\link{hwemom}()},
-#' or \code{\link{rmlike}()}.
+#' \code{\link{rmlike}()}, or \code{\link{hwenodr}()}.
 #'
 #' We provide parallelization support through the \link[future]{future}
 #' package.
@@ -19,12 +19,16 @@
 #'     or equilibrium (\code{type = "hwe"}). For tetraploids, both
 #'     tests will be run, so this is only applicable for ploidies greater
 #'     than 4.
+#' @param overwrite A logical. The default is to run \code{hwetetra()} if
+#'     you have tetraploids, regardless of the selection of \code{type}. Set
+#'     this to \code{TRUE} to overwrite this default.
 #' @param ... Any other parameters to send to \code{\link{hwetetra}()},
-#'     \code{\link{hwemom}()}, or \code{\link{rmlike}()}.
+#'     \code{\link{hwemom}()}, \code{\link{rmlike}()}, or
+#'     \code{\link{hwenodr}()}.
 #'
 #' @return A data frame. The columns of which can are described in
 #'     \code{\link{hwetetra}()}, \code{\link{hwemom}()},
-#'     or \code{\link{rmlike}()}.
+#'     \code{\link{rmlike}()}, or \code{\link{hwenodr}()}.
 #'
 #' @author David Gerard
 #'
@@ -55,19 +59,22 @@
 #'      main = "qqplot")
 #' abline(0, 1, col = 2, lty = 2)
 #'
-hwefit <- function(nmat, type = c("hwe", "rm"), ...) {
+hwefit <- function(nmat, type = c("hwe", "rm", "nodr"), overwrite = FALSE, ...) {
   stopifnot(is.matrix(nmat))
   ploidy <- ncol(nmat) - 1
   stopifnot(ploidy %% 2 == 0, ploidy > 2)
+  stopifnot(length(overwrite) == 1, is.logical(overwrite))
   type <- match.arg(type)
 
   ## Choose appropriate function ----
-  if (ploidy == 4) {
+  if (ploidy == 4 & !overwrite) {
     fun <- hwetetra
   } else if (type == "hwe") {
     fun <- hwemom
-  } else {
+  } else if (type == "rm") {
     fun <- rmlike
+  } else if (type == "nodr") {
+    fun <- hwenodr
   }
 
   ## Register doFutures()

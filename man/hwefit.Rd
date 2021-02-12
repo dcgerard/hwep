@@ -4,7 +4,7 @@
 \alias{hwefit}
 \title{HWE and random mating estimation and testing for many loci.}
 \usage{
-hwefit(nmat, type = c("hwe", "rm"), ...)
+hwefit(nmat, type = c("hwe", "rm", "nodr"), overwrite = FALSE, ...)
 }
 \arguments{
 \item{nmat}{A matrix of counts. The rows index the loci and the columns
@@ -17,18 +17,23 @@ or equilibrium (\code{type = "hwe"}). For tetraploids, both
 tests will be run, so this is only applicable for ploidies greater
 than 4.}
 
+\item{overwrite}{A logical. The default is to run \code{hwetetra()} if
+you have tetraploids, regardless of the selection of \code{type}. Set
+this to \code{TRUE} to overwrite this default.}
+
 \item{...}{Any other parameters to send to \code{\link{hwetetra}()},
-\code{\link{hwemom}()}, or \code{\link{rmlike}()}.}
+\code{\link{hwemom}()}, \code{\link{rmlike}()}, or
+\code{\link{hwenodr}()}.}
 }
 \value{
 A data frame. The columns of which can are described in
 \code{\link{hwetetra}()}, \code{\link{hwemom}()},
-or \code{\link{rmlike}()}.
+\code{\link{rmlike}()}, or \code{\link{hwenodr}()}.
 }
 \description{
 Estimates and tests for either random mating or HWE across many loci
 using \code{\link{hwetetra}()}, \code{\link{hwemom}()},
-or \code{\link{rmlike}()}.
+\code{\link{rmlike}()}, or \code{\link{hwenodr}()}.
 }
 \details{
 We provide parallelization support through the \link[future]{future}
