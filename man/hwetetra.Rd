@@ -28,9 +28,9 @@ A list with the following elements
 \item{\code{ll_u}}{The log-likelihood under the urestricted model.}
 \item{\code{q_rm}}{The genotype frequencies under the random mating model.}
 \item{\code{ll_rm}}{The log-likelihood under the random mating model.}
-\item{\code{q_hw}}{The genotype frequencies under the small deviations
+\item{\code{q_hwe}}{The genotype frequencies under the small deviations
 from HWE model.}
-\item{\code{ll_hw}}{The log-likelihood under the small deviations from HWE
+\item{\code{ll_hwe}}{The log-likelihood under the small deviations from HWE
 model.}
 \item{\code{q_ndr}}{The genotype frequencies under the no double reduction
 at HWE model.}
@@ -40,10 +40,11 @@ HWE model.}
 mating, with an alternative of unrestricted.}
 \item{\code{df_rm}}{The degrees of freedom corresponding to \code{chisq_rm}.}
 \item{\code{pval_rm}}{The p-value corresponding to \code{chisq_rm}.}
-\item{\code{chisq_hw}}{The chi-square statistic against the null of only
-small deviations from HWE, with an alternative of random mating.}
-\item{\code{df_hw}}{The degrees of freedom corresponding to \code{chisq_hw}.}
-\item{\code{pval_hw}}{The p-value corresponding to \code{chisq_hw}.}
+\item{\code{chisq_hwe}}{The chi-square statistic against the null of only
+small deviations from HWE, with an alternative of arbitrary
+genotype frequencies.}
+\item{\code{df_hwe}}{The degrees of freedom corresponding to \code{chisq_hwe}.}
+\item{\code{pval_hwe}}{The p-value corresponding to \code{chisq_hwe}.}
 \item{\code{chisq_ndr}}{The chi-square statistic against the null of no
 double reduction at HWE, with an alternative of only small deviations
 from HWE.}
