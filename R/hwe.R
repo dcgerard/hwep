@@ -172,14 +172,24 @@ hwefreq <- function(r,
   ## Return theoretical result when no double reduction and large niter ----
   if (all(alpha < sqrt(.Machine$double.eps)) & niter >= 6) {
     freq <- stats::dbinom(x = 0:ploidy, size = ploidy, prob = r)
-    return(freq)
+    if (more) {
+      pgam <- stats::dbinom(x = 0:(ploidy / 2), size = ploidy / 2, prob = r)
+      return(list(q = freq, p = pgam))
+    } else {
+      return(freq)
+    }
   }
 
   ## Special code for tetraplolids at equilibrium and large niter ----
   if (ploidy == 4 & niter >= 6) {
     pgam <- gam_from_a(a = alpha, r = r)
     names(pgam) <- NULL
-    return(stats::convolve(pgam, rev(pgam), type = "open"))
+    freq <- stats::convolve(pgam, rev(pgam), type = "open")
+    if (more) {
+      return(list(q = freq, p = pgam))
+    } else {
+      return(freq)
+    }
   }
 
   ## Create segregation matrix so don't need to remake it each iteration

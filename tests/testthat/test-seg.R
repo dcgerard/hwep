@@ -227,7 +227,29 @@ test_that("hwefreq gives parental gametes", {
   r <- 0.1
 
   hout <- hwefreq(r = r, alpha = alpha, ploidy = ploidy, more = TRUE)
+  expect_equal(
+    hout$q,
+    stats::convolve(hout$p, rev(hout$p), type = "open")
+  )
 
+  alpha <- c(0, 0)
+  hout <- hwefreq(r = r, alpha = alpha, ploidy = ploidy, more = TRUE)
+  expect_equal(
+    hout$q,
+    stats::convolve(hout$p, rev(hout$p), type = "open")
+  )
+
+  ploidy <- 4
+  alpha <- 1/4
+  hout <- hwefreq(r = r, alpha = alpha, ploidy = ploidy, more = TRUE)
+  expect_equal(
+    hout$q,
+    stats::convolve(hout$p, rev(hout$p), type = "open")
+  )
+
+  ploidy <- 4
+  alpha <- 1/4
+  hout <- hwefreq(r = r, alpha = alpha, ploidy = ploidy, more = TRUE, niter = 1)
   expect_equal(
     hout$q,
     stats::convolve(hout$p, rev(hout$p), type = "open")
