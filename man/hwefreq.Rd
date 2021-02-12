@@ -4,7 +4,14 @@
 \alias{hwefreq}
 \title{Generate HWE genotype frequencies}
 \usage{
-hwefreq(r, alpha, ploidy, niter = 100, tol = sqrt(.Machine$double.eps))
+hwefreq(
+  r,
+  alpha,
+  ploidy,
+  niter = 100,
+  tol = sqrt(.Machine$double.eps),
+  more = FALSE
+)
 }
 \arguments{
 \item{r}{The allele frequency of the reference allele.}
@@ -23,6 +30,15 @@ integer.}
 
 \item{tol}{The stopping criterion on the Chi-square divergence between
 old and new genotype frequencies.}
+
+\item{more}{A logical. Should we return more output (\code{TRUE}) or
+less (\code{FALSE}). See the Value section for details.}
+}
+\value{
+If \code{more = FALSE}, then returns just the genotype frequencies
+after \code{niter} generations of random mating. If \code{more = TRUE},
+then returns a list with these genotype frequencies, as well as
+the parental gamete frequencies.
 }
 \description{
 Generate genotype frequencies under Hardy-Weinberg equilibrium

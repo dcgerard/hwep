@@ -63,9 +63,14 @@ freqnext2 <- function(freq, alpha, segarray = NULL) {
 #' @param segmat You can provide your own segregation matrix.
 #'     \code{segmat[i, j]} is the probability that a parent with
 #'     dosage \code{i-1} produces a gamete with dosage \code{j-1}.
+#' @param more A logical. Should we return more output (\code{TRUE}) or
+#'     less (\code{FALSE}). See the Value section for details.
 #'
-#' @return A vector of length \code{lenght(freq)} that contains the
-#'     updated genotype frequencies after one generation of random mating.
+#' @return If \code{more = FALSE}, then returns a vector of length
+#'     \code{lenght(freq)} that contains the updated genotype frequencies
+#'     after one generation of random mating. If \code{more = TRUE}, then
+#'     returns a list with these genotype frequencies (\code{q}) as well as the
+#'     parental gamete frequencies (\code{p}).
 #'
 #' @author David Gerard
 #'
@@ -75,11 +80,12 @@ freqnext2 <- function(freq, alpha, segarray = NULL) {
 #' freq <- c(0.5, 0, 0, 0, 0.5)
 #' freqnext(freq = freq, alpha = 0)
 #'
-freqnext <- function(freq, alpha, segmat = NULL) {
+freqnext <- function(freq, alpha, segmat = NULL, more = FALSE) {
   ploidy <- length(freq) - 1
   stopifnot(ploidy %% 2 == 0, ploidy > 0)
   stopifnot(length(alpha) == floor(ploidy / 4))
   stopifnot(alpha >= 0, sum(alpha) <= 1)
+  stopifnot(is.logical(more), length(more) == 1)
 
   if (is.null(segmat)) {
     segmat <- gsegmat(alpha = alpha, ploidy = ploidy)
@@ -96,7 +102,11 @@ freqnext <- function(freq, alpha, segmat = NULL) {
   freqnew[freqnew < 0] <- 0
   freqnew <- freqnew / sum(freqnew)
 
-  return(freqnew)
+  if (more) {
+    return(list(q = freqnew, p = p))
+  } else {
+    return(freqnew)
+  }
 }
 
 #' Generate HWE genotype frequencies
@@ -115,6 +125,13 @@ freqnext <- function(freq, alpha, segmat = NULL) {
 #' @param niter The maximum number of iterations to simulate.
 #' @param tol The stopping criterion on the Chi-square divergence between
 #'     old and new genotype frequencies.
+#' @param more A logical. Should we return more output (\code{TRUE}) or
+#'     less (\code{FALSE}). See the Value section for details.
+#'
+#' @return If \code{more = FALSE}, then returns just the genotype frequencies
+#'     after \code{niter} generations of random mating. If \code{more = TRUE},
+#'     then returns a list with these genotype frequencies, as well as
+#'     the parental gamete frequencies.
 #'
 #' @author David Gerard
 #'
@@ -137,7 +154,12 @@ freqnext <- function(freq, alpha, segmat = NULL) {
 #'      xlab = "dosage",
 #'      ylab = "Pr(dosage)")
 #'
-hwefreq <- function(r, alpha, ploidy, niter = 100, tol = sqrt(.Machine$double.eps)) {
+hwefreq <- function(r,
+                    alpha,
+                    ploidy,
+                    niter = 100,
+                    tol = sqrt(.Machine$double.eps),
+                    more = FALSE) {
   stopifnot(length(r) == 1L, length(ploidy) == 1L, length(niter) == 1L)
   stopifnot(ploidy %% 2 == 0)
   stopifnot(ploidy > 1)
@@ -145,6 +167,7 @@ hwefreq <- function(r, alpha, ploidy, niter = 100, tol = sqrt(.Machine$double.ep
   stopifnot(alpha >= 0, sum(alpha) <= 1)
   stopifnot(r >= 0, r <= 1)
   stopifnot(niter >= 1)
+  stopifnot(is.logical(more), length(more) == 1)
 
   ## Return theoretical result when no double reduction and large niter ----
   if (all(alpha < sqrt(.Machine$double.eps)) & niter >= 6) {
@@ -168,13 +191,18 @@ hwefreq <- function(r, alpha, ploidy, niter = 100, tol = sqrt(.Machine$double.ep
   err <- Inf
   while (i <= niter && err > tol) {
     oldfreq <- freq
-    freq <- freqnext(freq = freq, alpha = alpha, segmat = segmat)
+    freqlist <- freqnext(freq = freq, alpha = alpha, segmat = segmat, more = TRUE)
+    freq <- freqlist$q
     pos <- freq > sqrt(.Machine$double.eps)
     i <- i + 1
     err <- sum((oldfreq[pos] - freq[pos]) ^ 2 / freq[pos]) * (ploidy + 1)
   }
 
-  return(freq)
+  if (more) {
+    return(freqlist)
+  } else {
+    return(freq)
+  }
 }
 
 

@@ -4,7 +4,7 @@
 \alias{freqnext}
 \title{Update genotype frequencies after one generation}
 \usage{
-freqnext(freq, alpha, segmat = NULL)
+freqnext(freq, alpha, segmat = NULL, more = FALSE)
 }
 \arguments{
 \item{freq}{The current genotype frequencies. This should be a
@@ -22,10 +22,16 @@ being in the gamete. Note that \code{sum(alpha)} should be less than
 \item{segmat}{You can provide your own segregation matrix.
 \code{segmat[i, j]} is the probability that a parent with
 dosage \code{i-1} produces a gamete with dosage \code{j-1}.}
+
+\item{more}{A logical. Should we return more output (\code{TRUE}) or
+less (\code{FALSE}). See the Value section for details.}
 }
 \value{
-A vector of length \code{lenght(freq)} that contains the
-updated genotype frequencies after one generation of random mating.
+If \code{more = FALSE}, then returns a vector of length
+\code{lenght(freq)} that contains the updated genotype frequencies
+after one generation of random mating. If \code{more = TRUE}, then
+returns a list with these genotype frequencies (\code{q}) as well as the
+parental gamete frequencies (\code{p}).
 }
 \description{
 After one generation of random mating, update the genotype

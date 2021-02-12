@@ -204,3 +204,32 @@ test_that("gsegmat() and gsegmat2() give same results", {
   #   gsegmat2(alpha = alpha, ploidy = ploidy)
   # )
 })
+
+test_that("freqnext gives parental gametes", {
+  set.seed(8)
+  ploidy <- 10
+  alpha <- c(0.3, 0.1)
+  q <- runif(ploidy + 1)
+  q <- q / sum(q)
+
+  fout <- freqnext(freq = q, alpha = alpha, more = TRUE)
+
+  expect_equal(
+    fout$q,
+    stats::convolve(fout$p, rev(fout$p), type = "open")
+  )
+})
+
+test_that("hwefreq gives parental gametes", {
+  set.seed(8)
+  ploidy <- 10
+  alpha <- c(0.3, 0.1)
+  r <- 0.1
+
+  hout <- hwefreq(r = r, alpha = alpha, ploidy = ploidy, more = TRUE)
+
+  expect_equal(
+    hout$q,
+    stats::convolve(hout$p, rev(hout$p), type = "open")
+  )
+})
