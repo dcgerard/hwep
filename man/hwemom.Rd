@@ -33,12 +33,12 @@ against the null of equilibrium.}
 \item{\code{df_hwe}}{The degrees of freedom associated with
 \code{chisq_hwe}.}
 \item{\code{p_hwe}}{The p-value against the null of equilibrium.}
-\item{\code{chisq_alpha}}{The chi-square test statistic for
+\item{\code{chisq_ndr}}{The chi-square test statistic for
 testing against the null of no double reduction (conditional
 on equilibrium). In diploids, this value is \code{NULL}.}
-\item{\code{df_alpha}}{The degrees of freedom associated with
-\code{chisq_alpha}.}
-\item{\code{p_alpha}}{The p-value against the null of no double
+\item{\code{df_ndr}}{The degrees of freedom associated with
+\code{chisq_ndr}.}
+\item{\code{p_ndr}}{The p-value against the null of no double
 reduction (conditional on equilibrium). In diploids, this value
 is \code{NULL}.}
 }

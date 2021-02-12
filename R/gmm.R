@@ -188,12 +188,12 @@ obj_reals <- function(y, nvec, denom = c("expected", "observed")) {
 #'   \item{\code{df_hwe}}{The degrees of freedom associated with
 #'       \code{chisq_hwe}.}
 #'   \item{\code{p_hwe}}{The p-value against the null of equilibrium.}
-#'   \item{\code{chisq_alpha}}{The chi-square test statistic for
+#'   \item{\code{chisq_ndr}}{The chi-square test statistic for
 #'       testing against the null of no double reduction (conditional
 #'       on equilibrium). In diploids, this value is \code{NULL}.}
-#'   \item{\code{df_alpha}}{The degrees of freedom associated with
-#'       \code{chisq_alpha}.}
-#'   \item{\code{p_alpha}}{The p-value against the null of no double
+#'   \item{\code{df_ndr}}{The degrees of freedom associated with
+#'       \code{chisq_ndr}.}
+#'   \item{\code{p_ndr}}{The p-value against the null of no double
 #'       reduction (conditional on equilibrium). In diploids, this value
 #'       is \code{NULL}.}
 #' }
@@ -283,9 +283,9 @@ hwemom <- function(nvec,
                     df_hwe = ploidy - ibdr - 1,
                     p_hwe = pval,
                     alpha = NULL,
-                    chisq_alpha = NULL,
-                    df_alpha = NULL,
-                    p_alpha = NULL)
+                    chisq_ndr = NULL,
+                    df_ndr = NULL,
+                    p_ndr = NULL)
   } else if (ibdr == 1) {
     ## Tetraploid or Hexaploid: Use Brent's method
     upper_alpha <- drbounds(ploidy = ploidy)
@@ -308,9 +308,9 @@ hwemom <- function(nvec,
                     df_hwe = ploidy - ibdr - 1,
                     p_hwe = pval_hwe,
                     alpha = oout$par,
-                    chisq_alpha = chisq_alpha,
-                    df_alpha = ibdr,
-                    p_alpha = pval_alpha)
+                    chisq_ndr = chisq_alpha,
+                    df_ndr = ibdr,
+                    p_ndr = pval_alpha)
   } else {
     ## Higher Ploidy: Use L-BFGS-B using boundaries from CES model
     upper_alpha <- drbounds(ploidy = ploidy)
@@ -335,9 +335,9 @@ hwemom <- function(nvec,
                     df_hwe = ploidy - ibdr - 1,
                     p_hwe = pval_hwe,
                     alpha = alpha,
-                    chisq_alpha = chisq_alpha,
-                    df_alpha = ibdr,
-                    p_alpha = pval_alpha)
+                    chisq_ndr = chisq_alpha,
+                    df_ndr = ibdr,
+                    p_ndr = pval_alpha)
   }
 
   ## get estimate of allele frequency ----

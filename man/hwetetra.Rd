@@ -39,17 +39,17 @@ HWE model.}
 \item{\code{chisq_rm}}{The chi-square statistic against the null of random
 mating, with an alternative of unrestricted.}
 \item{\code{df_rm}}{The degrees of freedom corresponding to \code{chisq_rm}.}
-\item{\code{pval_rm}}{The p-value corresponding to \code{chisq_rm}.}
+\item{\code{p_rm}}{The p-value corresponding to \code{chisq_rm}.}
 \item{\code{chisq_hwe}}{The chi-square statistic against the null of only
 small deviations from HWE, with an alternative of arbitrary
 genotype frequencies.}
 \item{\code{df_hwe}}{The degrees of freedom corresponding to \code{chisq_hwe}.}
-\item{\code{pval_hwe}}{The p-value corresponding to \code{chisq_hwe}.}
+\item{\code{p_hwe}}{The p-value corresponding to \code{chisq_hwe}.}
 \item{\code{chisq_ndr}}{The chi-square statistic against the null of no
 double reduction at HWE, with an alternative of only small deviations
 from HWE.}
 \item{\code{df_ndr}}{The degrees of freedom corresponding to \code{chisq_ndr}.}
-\item{\code{pval_ndr}}{The p-value corresponding to \code{chisq_ndr}.}
+\item{\code{p_ndr}}{The p-value corresponding to \code{chisq_ndr}.}
 }
 }
 \description{
