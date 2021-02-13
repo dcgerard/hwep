@@ -4,7 +4,7 @@
 \alias{hwetetra}
 \title{HWE likelihood inference for tetraploids}
 \usage{
-hwetetra(nvec, upperdr = 1/6, addval = 1/100)
+hwetetra(nvec, upperdr = 1/6, addval = 1/100, more = FALSE)
 }
 \arguments{
 \item{nvec}{A vector containing the observed genotype counts,
@@ -18,26 +18,17 @@ segregation model (Mather, 1935).}
 \item{addval}{The penalization applied to each genotype for the random
 mating hypothesis. This corresponds to the number of counts each
 genotype has \emph{a priori}. Defaults to \code{1 / 100}.}
+
+\item{more}{A logical. Should we output more (\code{TRUE}) or less
+(\code{FALSE})?}
 }
 \value{
-A list with the following elements
+A list some or all of the following elements
 \describe{
 \item{\code{alpha}}{The estimated double reduction rate.}
 \item{\code{r}}{The estimated allele frequency.}
-\item{\code{q_u}}{The genotype frequencies under the unrestricted model.}
-\item{\code{ll_u}}{The log-likelihood under the urestricted model.}
-\item{\code{q_rm}}{The genotype frequencies under the random mating model.}
-\item{\code{ll_rm}}{The log-likelihood under the random mating model.}
-\item{\code{q_hwe}}{The genotype frequencies under the small deviations
-from HWE model.}
-\item{\code{ll_hwe}}{The log-likelihood under the small deviations from HWE
-model.}
-\item{\code{q_ndr}}{The genotype frequencies under the no double reduction
-at HWE model.}
-\item{\code{ll_ndr}}{The log-likelihood under the no double reduction at
-HWE model.}
 \item{\code{chisq_rm}}{The chi-square statistic against the null of random
-mating, with an alternative of unrestricted.}
+mating, with an alternative of arbitrary genotype frequencies.}
 \item{\code{df_rm}}{The degrees of freedom corresponding to \code{chisq_rm}.}
 \item{\code{p_rm}}{The p-value corresponding to \code{chisq_rm}.}
 \item{\code{chisq_hwe}}{The chi-square statistic against the null of only
@@ -50,6 +41,18 @@ double reduction at HWE, with an alternative of only small deviations
 from HWE.}
 \item{\code{df_ndr}}{The degrees of freedom corresponding to \code{chisq_ndr}.}
 \item{\code{p_ndr}}{The p-value corresponding to \code{chisq_ndr}.}
+\item{\code{q_u}}{The genotype frequencies under the unrestricted model.}
+\item{\code{ll_u}}{The log-likelihood under the urestricted model.}
+\item{\code{q_rm}}{The genotype frequencies under the random mating model.}
+\item{\code{ll_rm}}{The log-likelihood under the random mating model.}
+\item{\code{q_hwe}}{The genotype frequencies under the small deviations
+from HWE model.}
+\item{\code{ll_hwe}}{The log-likelihood under the small deviations from HWE
+model.}
+\item{\code{q_ndr}}{The genotype frequencies under the no double reduction
+at HWE model.}
+\item{\code{ll_ndr}}{The log-likelihood under the no double reduction at
+HWE model.}
 }
 }
 \description{

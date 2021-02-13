@@ -70,25 +70,15 @@ lltetra <- function(a, r, nvec) {
 #' @param addval The penalization applied to each genotype for the random
 #'     mating hypothesis. This corresponds to the number of counts each
 #'     genotype has \emph{a priori}. Defaults to \code{1 / 100}.
+#' @param more A logical. Should we output more (\code{TRUE}) or less
+#'     (\code{FALSE})?
 #'
-#' @return A list with the following elements
+#' @return A list some or all of the following elements
 #' \describe{
 #'  \item{\code{alpha}}{The estimated double reduction rate.}
 #'  \item{\code{r}}{The estimated allele frequency.}
-#'  \item{\code{q_u}}{The genotype frequencies under the unrestricted model.}
-#'  \item{\code{ll_u}}{The log-likelihood under the urestricted model.}
-#'  \item{\code{q_rm}}{The genotype frequencies under the random mating model.}
-#'  \item{\code{ll_rm}}{The log-likelihood under the random mating model.}
-#'  \item{\code{q_hwe}}{The genotype frequencies under the small deviations
-#'      from HWE model.}
-#'  \item{\code{ll_hwe}}{The log-likelihood under the small deviations from HWE
-#'      model.}
-#'  \item{\code{q_ndr}}{The genotype frequencies under the no double reduction
-#'      at HWE model.}
-#'  \item{\code{ll_ndr}}{The log-likelihood under the no double reduction at
-#'      HWE model.}
 #'  \item{\code{chisq_rm}}{The chi-square statistic against the null of random
-#'      mating, with an alternative of unrestricted.}
+#'      mating, with an alternative of arbitrary genotype frequencies.}
 #'  \item{\code{df_rm}}{The degrees of freedom corresponding to \code{chisq_rm}.}
 #'  \item{\code{p_rm}}{The p-value corresponding to \code{chisq_rm}.}
 #'  \item{\code{chisq_hwe}}{The chi-square statistic against the null of only
@@ -101,6 +91,18 @@ lltetra <- function(a, r, nvec) {
 #'      from HWE.}
 #'  \item{\code{df_ndr}}{The degrees of freedom corresponding to \code{chisq_ndr}.}
 #'  \item{\code{p_ndr}}{The p-value corresponding to \code{chisq_ndr}.}
+#'  \item{\code{q_u}}{The genotype frequencies under the unrestricted model.}
+#'  \item{\code{ll_u}}{The log-likelihood under the urestricted model.}
+#'  \item{\code{q_rm}}{The genotype frequencies under the random mating model.}
+#'  \item{\code{ll_rm}}{The log-likelihood under the random mating model.}
+#'  \item{\code{q_hwe}}{The genotype frequencies under the small deviations
+#'      from HWE model.}
+#'  \item{\code{ll_hwe}}{The log-likelihood under the small deviations from HWE
+#'      model.}
+#'  \item{\code{q_ndr}}{The genotype frequencies under the no double reduction
+#'      at HWE model.}
+#'  \item{\code{ll_ndr}}{The log-likelihood under the no double reduction at
+#'      HWE model.}
 #' }
 #' @author David Gerard
 #'
@@ -121,11 +123,12 @@ lltetra <- function(a, r, nvec) {
 #' hwetetra(nvec = nvec)
 #'
 #'
-hwetetra <- function(nvec, upperdr = 1/6, addval = 1 / 100) {
+hwetetra <- function(nvec, upperdr = 1/6, addval = 1 / 100, more = FALSE) {
   stopifnot(length(nvec) == 5)
   stopifnot(nvec >= 0)
   stopifnot(is.vector(nvec))
   stopifnot(addval >= 0, length(addval) == 1)
+  stopifnot(is.logical(more), length(more) == 1)
 
   ## Unconstrained ---------------------------
   q_u <- nvec / sum(nvec)
@@ -177,14 +180,6 @@ hwetetra <- function(nvec, upperdr = 1/6, addval = 1 / 100) {
   retlist <- list(
     alpha = alpha,
     r = r,
-    q_u = q_u,
-    ll_u = ll_u,
-    q_rm = q_rm,
-    ll_rm = ll_rm,
-    q_hwe = q_hwe,
-    ll_hwe = ll_hwe,
-    q_ndr = q_ndr,
-    ll_ndr = ll_ndr,
     chisq_rm = chisq_rm,
     df_rm = 2,
     p_rm = pval_rm,
@@ -194,5 +189,17 @@ hwetetra <- function(nvec, upperdr = 1/6, addval = 1 / 100) {
     chisq_ndr = chisq_ndr,
     df_ndr = 1,
     p_ndr = pval_ndr)
+
+  if (more) {
+    retlist$q_u <- q_u
+    retlist$ll_u <- ll_u
+    retlist$q_rm <- q_rm
+    retlist$ll_rm <- ll_rm
+    retlist$q_hwe <- q_hwe
+    retlist$ll_hwe <- ll_hwe
+    retlist$q_ndr <- q_ndr
+    retlist$ll_ndr <- ll_ndr
+  }
+
   return(retlist)
 }
