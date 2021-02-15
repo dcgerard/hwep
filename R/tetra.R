@@ -55,6 +55,8 @@ lltetra <- function(a, r, nvec) {
 
   p <- gam_from_a(a = a, r = r)
   q <- stats::convolve(p, rev(p), type = "open")
+  stopifnot(q > -10^-6)
+  q[q < 0] <- 0
 
   stats::dmultinom(x = nvec, prob = q, log = TRUE)
 }
@@ -129,6 +131,35 @@ hwetetra <- function(nvec, upperdr = 1/6, addval = 1 / 100, more = FALSE) {
   stopifnot(is.vector(nvec))
   stopifnot(addval >= 0, length(addval) == 1)
   stopifnot(is.logical(more), length(more) == 1)
+
+  ## return early if only one non-zero element
+  if (sum(nvec > 0.5) <= 1) {
+     retlist <- list(
+        alpha = NA_real_,
+        r = NA_real_,
+        chisq_rm = NA_real_,
+        df_rm = NA_real_,
+        p_rm = NA_real_,
+        chisq_hwe = NA_real_,
+        df_hwe = NA_real_,
+        p_hwe = NA_real_,
+        chisq_ndr = NA_real_,
+        df_ndr = NA_real_,
+        p_ndr = NA_real_)
+
+      if (more) {
+        retlist$q_u <- NA_real_
+        retlist$ll_u <- NA_real_
+        retlist$q_rm <- NA_real_
+        retlist$ll_rm <- NA_real_
+        retlist$q_hwe <- NA_real_
+        retlist$ll_hwe <- NA_real_
+        retlist$q_ndr <- NA_real_
+        retlist$ll_ndr <- NA_real_
+      }
+
+     return(retlist)
+  }
 
   ## Unconstrained ---------------------------
   q_u <- nvec / sum(nvec)

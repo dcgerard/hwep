@@ -86,10 +86,11 @@ chisqdiv <- function(nvec,
     fq <- freqnext(freq = fq, alpha = alpha)
   }
 
+  notzero <- qhat > 10^-6 | fq > 10^-6
   if (denom == "expected") {
-    chisq <- n * sum((qhat - fq) ^ 2 / fq)
+    chisq <- n * sum((qhat[notzero] - fq[notzero]) ^ 2 / fq[notzero])
   } else if (denom == "observed") {
-    chisq <- n * sum((qhat - fq) ^ 2 / qhat)
+    chisq <- n * sum((qhat[notzero] - fq[notzero]) ^ 2 / qhat[notzero])
   }
 
   return(chisq)
@@ -194,9 +195,6 @@ obj_reals <- function(y, nvec, denom = c("expected", "observed")) {
 #'     See Berkson (1980) for a description.
 #' @param ngen The number of generations of random mating of current
 #'     empirical frequencies to compare against.
-#' @param addval How many counts should we add to each genotype before
-#'     implementing our procedures? Defaults to \code{4 / length(nvec)},
-#'     which corresponds to the "add two" rule of Agresti and Coull (1998).
 #'
 #' @return A list with the following elements
 #' \describe{
@@ -256,20 +254,32 @@ obj_reals <- function(y, nvec, denom = c("expected", "observed")) {
 #'
 hwemom <- function(nvec,
                    obj = c("g", "pearson", "neyman"),
-                   addval = 4 / length(nvec),
                    ngen = 1) {
   ## Check parameters ----
   ploidy <- length(nvec) - 1
   stopifnot(ploidy %% 2 == 0, ploidy > 0)
   stopifnot(nvec >= 0)
   stopifnot(is.vector(nvec))
-  stopifnot(addval >= 0, length(addval) == 1)
   stopifnot(length(ngen) == 1, ngen >= 1)
   ibdr <- floor(ploidy / 4)
   obj <- match.arg(obj)
 
-  ## Add counts to each cell ----
-  nvec <- nvec + addval
+  ## Return NA's if too few counts ----
+  if (sum(nvec > 0.5) < ibdr + 1) {
+    retlist <- list()
+
+    retlist <- list(chisq_hwe = NA_real_,
+                    df_hwe = NA_real_,
+                    p_hwe = NA_real_,
+                    alpha = rep(NA_real_, times = ibdr),
+                    chisq_ndr = NA_real_,
+                    df_ndr = NA_real_,
+                    p_ndr = NA_real_)
+
+    retlist$r <- sum(0:ploidy * nvec) / (ploidy * sum(nvec))
+
+    return(retlist)
+  }
 
   ## Choose objective function ----
   if (obj == "pearson") {
@@ -322,7 +332,7 @@ hwemom <- function(nvec,
   } else if (ibdr == 1) {
     ## Tetraploid or Hexaploid: Use Brent's method
     upper_alpha <- drbounds(ploidy = ploidy)
-    oout <- stats::optim(par = 0.1,
+    oout <- stats::optim(par = minval,
                          fn = divfun,
                          method = "Brent",
                          lower = minval,
@@ -349,7 +359,7 @@ hwemom <- function(nvec,
   } else {
     ## Higher Ploidy: Use L-BFGS-B using boundaries from CES model
     upper_alpha <- drbounds(ploidy = ploidy)
-    oout <- stats::optim(par = upper_alpha / 2,
+    oout <- stats::optim(par = rep(minval, ibdr),
                          fn = divfun,
                          gr = grfun,
                          method = "L-BFGS-B",

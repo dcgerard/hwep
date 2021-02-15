@@ -44,25 +44,27 @@ package.
 set.seed(2)
 ploidy <- 8
 nloc <- 100
-size <- 1000
+size <- 100
 r <- runif(nloc)
 probmat <- t(sapply(r, dbinom, x = 0:ploidy, size = ploidy))
 nmat <- t(apply(X = probmat, MARGIN = 1, FUN = rmultinom, n = 1, size = size))
 
 ## Run the analysis in parallel on the local computer with two workers
 future::plan(future::multisession, workers = 2)
-hout <- hwefit(nmat = nmat, obj = "pearson")
+hout <- hwefit(nmat = nmat)
 
 ## Shut down parallel workers
 future::plan("sequential")
 
 ## Show that test statistic follows theoretical distribution
-plot(x = qchisq(ppoints(n = nrow(hout)), df = hout$df_hwe),
-     y = sort(hout$chisq_hwe),
+obs <- sort(hout$chisq_hwe)
+plot(x = qchisq(ppoints(n = length(obs)), df = hout$df_hwe[[1]]),
+     y = obs,
      xlab = "theoretical",
      ylab = "observed",
      main = "qqplot")
 abline(0, 1, col = 2, lty = 2)
+mean(hout$chisq_hwe < 0.05, na.rm = TRUE)
 
 }
 \author{

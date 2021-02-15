@@ -38,3 +38,21 @@ test_that("pearson and neyman work", {
 test_that("gdiv works on diploids", {
   expect_error(gdiv(nvec = 0:2, alpha = NULL), NA)
 })
+
+
+test_that("hwemom gives no errors on hard data", {
+  nvec <- c(0,0,0,0,0,1,1,1,99999)
+  expect_error(hwemom(nvec = nvec, ngen = 5, obj = "g"), NA)
+  expect_error(hwemom(nvec = nvec, ngen = 1, obj = "g"), NA)
+
+  expect_error(hwemom(nvec = nvec, ngen = 5, obj = "pearson"), NA)
+  expect_error(hwemom(nvec = nvec, ngen = 1, obj = "pearson"), NA)
+
+  expect_error(hwemom(nvec = nvec, ngen = 5, obj = "neyman"), NA)
+  expect_error(hwemom(nvec = nvec, ngen = 1, obj = "neyman"), NA)
+})
+
+test_that("hwetetra gives no errors on hard data", {
+  nvec <- c(0,0,0,99,1)
+  expect_error(hwetetra(nvec = nvec), NA)
+})
