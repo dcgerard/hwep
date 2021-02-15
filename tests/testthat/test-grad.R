@@ -95,6 +95,12 @@ test_that("dpearsondiv_dalpha works", {
     tolerance = 10^-6
   )
 
+  expect_equal(
+    dpearsondiv_dalpha(nvec = nvec, alpha = alpha, ngen = 2),
+    c(pracma::jacobian(f = pearsondiv, x0 = alpha, nvec = nvec, ngen = 2)),
+    tolerance = 10^-6
+  )
+
   # microbenchmark::microbenchmark(
   #   dpearsondiv_dalpha(nvec = nvec, alpha = alpha),
   #   c(pracma::jacobian(f = pearsondiv, x0 = alpha, nvec = nvec))
@@ -113,6 +119,12 @@ test_that("dneymandiv_dalpha works", {
   expect_equal(
     dneymandiv_dalpha(nvec = nvec, alpha = alpha),
     c(pracma::jacobian(f = neymandiv, x0 = alpha, nvec = nvec)),
+    tolerance = 10^-6
+  )
+
+  expect_equal(
+    dneymandiv_dalpha(nvec = nvec, alpha = alpha, ngen = 2),
+    c(pracma::jacobian(f = neymandiv, x0 = alpha, nvec = nvec, ngen = 2)),
     tolerance = 10^-6
   )
 
@@ -136,10 +148,37 @@ test_that("dgdiv_dalpha works", {
     tolerance = 10^-6
   )
 
+  expect_equal(
+    dgdiv_dalpha(nvec = nvec, alpha = alpha, ngen = 2),
+    c(pracma::jacobian(f = gdiv, x0 = alpha, nvec = nvec, ngen = 2)),
+    tolerance = 10^-6
+  )
+
   # microbenchmark::microbenchmark(
   #   dgdiv_dalpha(nvec = nvec, alpha = alpha),
   #   c(pracma::jacobian(f = gdiv, x0 = alpha, nvec = nvec))
   # )
+})
+
+
+test_that("dfreqnext_dalpha_ngen works", {
+  set.seed(1)
+  ploidy <- 4
+  freq <- runif(ploidy + 1)
+  freq <- freq / sum(freq)
+  alpha <- 0.1
+  ngen <- 3
+
+  expect_equal(
+    pracma::jacobian(f = freqnext_ngen, x0 = alpha, freq = freq, ngen = ngen),
+    dfreqnext_dalpha_ngen(freq = freq, alpha = alpha, ngen = ngen)
+  )
+
+  # microbenchmark::microbenchmark(
+  #   pracma::jacobian(f = freqnext_ngen, x0 = alpha, freq = freq, ngen = ngen),
+  #   dfreqnext_dalpha_ngen(freq = freq, alpha = alpha, ngen = ngen)
+  # )
+
 })
 
 

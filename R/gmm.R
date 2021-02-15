@@ -58,23 +58,33 @@ drbounds <- function(ploidy) {
 #' @param denom What should we use for the denominator? The expected
 #'     genotype frequencies (\code{denom = "expected"}) or the
 #'     observed genotype frequencies (\code{denom = "observed"})?
+#' @param ngen The number of generations of random mating of current
+#'     empirical frequencies to compare against.
 #'
 #' @author David Gerard
 #'
 #' @noRd
-chisqdiv <- function(nvec, alpha, denom = c("expected", "observed")) {
+chisqdiv <- function(nvec,
+                     alpha,
+                     denom = c("expected", "observed"),
+                     ngen = 1) {
   ## Check parameters ----
   ploidy <- length(nvec) - 1
   stopifnot(ploidy %% 2 == 0, ploidy > 0)
   stopifnot(length(alpha) == floor(ploidy / 4))
   stopifnot(alpha >= 0, sum(alpha) <= 1)
   stopifnot(nvec >= 0)
+  stopifnot(length(ngen) == 1, ngen >= 1)
   denom <- match.arg(denom)
 
   ## calculate divergence ----
   n <- sum(nvec)
   qhat <- nvec / n
-  fq <- freqnext(freq = qhat, alpha = alpha)
+
+  fq <- qhat
+  for (i in seq_len(ngen)) {
+    fq <- freqnext(freq = fq, alpha = alpha)
+  }
 
   if (denom == "expected") {
     chisq <- n * sum((qhat - fq) ^ 2 / fq)
@@ -85,12 +95,12 @@ chisqdiv <- function(nvec, alpha, denom = c("expected", "observed")) {
   return(chisq)
 }
 
-neymandiv <- function(nvec, alpha) {
-  chisqdiv(nvec = nvec, alpha = alpha, denom = "observed")
+neymandiv <- function(nvec, alpha, ngen = 1) {
+  chisqdiv(nvec = nvec, alpha = alpha, denom = "observed", ngen = ngen)
 }
 
-pearsondiv <- function(nvec, alpha) {
-  chisqdiv(nvec = nvec, alpha = alpha, denom = "expected")
+pearsondiv <- function(nvec, alpha, ngen = 1) {
+  chisqdiv(nvec = nvec, alpha = alpha, denom = "expected", ngen = ngen)
 }
 
 
@@ -101,7 +111,7 @@ pearsondiv <- function(nvec, alpha) {
 #' @author David Gerard
 #'
 #' @noRd
-gdiv <- function(nvec, alpha) {
+gdiv <- function(nvec, alpha, ngen = 1) {
   ## Check parameters ----
   ploidy <- length(nvec) - 1
   stopifnot(ploidy %% 2 == 0, ploidy > 0)
@@ -109,10 +119,17 @@ gdiv <- function(nvec, alpha) {
   stopifnot(alpha >= 0, sum(alpha) <= 1)
   stopifnot(nvec >= 0)
 
-  ## Calculate statistic ----
+  ## Iterate through ngen generations of random mating ----
   n <- sum(nvec)
   qhat <- nvec / n
-  ei <- freqnext(freq = qhat, alpha = alpha) * n
+
+  fq <- qhat
+  for (i in seq_len(ngen)) {
+    fq <- freqnext(freq = fq, alpha = alpha)
+  }
+
+  ## Calculate statistic
+  ei <- fq * n
   notzero <- nvec > 0
   gstat <- 2 * sum(nvec[notzero] * log(nvec[notzero] / ei[notzero]))
 
@@ -175,6 +192,8 @@ obj_reals <- function(y, nvec, denom = c("expected", "observed")) {
 #'       \item{\code{neyman}}{\deqn{\sum (o-e)^2/o}}
 #'     }
 #'     See Berkson (1980) for a description.
+#' @param ngen The number of generations of random mating of current
+#'     empirical frequencies to compare against.
 #' @param addval How many counts should we add to each genotype before
 #'     implementing our procedures? Defaults to \code{4 / length(nvec)},
 #'     which corresponds to the "add two" rule of Agresti and Coull (1998).
@@ -237,13 +256,15 @@ obj_reals <- function(y, nvec, denom = c("expected", "observed")) {
 #'
 hwemom <- function(nvec,
                    obj = c("g", "pearson", "neyman"),
-                   addval = 4 / length(nvec)) {
+                   addval = 4 / length(nvec),
+                   ngen = 1) {
   ## Check parameters ----
   ploidy <- length(nvec) - 1
   stopifnot(ploidy %% 2 == 0, ploidy > 0)
   stopifnot(nvec >= 0)
   stopifnot(is.vector(nvec))
   stopifnot(addval >= 0, length(addval) == 1)
+  stopifnot(length(ngen) == 1, ngen >= 1)
   ibdr <- floor(ploidy / 4)
   obj <- match.arg(obj)
 
@@ -253,13 +274,25 @@ hwemom <- function(nvec,
   ## Choose objective function ----
   if (obj == "pearson") {
     divfun <- pearsondiv
-    grfun <- dpearsondiv_dalpha
+    if (ngen == 1) {
+      grfun <- dpearsondiv_dalpha
+    } else {
+      grfun <- NULL
+    }
   } else if (obj == "g") {
     divfun <- gdiv
-    grfun <- dgdiv_dalpha
+    if (ngen == 1) {
+      grfun <- dgdiv_dalpha
+    } else {
+      grfun <- NULL
+    }
   } else if (obj == "neyman") {
     divfun <- neymandiv
-    grfun <- dneymandiv_dalpha
+    if (ngen == 1) {
+      grfun <- dneymandiv_dalpha
+    } else {
+      grfun <- NULL
+    }
   }
 
   ## tell folks to use other stuff ----
@@ -273,7 +306,7 @@ hwemom <- function(nvec,
   ## optimize ----
   if (ibdr == 0) {
     ## Diploid: Just return chi-square
-    chisq <- divfun(nvec = nvec, alpha = NULL)
+    chisq <- divfun(nvec = nvec, alpha = NULL, ngen = ngen)
     pval <- stats::pchisq(q = chisq,
                           df = ploidy - ibdr - 1,
                           lower.tail = FALSE)
@@ -294,12 +327,14 @@ hwemom <- function(nvec,
                          method = "Brent",
                          lower = minval,
                          upper = upper_alpha,
-                         nvec = nvec)
+                         nvec = nvec,
+                         ngen = ngen)
     pval_hwe <- stats::pchisq(q = oout$value,
                               df = ploidy - ibdr - 1,
                               lower.tail = FALSE)
     chisq_null <- divfun(nvec = nvec,
-                         alpha = rep(0, length.out = ibdr))
+                         alpha = rep(0, length.out = ibdr),
+                         ngen = ngen)
     chisq_alpha <- (chisq_null - oout$value)
     pval_alpha <- stats::pchisq(q = chisq_alpha,
                                 df = ibdr,
@@ -320,13 +355,15 @@ hwemom <- function(nvec,
                          method = "L-BFGS-B",
                          lower = rep(minval, ibdr),
                          upper = upper_alpha,
-                         nvec = nvec)
+                         nvec = nvec,
+                         ngen = ngen)
     alpha <- oout$par
     pval_hwe <- stats::pchisq(q = oout$value,
                               df = ploidy - ibdr - 1,
                               lower.tail = FALSE)
     chisq_null <- divfun(nvec = nvec,
-                         alpha = rep(0, length.out = ibdr))
+                         alpha = rep(0, length.out = ibdr),
+                         ngen = ngen)
     chisq_alpha <- (chisq_null - oout$value)
     pval_alpha <- stats::pchisq(q = chisq_alpha,
                                 df = ibdr,

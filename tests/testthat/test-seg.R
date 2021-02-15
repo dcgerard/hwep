@@ -255,3 +255,17 @@ test_that("hwefreq gives parental gametes", {
     stats::convolve(hout$p, rev(hout$p), type = "open")
   )
 })
+
+
+test_that("freqnext and freqnext_ngen give same results at ngen = 1", {
+  set.seed(7)
+  ploidy <- 4
+  freq <- runif(ploidy + 1)
+  freq <- freq / sum(freq)
+  alpha <- 0.1
+
+  expect_equal(
+    freqnext(freq = freq, alpha = alpha),
+    freqnext_ngen(freq = freq, alpha = alpha, ngen = 1)
+  )
+})

@@ -4,7 +4,12 @@
 \alias{hwemom}
 \title{Estimate double reduction parameter and test for HWE}
 \usage{
-hwemom(nvec, obj = c("g", "pearson", "neyman"), addval = 4/length(nvec))
+hwemom(
+  nvec,
+  obj = c("g", "pearson", "neyman"),
+  addval = 4/length(nvec),
+  ngen = 1
+)
 }
 \arguments{
 \item{nvec}{A vector containing the observed genotype counts,
@@ -22,6 +27,9 @@ See Berkson (1980) for a description.}
 \item{addval}{How many counts should we add to each genotype before
 implementing our procedures? Defaults to \code{4 / length(nvec)},
 which corresponds to the "add two" rule of Agresti and Coull (1998).}
+
+\item{ngen}{The number of generations of random mating of current
+empirical frequencies to compare against.}
 }
 \value{
 A list with the following elements

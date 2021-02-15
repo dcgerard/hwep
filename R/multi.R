@@ -39,14 +39,14 @@
 #' set.seed(2)
 #' ploidy <- 8
 #' nloc <- 100
-#' size <- 1000
+#' size <- 10000
 #' r <- runif(nloc)
 #' probmat <- t(sapply(r, dbinom, x = 0:ploidy, size = ploidy))
 #' nmat <- t(apply(X = probmat, MARGIN = 1, FUN = rmultinom, n = 1, size = size))
 #'
 #' ## Run the analysis in parallel on the local computer with two workers
 #' future::plan(future::multisession, workers = 2)
-#' hout <- hwefit(nmat = nmat)
+#' hout <- hwefit(nmat = nmat, obj = "pearson")
 #'
 #' ## Shut down parallel workers
 #' future::plan("sequential")

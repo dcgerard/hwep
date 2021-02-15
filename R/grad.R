@@ -79,15 +79,22 @@ dB_dalpha <- function(ploidy) {
 #' Gradient of \code{\link{freqnext}()} with respect to alpha
 #'
 #' @inheritParams freqnext
+#' @param ngen The number of generations of freqnext to apply
 #'
 #' @author David Gerard
 #'
 #' @noRd
-dfreqnext_dalpha <- function(freq, alpha) {
+dfreqnext_dalpha <- function(freq, alpha, ngen = 1) {
   ploidy <- length(freq) - 1
   stopifnot(ploidy %% 2 == 0, ploidy >=4, length(ploidy) == 1)
   stopifnot(length(alpha) == floor(ploidy / 4))
   stopifnot(alpha >= 0, sum(alpha) <= 1)
+  stopifnot(length(ngen) == 1, ngen >= 1)
+
+  if (ngen > 1) {
+    return(dfreqnext_dalpha_ngen(freq, alpha, ngen = ngen))
+  }
+
   ibdr <- floor(ploidy / 4)
   B <- gsegmat2(alpha = alpha, ploidy = ploidy)
   p <- c(t(freq) %*% B)
@@ -95,19 +102,78 @@ dfreqnext_dalpha <- function(freq, alpha) {
   dg_dp(p = p) %*% dp_dB(q = freq) %*% dB_dalpha(ploidy = ploidy)
 }
 
-#' Derivative of pearsondiv() with respect to alpha
+
+#' Gradient of multiple iterations of \code{\link{freqnext}()} with
+#' respect to alpha
 #'
-#' @param nvec The counts
-#' @param alpha The DR parameters
+#' @inheritParams freqnext
+#' @param ngen The number of generations of freqnext to apply
+#'
+#' @seealso \code{\link{freqnext_ngen}()}
 #'
 #' @author David Gerard
 #'
 #' @noRd
-dpearsondiv_dalpha <- function(nvec, alpha) {
+dfreqnext_dalpha_ngen <- function(freq, alpha, ngen = 1) {
+  ploidy <- length(freq) - 1
+  stopifnot(ploidy %% 2 == 0, ploidy >=4, length(ploidy) == 1)
+  stopifnot(length(alpha) == floor(ploidy / 4))
+  stopifnot(alpha >= 0, sum(alpha) <= 1)
+  ibdr <- floor(ploidy / 4)
+  stopifnot(length(ngen) == 1, ngen >= 1)
+
+  B <- gsegmat2(alpha = alpha, ploidy = ploidy)
+  p <- c(t(freq) %*% B)
+
+  if (ngen > 1) {
+    ## Mind your p's and q's
+    plist <- list()
+    qlist <- list()
+    plist[[1]] <- p
+    qlist[[1]] <- freq
+    for (i in 2:ngen) {
+      fq <- stats::convolve(p, rev(p), type = "open")
+      fq <- fq / sum(fq)
+      qlist[[i]] <- fq
+      p <- c(t(fq) %*% B)
+      p <- p / sum(p)
+      plist[[i]] <- p
+    }
+
+    A <- dB_dalpha(ploidy = ploidy)
+    leftmat <- dg_dp(p = p)
+    rightmat <- dp_dB(q = fq) %*% A
+    gradval <- leftmat %*% rightmat
+
+    ## Calculate grad matrix
+    for (i in (ngen - 1):1) {
+      p <- plist[[i]]
+      q <- qlist[[i]]
+      leftmat <- leftmat %*% t(B) %*% dg_dp(p = p)
+      rightmat <- dp_dB(q = q) %*% A
+      gradval <- leftmat %*% rightmat + gradval
+    }
+  } else {
+    gradval <- dg_dp(p = p) %*% dp_dB(q = freq) %*% dB_dalpha(ploidy = ploidy)
+  }
+
+  return(gradval)
+}
+
+#' Derivative of pearsondiv() with respect to alpha
+#'
+#' @param nvec The counts
+#' @param alpha The DR parameters
+#' @param ngen The number of generations of freqnext to apply
+#'
+#' @author David Gerard
+#'
+#' @noRd
+dpearsondiv_dalpha <- function(nvec, alpha, ngen = 1) {
   n <- sum(nvec)
   q <- nvec / n
-  fq <- freqnext(freq = q, alpha = alpha)
-  grad_f <- dfreqnext_dalpha(freq = q, alpha = alpha)
+  fq <- freqnext_ngen(freq = q, alpha = alpha, ngen = ngen)
+  grad_f <- dfreqnext_dalpha(freq = q, alpha = alpha, ngen = ngen)
 
   n * colSums((-2 * (q - fq) / fq - (q - fq)^2 / fq^2) * grad_f)
 }
@@ -116,15 +182,16 @@ dpearsondiv_dalpha <- function(nvec, alpha) {
 #'
 #' @param nvec The counts
 #' @param alpha The DR parameters
+#' @param ngen The number of generations of freqnext to apply
 #'
 #' @author David Gerard
 #'
 #' @noRd
-dneymandiv_dalpha <- function(nvec, alpha) {
+dneymandiv_dalpha <- function(nvec, alpha, ngen = 1) {
   n <- sum(nvec)
   q <- nvec / n
-  fq <- freqnext(freq = q, alpha = alpha)
-  grad_f <- dfreqnext_dalpha(freq = q, alpha = alpha)
+  fq <- freqnext_ngen(freq = q, alpha = alpha, ngen = ngen)
+  grad_f <- dfreqnext_dalpha(freq = q, alpha = alpha, ngen = ngen)
 
   n * colSums(-2 * (q - fq) / q  * grad_f)
 }
@@ -137,11 +204,11 @@ dneymandiv_dalpha <- function(nvec, alpha) {
 #' @author David Gerard
 #'
 #' @noRd
-dgdiv_dalpha <- function(nvec, alpha) {
+dgdiv_dalpha <- function(nvec, alpha, ngen = 1) {
   n <- sum(nvec)
   q <- nvec / n
-  fq <- freqnext(freq = q, alpha = alpha)
-  grad_f <- dfreqnext_dalpha(freq = q, alpha = alpha)
+  fq <- freqnext_ngen(freq = q, alpha = alpha, ngen = ngen)
+  grad_f <- dfreqnext_dalpha(freq = q, alpha = alpha, ngen = ngen)
 
   n * colSums(-2 * q / fq * grad_f)
 }

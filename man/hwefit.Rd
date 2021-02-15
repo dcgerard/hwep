@@ -51,7 +51,7 @@ nmat <- t(apply(X = probmat, MARGIN = 1, FUN = rmultinom, n = 1, size = size))
 
 ## Run the analysis in parallel on the local computer with two workers
 future::plan(future::multisession, workers = 2)
-hout <- hwefit(nmat = nmat)
+hout <- hwefit(nmat = nmat, obj = "pearson")
 
 ## Shut down parallel workers
 future::plan("sequential")

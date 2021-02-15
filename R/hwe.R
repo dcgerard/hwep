@@ -109,6 +109,26 @@ freqnext <- function(freq, alpha, segmat = NULL, more = FALSE) {
   }
 }
 
+
+#' Apply \code{\link{freqnext}()} exactly `ngen` times.
+#'
+#' @inheritParams freqnext
+#' @param ngen The number of generations of freqnext to apply
+#'
+#' @author David Gerard
+#'
+#' @noRd
+freqnext_ngen <- function(freq, alpha, ngen = 1) {
+  stopifnot(length(ngen) == 1, ngen >= 1)
+
+  fq <- freq
+  for (i in seq_len(ngen)) {
+    fq <- freqnext(freq = fq, alpha = alpha)
+  }
+
+  return(fq)
+}
+
 #' Generate HWE genotype frequencies
 #'
 #' Generate genotype frequencies under Hardy-Weinberg equilibrium
