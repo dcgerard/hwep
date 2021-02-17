@@ -13,19 +13,28 @@
 #' @param omega A (ploidy+1) by (ploidy+1) positive semidefinite matrix.
 #'     This is an estimate of the \emph{inverse} covariance of the elements
 #'     of the U-statistic.
+#' @param which_keep A logical vector. Which genotypes do we use in the
+#'     objective function evaluation?
 #'
 #' @author David Gerard
 #'
-#' @export
-uobj <- function(nvec, alpha, omega = NULL) {
+#' @noRd
+uobj <- function(nvec, alpha, omega = NULL, which_keep = NULL) {
   ## check parameters ----
   ploidy <- length(nvec) - 1
   stopifnot(ploidy %% 2 == 0, ploidy > 0)
   stopifnot(length(alpha) == floor(ploidy / 4))
   stopifnot(nvec >= 0)
-  if (!is.null(omega)) {
-    stopifnot(dim(omega) == c(ploidy + 1, ploidy + 1))
+  if (is.null(which_keep)) {
+    which_keep <- rep(TRUE, ploidy + 1)
   }
+  stopifnot(length(which_keep) == ploidy + 1)
+  stopifnot(is.logical(which_keep))
+  numkeep <- sum(which_keep)
+  if (!is.null(omega)) {
+    stopifnot(dim(omega) == c(sum(numkeep), sum(numkeep)))
+  }
+
 
   ## Calculate objective ----
   n <- sum(nvec)
@@ -33,9 +42,10 @@ uobj <- function(nvec, alpha, omega = NULL) {
   fq <- freqnext(freq = qhat, alpha = alpha, check = FALSE)
 
   if (is.null(omega)) {
-    return(sum((qhat - fq)^2) * n)
+    diff <- (qhat - fq)[which_keep]
+    return(sum(diff^2) * n)
   } else {
-    diff <- matrix(qhat - fq, ncol = 1)
+    diff <- matrix((qhat - fq)[which_keep], ncol = 1)
     return(c(t(diff) %*% omega %*% diff) * n)
   }
 }
@@ -70,12 +80,17 @@ ginv <- function(omega) {
 #' @author David Gerard
 #'
 #' @noRd
-ucov <- function(nvec, alpha) {
+ucov <- function(nvec, alpha, which_keep = NULL) {
   ## Check parameters ----
   ploidy <- length(nvec) - 1
   stopifnot(ploidy %% 2 == 0, ploidy > 0)
   stopifnot(length(alpha) == floor(ploidy / 4))
   stopifnot(nvec >= 0)
+  if (is.null(which_keep)) {
+    which_keep <- rep(TRUE, ploidy + 1)
+  }
+  stopifnot(length(which_keep) == ploidy + 1)
+  stopifnot(is.logical(which_keep))
 
   ## Calculate covariance ----
   n <- sum(nvec)
@@ -96,7 +111,9 @@ ucov <- function(nvec, alpha) {
   }
 
   ## return generalized inverse ----
-  return(ginv(omega))
+  ominv <- ginv(omega[which_keep, which_keep, drop = FALSE])
+
+  return(ominv)
 }
 
 #' U-process minimizer approach to equilibrium testing and double reduction
@@ -115,6 +132,8 @@ ucov <- function(nvec, alpha) {
 #' @param nvec A vector containing the observed genotype counts,
 #'     where \code{nvec[[i]]} is the number of individuals with genotype
 #'     \code{i-1}. This should be of length \code{ploidy+1}.
+#' @param thresh The threshhold for ignoring the genotype. We remove
+#'     genotypes that have fewer indivuals than \code{thresh}.
 #'
 #' @return A list with some or all of the following elements:
 #' \describe{
@@ -129,12 +148,36 @@ ucov <- function(nvec, alpha) {
 #'
 #' @author David Gerard
 #'
+#' @examples
+#' set.seed(99)
+#' ploidy <- 6
+#' size <- 100
+#' r <- 0.5
+#' alpha <- 0.1
+#' qvec <- hwefreq(r = r, alpha = alpha, ploidy = ploidy)
+#' nvec <- c(rmultinom(n = 1, size = size, prob = qvec))
+#' hweustat(nvec = nvec)
+#'
 #' @export
-hweustat <- function(nvec) {
+hweustat <- function(nvec, thresh = 5) {
   ploidy <- length(nvec) - 1
   stopifnot(ploidy %% 2 == 0, ploidy >= 4)
   ibdr <- floor(ploidy / 4)
+  stopifnot(thresh > 0, length(thresh) == 1)
   minval <- sqrt(.Machine$double.eps)
+
+  which_keep <- nvec >= thresh
+
+  if (sum(which_keep) < ibdr + 1) {
+    return(
+      list(
+        alpha = NA_real_,
+        chisq_hwe = NA_real_,
+        df_hwe = NA_real_,
+        p_hwe = NA_real_
+      )
+    )
+  }
 
   if (ibdr == 1) {
     upper_alpha <- drbounds(ploidy = ploidy)
@@ -146,11 +189,12 @@ hweustat <- function(nvec) {
                          lower = minval,
                          upper = upper_alpha,
                          nvec = nvec,
-                         omega = NULL)
+                         omega = NULL,
+                         which_keep = which_keep)
 
     ## Calculate covariance ----
     alpha_tilde <- oout$par
-    omega <- ucov(nvec = nvec, alpha = alpha_tilde)
+    omega <- ucov(nvec = nvec, alpha = alpha_tilde, which_keep = which_keep)
 
     ## step 2 ----
     oout <- stats::optim(par = minval,
@@ -159,7 +203,8 @@ hweustat <- function(nvec) {
                          lower = minval,
                          upper = upper_alpha,
                          nvec = nvec,
-                         omega = omega)
+                         omega = omega,
+                         which_keep = which_keep)
   } else {
     upper_alpha <- drbounds(ploidy = ploidy)
 
@@ -170,11 +215,12 @@ hweustat <- function(nvec) {
                          lower = rep(minval, ibdr),
                          upper = upper_alpha,
                          nvec = nvec,
-                         omega = NULL)
+                         omega = NULL,
+                         which_keep = which_keep)
 
     ## Calculate covariance ----
     alpha_tilde <- oout$par
-    omega <- ucov(nvec = nvec, alpha = alpha_tilde)
+    omega <- ucov(nvec = nvec, alpha = alpha_tilde, which_keep = which_keep)
 
     ## step 2 ----
     oout <- stats::optim(par = rep(minval, ibdr),
@@ -183,15 +229,22 @@ hweustat <- function(nvec) {
                          lower = rep(minval, ibdr),
                          upper = upper_alpha,
                          nvec = nvec,
-                         omega = omega)
+                         omega = omega,
+                         which_keep = which_keep)
   }
+
+  ## Calculate degrees of freedom ----
+  df_hwe <- sum(which_keep) -
+    ibdr -
+    all(which_keep) -
+    1
 
 
   ## return ----
   retlist <- list(
     alpha = oout$par,
     chisq_hwe = oout$value,
-    df_hwe = ploidy - ibdr - 1
+    df_hwe = df_hwe
   )
   retlist$p_hwe <- stats::pchisq(q = retlist$chisq_hwe,
                                  df = retlist$df_hwe,

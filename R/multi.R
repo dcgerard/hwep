@@ -41,23 +41,23 @@
 #' ## Generate random data
 #' set.seed(5)
 #' ploidy <- 6
-#' nloc <- 100
-#' size <- 1000
-#' r <- 0.5
-#' alpha <- 0.1
+#' nloc <- 1000
+#' size <- 10000
+#' r <- 0.1
+#' alpha <- 0.2
 #' qvec <- hwefreq(r = r, alpha = alpha, ploidy = ploidy)
 #' nmat <- t(rmultinom(n = nloc, size = size, prob = qvec))
 #'
 #' ## Run the analysis in parallel on the local computer with two workers
-#' future::plan(future::multisession, workers = 2)
-#' hout <- hwefit(nmat = nmat, type = "ustat")
+#' future::plan(future::multisession, workers = 6)
+#' hout <- hwefit(nmat = nmat, type = "ustat", thresh = 10)
 #'
 #' ## Shut down parallel workers
 #' future::plan("sequential")
 #'
-#' ## Show that test statistic follows theoretical distribution
-#' obs <- sort(hout$chisq_hwe)
-#' plot(x = qchisq(ppoints(n = length(obs)), df = hout$df_hwe[[1]]),
+#' ## Show that p-values are uniform
+#' obs <- sort(hout$p_hwe)
+#' plot(x = ppoints(n = length(obs)),
 #'      y = obs,
 #'      xlab = "theoretical",
 #'      ylab = "observed",

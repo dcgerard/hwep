@@ -5,12 +5,15 @@
 \title{U-process minimizer approach to equilibrium testing and double reduction
 estimation}
 \usage{
-hweustat(nvec)
+hweustat(nvec, thresh = 5)
 }
 \arguments{
 \item{nvec}{A vector containing the observed genotype counts,
 where \code{nvec[[i]]} is the number of individuals with genotype
 \code{i-1}. This should be of length \code{ploidy+1}.}
+
+\item{thresh}{The threshhold for ignoring the genotype. We remove
+genotypes that have fewer indivuals than \code{thresh}.}
 }
 \value{
 A list with some or all of the following elements:
@@ -35,6 +38,17 @@ This is a two-step estimator, where we first obtain a consistent
 estimate of the double reduction parameter, use this to
 estimate the covariance of estimators, then use this to obtain
 our final estimate of the double reduction parameter.
+}
+\examples{
+set.seed(99)
+ploidy <- 6
+size <- 100
+r <- 0.5
+alpha <- 0.1
+qvec <- hwefreq(r = r, alpha = alpha, ploidy = ploidy)
+nvec <- c(rmultinom(n = 1, size = size, prob = qvec))
+hweustat(nvec = nvec)
+
 }
 \author{
 David Gerard
