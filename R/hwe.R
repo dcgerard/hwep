@@ -7,6 +7,8 @@
 #' After one generation of random mating, update the genotype
 #' frequencies.
 #'
+#' This one is slightly slower than freqnext()
+#'
 #' @inheritParams dgamete
 #' @param freq The current genotype frequencies. This should be a
 #'     vector of length K+1, where K is the ploidy of the species.
