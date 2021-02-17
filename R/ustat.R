@@ -34,10 +34,10 @@ uobj <- function(nvec, alpha, omega = NULL) {
   fq <- freqnext(freq = qhat, alpha = alpha)
 
   if (is.null(omega)) {
-    return(sum((qhat - fq)^2))
+    return(sum((qhat - fq)^2) * n)
   } else {
     diff <- matrix(qhat - fq, ncol = 1)
-    return(c(t(diff) %*% omega %*% diff))
+    return(c(t(diff) %*% omega %*% diff) * n)
   }
 }
 
@@ -193,7 +193,7 @@ hweustat <- function(nvec) {
   retlist <- list(
     alpha = oout$par,
     chisq_hwe = oout$value,
-    df_hwe = ploidy - ibdr
+    df_hwe = ploidy - ibdr - 1
   )
   retlist$p_hwe <- stats::pchisq(q = retlist$chisq_hwe,
                                  df = retlist$df_hwe,

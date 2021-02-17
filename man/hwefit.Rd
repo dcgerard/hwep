@@ -4,7 +4,7 @@
 \alias{hwefit}
 \title{HWE and random mating estimation and testing for many loci.}
 \usage{
-hwefit(nmat, type = c("hwe", "rm", "nodr"), overwrite = FALSE, ...)
+hwefit(nmat, type = c("ustat", "rm", "nodr", "gmm"), overwrite = FALSE, ...)
 }
 \arguments{
 \item{nmat}{A matrix of counts. The rows index the loci and the columns
@@ -13,44 +13,48 @@ that have genotype \code{j-1} at locus \code{i}. The ploidy is
 assumed to be \code{ncol(nmat)-1}.}
 
 \item{type}{Should we test for random mating (\code{type = "rm"})
-or equilibrium (\code{type = "hwe"}). For tetraploids, both
-tests will be run, so this is only applicable for ploidies greater
-than 4.}
+equilibrium using a U-statistic approach (\code{type = "ustat"}),
+equilibrium using an ad-hoc generalized method of moments approach
+(\code{type = "gmm"}), or equilibrium assuming no double reduction
+(\code{type = "nodr"})? This is only applicable for ploidies greater
+than 4 (unless \code{overwrite = TRUE}).}
 
 \item{overwrite}{A logical. The default is to run \code{hwetetra()} if
 you have tetraploids, regardless of the selection of \code{type}. Set
 this to \code{TRUE} to overwrite this default.}
 
-\item{...}{Any other parameters to send to \code{\link{hwetetra}()},
-\code{\link{hwemom}()}, \code{\link{rmlike}()}, or
-\code{\link{hwenodr}()}.}
+\item{...}{Any other parameters to send to \code{\link{hweustat}()},
+\code{\link{hwetetra}()}, \code{\link{hwemom}()},
+\code{\link{rmlike}()}, or \code{\link{hwenodr}()}.}
 }
 \value{
 A data frame. The columns of which can are described in
-\code{\link{hwetetra}()}, \code{\link{hwemom}()},
-\code{\link{rmlike}()}, or \code{\link{hwenodr}()}.
+\code{\link{hwetetra}()}, \code{\link{hweustat}()},
+\code{\link{hwemom}()}, \code{\link{rmlike}()},
+or \code{\link{hwenodr}()}.
 }
 \description{
 Estimates and tests for either random mating or HWE across many loci
-using \code{\link{hwetetra}()}, \code{\link{hwemom}()},
-\code{\link{rmlike}()}, or \code{\link{hwenodr}()}.
+using \code{\link{hwetetra}()}, \code{\link{hweustat}()},
+\code{\link{hwemom}()}, \code{\link{rmlike}()}, or \code{\link{hwenodr}()}.
 }
 \details{
 We provide parallelization support through the \link[future]{future}
 package.
 }
 \examples{
-## Generate random data where there is no double reduction at HWE
-set.seed(2)
+## Generate random data
+set.seed(3)
 ploidy <- 8
-nloc <- 100
-size <- 100
-r <- runif(nloc)
-probmat <- t(sapply(r, dbinom, x = 0:ploidy, size = ploidy))
-nmat <- t(apply(X = probmat, MARGIN = 1, FUN = rmultinom, n = 1, size = size))
+nloc <- 1000
+size <- 1000000
+r <- 0.5
+alpha <- c(0.2, 0.01)
+qvec <- hwefreq(r = r, alpha = alpha, ploidy = ploidy)
+nmat <- t(rmultinom(n = nloc, size = size, prob = qvec))
 
 ## Run the analysis in parallel on the local computer with two workers
-future::plan(future::multisession, workers = 2)
+future::plan(future::multisession, workers = 6)
 hout <- hwefit(nmat = nmat)
 
 ## Shut down parallel workers
@@ -64,7 +68,10 @@ plot(x = qchisq(ppoints(n = length(obs)), df = hout$df_hwe[[1]]),
      ylab = "observed",
      main = "qqplot")
 abline(0, 1, col = 2, lty = 2)
-mean(hout$chisq_hwe < 0.05, na.rm = TRUE)
+mean(hout$p_hwe < 0.05, na.rm = TRUE)
+
+## Consistent estimate for alpha
+mean(hout$alpha1)
 
 }
 \author{
