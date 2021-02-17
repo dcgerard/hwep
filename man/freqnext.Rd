@@ -4,7 +4,7 @@
 \alias{freqnext}
 \title{Update genotype frequencies after one generation}
 \usage{
-freqnext(freq, alpha, segmat = NULL, more = FALSE)
+freqnext(freq, alpha, segmat = NULL, more = FALSE, check = TRUE)
 }
 \arguments{
 \item{freq}{The current genotype frequencies. This should be a
@@ -25,6 +25,9 @@ dosage \code{i-1} produces a gamete with dosage \code{j-1}.}
 
 \item{more}{A logical. Should we return more output (\code{TRUE}) or
 less (\code{FALSE}). See the Value section for details.}
+
+\item{check}{Should we correct for minor numerical issues? Defaults
+to \code{TRUE}.}
 }
 \value{
 If \code{more = FALSE}, then returns a vector of length

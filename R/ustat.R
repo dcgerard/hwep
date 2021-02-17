@@ -22,7 +22,6 @@ uobj <- function(nvec, alpha, omega = NULL) {
   ploidy <- length(nvec) - 1
   stopifnot(ploidy %% 2 == 0, ploidy > 0)
   stopifnot(length(alpha) == floor(ploidy / 4))
-  stopifnot(alpha >= 0, sum(alpha) <= 1)
   stopifnot(nvec >= 0)
   if (!is.null(omega)) {
     stopifnot(dim(omega) == c(ploidy + 1, ploidy + 1))
@@ -31,7 +30,7 @@ uobj <- function(nvec, alpha, omega = NULL) {
   ## Calculate objective ----
   n <- sum(nvec)
   qhat <- nvec / n
-  fq <- freqnext(freq = qhat, alpha = alpha)
+  fq <- freqnext(freq = qhat, alpha = alpha, check = FALSE)
 
   if (is.null(omega)) {
     return(sum((qhat - fq)^2) * n)
@@ -76,13 +75,12 @@ ucov <- function(nvec, alpha) {
   ploidy <- length(nvec) - 1
   stopifnot(ploidy %% 2 == 0, ploidy > 0)
   stopifnot(length(alpha) == floor(ploidy / 4))
-  stopifnot(alpha >= 0, sum(alpha) <= 1)
   stopifnot(nvec >= 0)
 
   ## Calculate covariance ----
   n <- sum(nvec)
   qhat <- nvec / n
-  fq <- freqnext(freq = qhat, alpha = alpha)
+  fq <- freqnext(freq = qhat, alpha = alpha, check = FALSE)
   A <- zsegarray(alpha = alpha, ploidy = ploidy)
 
   omega <- diag(qhat) - tcrossprod(qhat, fq) - tcrossprod(fq, qhat)
@@ -163,8 +161,9 @@ hweustat <- function(nvec) {
                          nvec = nvec,
                          omega = omega)
   } else {
-    ## step 1 ----
     upper_alpha <- drbounds(ploidy = ploidy)
+
+    ## step 1 ----
     oout <- stats::optim(par = rep(minval, ibdr),
                          fn = uobj,
                          method = "L-BFGS-B",
@@ -178,7 +177,6 @@ hweustat <- function(nvec) {
     omega <- ucov(nvec = nvec, alpha = alpha_tilde)
 
     ## step 2 ----
-    upper_alpha <- drbounds(ploidy = ploidy)
     oout <- stats::optim(par = rep(minval, ibdr),
                          fn = uobj,
                          method = "L-BFGS-B",

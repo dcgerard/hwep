@@ -44,18 +44,18 @@ package.
 }
 \examples{
 ## Generate random data
-set.seed(3)
-ploidy <- 8
-nloc <- 1000
-size <- 1000000
+set.seed(5)
+ploidy <- 6
+nloc <- 100
+size <- 1000
 r <- 0.5
-alpha <- c(0.2, 0.01)
+alpha <- 0.1
 qvec <- hwefreq(r = r, alpha = alpha, ploidy = ploidy)
 nmat <- t(rmultinom(n = nloc, size = size, prob = qvec))
 
 ## Run the analysis in parallel on the local computer with two workers
-future::plan(future::multisession, workers = 6)
-hout <- hwefit(nmat = nmat)
+future::plan(future::multisession, workers = 2)
+hout <- hwefit(nmat = nmat, type = "ustat")
 
 ## Shut down parallel workers
 future::plan("sequential")
@@ -71,7 +71,7 @@ abline(0, 1, col = 2, lty = 2)
 mean(hout$p_hwe < 0.05, na.rm = TRUE)
 
 ## Consistent estimate for alpha
-mean(hout$alpha1)
+mean(hout$alpha)
 
 }
 \author{

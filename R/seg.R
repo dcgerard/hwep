@@ -44,8 +44,7 @@ dgamete <- function(x, alpha, G, ploidy, log_p = FALSE) {
   stopifnot(0 <= x, x <= ploidy / 2)
   ibdr <- floor(ploidy / 4)
   stopifnot(length(alpha) == ibdr)
-  stopifnot(alpha >= 0, sum(alpha) <= 1)
-
+  ## stopifnot(alpha >= 0, sum(alpha) <= 1)
 
   ## Faster if ploidy is 2 or if no DR to use hypergeometric dist ----
   if (ploidy == 2) {
@@ -56,7 +55,7 @@ dgamete <- function(x, alpha, G, ploidy, log_p = FALSE) {
                             log = log_p)
     return(retvec)
   }
-  if (all(alpha < sqrt(.Machine$double.eps))) {
+  if (all(abs(alpha) < sqrt(.Machine$double.eps))) {
     retvec <- stats::dhyper(x = x,
                             m = G,
                             n = ploidy - G,
@@ -76,20 +75,35 @@ dgamete <- function(x, alpha, G, ploidy, log_p = FALSE) {
   ## Calculate probs ----
   retvec <- rep(NA_real_, length = length(x))
   for (k in seq_along(x)) {
-    retvec[[k]] <- log_sum_exp(
-      lchoose(G, jvec) +
-        lchoose(G - jvec, x[[k]] - 2 * jvec) +
-        lchoose(ploidy - G, ivec - jvec) +
-        lchoose(ploidy - G - (ivec - jvec), ploidy / 2 - x[[k]] - 2 * (ivec - jvec)) -
-        lchoose(ploidy, ivec) -
-        lchoose(ploidy - ivec, ploidy / 2 - 2 * ivec) +
-        log(alphavec)
-    )
+    retvec[[k]] <-
+      sum(
+        exp(
+          lchoose(G, jvec) +
+            lchoose(G - jvec, x[[k]] - 2 * jvec) +
+            lchoose(ploidy - G, ivec - jvec) +
+            lchoose(ploidy - G - (ivec - jvec), ploidy / 2 - x[[k]] - 2 * (ivec - jvec)) -
+            lchoose(ploidy, ivec) -
+            lchoose(ploidy - ivec, ploidy / 2 - 2 * ivec)
+          ) * alphavec
+        )
+
+    ## old way
+    # exp(
+    #   log_sum_exp(
+    #     lchoose(G, jvec) +
+    #       lchoose(G - jvec, x[[k]] - 2 * jvec) +
+    #       lchoose(ploidy - G, ivec - jvec) +
+    #       lchoose(ploidy - G - (ivec - jvec), ploidy / 2 - x[[k]] - 2 * (ivec - jvec)) -
+    #       lchoose(ploidy, ivec) -
+    #       lchoose(ploidy - ivec, ploidy / 2 - 2 * ivec) +
+    #       log(alphavec)
+    #     )
+    #   )
   }
   retvec[is.nan(retvec)] <- -Inf ## just means multiple -Inf in the above
 
-  if (!log_p) {
-    retvec <- exp(retvec)
+  if (log_p) {
+    retvec <- log(retvec)
   }
 
   return(retvec)
@@ -170,7 +184,7 @@ gsegmat <- function(alpha, ploidy) {
   }
 
   ## Keep checking ----
-  stopifnot(alpha >= 0, sum(alpha) <= 1)
+  ## stopifnot(alpha >= 0, sum(alpha) <= 1)
   ibdr <- floor(ploidy / 4)
   alphavec <- c(1 - sum(alpha), alpha)
   ellvec <- 0:ploidy
@@ -187,9 +201,8 @@ gsegmat <- function(alpha, ploidy) {
             outer(X = lchoose(n = ploidy - ellvec, i - j), Y = rep(1, ploidy / 2 + 1), FUN = `*`) +
             outer(X = ellvec, Y = kvec, FUN = function(x, y) lchoose(ploidy - x - (i - j), ploidy / 2 - y - 2 * (i - j))) -
             matrix(lchoose(ploidy, i), nrow = ploidy + 1, ncol = ploidy / 2 + 1) -
-            matrix(lchoose(ploidy - i, ploidy / 2 - 2 * i), nrow = ploidy + 1, ncol = ploidy / 2 + 1) +
-            log(alphavec[[i + 1]])
-        )
+            matrix(lchoose(ploidy - i, ploidy / 2 - 2 * i), nrow = ploidy + 1, ncol = ploidy / 2 + 1)
+        ) * alphavec[[i + 1]]
     }
   }
   return(segmat)
@@ -217,7 +230,7 @@ gsegmat_diploid <- function() {
 #' @noRd
 gsegmat_tetraploid <- function(alpha) {
   stopifnot(length(alpha) == 1)
-  stopifnot(alpha >= 0, alpha <= 1)
+  ## stopifnot(alpha >= 0, alpha <= 1)
   matrix(c(1, 0, 0,
            0.25 * (2 + alpha), 0.5 * (1 - alpha), 0.25 * alpha,
            (1 + 2 * alpha) / 6, 4 * (1 - alpha) / 6, (1 + 2 * alpha) / 6,
@@ -235,7 +248,7 @@ gsegmat_tetraploid <- function(alpha) {
 #' @noRd
 gsegmat_hexaploid <- function(alpha) {
   stopifnot(length(alpha) == 1)
-  stopifnot(alpha >= 0, alpha <= 1)
+  ## stopifnot(alpha >= 0, alpha <= 1)
   matrix(c(1, 0, 0, 0,
            (3 + alpha) / 6, (3 - 2 * alpha) / 6, alpha / 6, 0,
            (3 + 3 * alpha) / 15, (9 - 5 * alpha) / 15, (3 + alpha) / 15, alpha / 15,
@@ -281,7 +294,7 @@ zygdist <- function(alpha, G1, G2, ploidy) {
   stopifnot(0 <= G2, G2 <= ploidy)
   ibdr <- floor(ploidy / 4)
   stopifnot(length(alpha) == ibdr)
-  stopifnot(alpha >= 0, sum(alpha) <= 1)
+  ## stopifnot(alpha >= 0, sum(alpha) <= 1)
 
   ## Get gamete probs ----
   p1gamprob <- dgamete(x = 0:(ploidy / 2),
@@ -338,7 +351,7 @@ zsegarray <- function(alpha, ploidy) {
   stopifnot(length(ploidy) == 1L)
   stopifnot(ploidy %% 2 == 0)
   stopifnot(length(alpha) == floor(ploidy / 4))
-  stopifnot(alpha >= 0, sum(alpha) <= 1)
+  ## stopifnot(alpha >= 0, sum(alpha) <= 1)
 
   segarray <- array(data = NA_real_, dim = rep(ploidy + 1, length.out = 3))
   for (G1 in 0:ploidy) {

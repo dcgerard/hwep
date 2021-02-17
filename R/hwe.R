@@ -67,6 +67,8 @@ freqnext2 <- function(freq, alpha, segarray = NULL) {
 #'     dosage \code{i-1} produces a gamete with dosage \code{j-1}.
 #' @param more A logical. Should we return more output (\code{TRUE}) or
 #'     less (\code{FALSE}). See the Value section for details.
+#' @param check Should we correct for minor numerical issues? Defaults
+#'     to \code{TRUE}.
 #'
 #' @return If \code{more = FALSE}, then returns a vector of length
 #'     \code{lenght(freq)} that contains the updated genotype frequencies
@@ -82,11 +84,14 @@ freqnext2 <- function(freq, alpha, segarray = NULL) {
 #' freq <- c(0.5, 0, 0, 0, 0.5)
 #' freqnext(freq = freq, alpha = 0)
 #'
-freqnext <- function(freq, alpha, segmat = NULL, more = FALSE) {
+freqnext <- function(freq, alpha, segmat = NULL, more = FALSE, check = TRUE) {
   ploidy <- length(freq) - 1
   stopifnot(ploidy %% 2 == 0, ploidy > 0)
   stopifnot(length(alpha) == floor(ploidy / 4))
-  stopifnot(alpha >= 0, sum(alpha) <= 1)
+  stopifnot(is.logical(check), length(check) == 1)
+  if (check) {
+    stopifnot(alpha >= 0, sum(alpha) <= 1)
+  }
   stopifnot(is.logical(more), length(more) == 1)
 
   if (is.null(segmat)) {
@@ -100,9 +105,11 @@ freqnext <- function(freq, alpha, segmat = NULL, more = FALSE) {
 
   freqnew <- stats::convolve(p, rev(p), type = "open")
 
-  ## resolve numerical issues
-  freqnew[freqnew < 0] <- 0
-  freqnew <- freqnew / sum(freqnew)
+  if (check) {
+    ## resolve numerical issues
+    freqnew[freqnew < 0] <- 0
+    freqnew <- freqnew / sum(freqnew)
+  }
 
   if (more) {
     return(list(q = freqnew, p = p))
