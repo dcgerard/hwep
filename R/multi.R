@@ -42,15 +42,15 @@
 #' set.seed(5)
 #' ploidy <- 6
 #' nloc <- 1000
-#' size <- 10000
+#' size <- 1000
 #' r <- 0.1
-#' alpha <- 0.2
+#' alpha <- 0
 #' qvec <- hwefreq(r = r, alpha = alpha, ploidy = ploidy)
 #' nmat <- t(rmultinom(n = nloc, size = size, prob = qvec))
 #'
 #' ## Run the analysis in parallel on the local computer with two workers
 #' future::plan(future::multisession, workers = 6)
-#' hout <- hwefit(nmat = nmat, type = "ustat", thresh = 10)
+#' hout <- hwefit(nmat = nmat, type = "ustat", thresh_mult = 100, thresh_tot = 10)
 #'
 #' ## Shut down parallel workers
 #' future::plan("sequential")
@@ -64,6 +64,15 @@
 #'      main = "qqplot")
 #' abline(0, 1, col = 2, lty = 2)
 #' mean(hout$p_hwe < 0.05, na.rm = TRUE)
+#'
+#' obs <- sort(hout$chisq_hwe)
+#' plot(x = qchisq(ppoints(n = length(obs)), df = 2),
+#'      y = obs,
+#'      xlab = "theoretical",
+#'      ylab = "observed",
+#'      main = "qqplot")
+#' abline(0, 1, col = 2, lty = 2)
+#' hist(obs, breaks = 30)
 #'
 #' ## Consistent estimate for alpha
 #' mean(hout$alpha)

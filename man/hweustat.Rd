@@ -5,15 +5,20 @@
 \title{U-process minimizer approach to equilibrium testing and double reduction
 estimation}
 \usage{
-hweustat(nvec, thresh = 5)
+hweustat(nvec, thresh_mult = 100, thresh_tot = 10)
 }
 \arguments{
 \item{nvec}{A vector containing the observed genotype counts,
 where \code{nvec[[i]]} is the number of individuals with genotype
 \code{i-1}. This should be of length \code{ploidy+1}.}
 
-\item{thresh}{The threshhold for ignoring the genotype. We remove
-genotypes that have fewer indivuals than \code{thresh}.}
+\item{thresh_mult}{The threshhold for ignoring the genotype. We keep
+genotypes such that \code{max(nvec) / nvec <= thresh_mult}.
+Setting this to \code{Inf} uses all genotypes.}
+
+\item{thresh_tot}{The threshhold for ignoring the genotype. We keep
+genotypes such that \code{nvec >= thresh_tot}.
+Setting this to \code{0} uses all genotypes.}
 }
 \value{
 A list with some or all of the following elements:

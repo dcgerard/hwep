@@ -99,10 +99,12 @@ ucov <- function(nvec, alpha, which_keep = NULL) {
   A <- zsegarray(alpha = alpha, ploidy = ploidy)
 
   omega <- diag(qhat) - tcrossprod(qhat, fq) - tcrossprod(fq, qhat)
-  for (p in 0:ploidy) {
-    for (r in 0:ploidy) {
-      for (ell in 0:ploidy) {
-        for (m in 0:ploidy) {
+
+  indset <- 0:ploidy
+  for (p in indset) {
+    for (r in indset) {
+      for (ell in indset) {
+        for (m in indset) {
           omega[p + 1, r + 1] <- omega[p + 1, r + 1] +
             A[ell + 1, m + 1, p + 1] * A[ell + 1, m + 1, r + 1] * qhat[[ell + 1]] * qhat[[m + 1]]
         }
@@ -132,8 +134,12 @@ ucov <- function(nvec, alpha, which_keep = NULL) {
 #' @param nvec A vector containing the observed genotype counts,
 #'     where \code{nvec[[i]]} is the number of individuals with genotype
 #'     \code{i-1}. This should be of length \code{ploidy+1}.
-#' @param thresh The threshhold for ignoring the genotype. We remove
-#'     genotypes that have fewer indivuals than \code{thresh}.
+#' @param thresh_mult The threshhold for ignoring the genotype. We keep
+#'     genotypes such that \code{max(nvec) / nvec <= thresh_mult}.
+#'     Setting this to \code{Inf} uses all genotypes.
+#' @param thresh_tot The threshhold for ignoring the genotype. We keep
+#'     genotypes such that \code{nvec >= thresh_tot}.
+#'     Setting this to \code{0} uses all genotypes.
 #'
 #' @return A list with some or all of the following elements:
 #' \describe{
@@ -159,14 +165,15 @@ ucov <- function(nvec, alpha, which_keep = NULL) {
 #' hweustat(nvec = nvec)
 #'
 #' @export
-hweustat <- function(nvec, thresh = 5) {
+hweustat <- function(nvec, thresh_mult = 100, thresh_tot = 10) {
   ploidy <- length(nvec) - 1
   stopifnot(ploidy %% 2 == 0, ploidy >= 4)
   ibdr <- floor(ploidy / 4)
-  stopifnot(thresh > 0, length(thresh) == 1)
+  stopifnot(thresh_mult >= 0, length(thresh_mult) == 1)
+  stopifnot(thresh_tot >= 0, length(thresh_tot) == 1)
   minval <- sqrt(.Machine$double.eps)
 
-  which_keep <- nvec >= thresh
+  which_keep <- ((max(nvec) / nvec) <= thresh_mult) & (nvec >= thresh_tot)
 
   if (sum(which_keep) < ibdr + 1) {
     return(
@@ -236,9 +243,8 @@ hweustat <- function(nvec, thresh = 5) {
   ## Calculate degrees of freedom ----
   df_hwe <- sum(which_keep) -
     ibdr -
-    all(which_keep) -
+    sum(eigen(omega)$values - 1 < sqrt(.Machine$double.eps)) -
     1
-
 
   ## return ----
   retlist <- list(
@@ -249,6 +255,6 @@ hweustat <- function(nvec, thresh = 5) {
   retlist$p_hwe <- stats::pchisq(q = retlist$chisq_hwe,
                                  df = retlist$df_hwe,
                                  lower.tail = FALSE)
-
+  retlist$p_hwe[retlist$df_hwe <= 0] <- NA_real_
   return(retlist)
 }
