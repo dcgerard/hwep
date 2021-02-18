@@ -118,6 +118,66 @@ ucov <- function(nvec, alpha, which_keep = NULL) {
   return(ominv)
 }
 
+
+#' \emph{Inverse} covariance estimate of elements of ustat
+#'
+#'
+#' @inheritParams uobj
+#'
+#' @return \emph{Generalized} inverse covariance estimate.
+#'
+#' @author David Gerard
+#'
+#' @noRd
+ucov2 <- function(nvec, alpha, which_keep = NULL) {
+  ## Check parameters ----
+  ploidy <- length(nvec) - 1
+  stopifnot(ploidy %% 2 == 0, ploidy > 0)
+  stopifnot(length(alpha) == floor(ploidy / 4))
+  stopifnot(nvec >= 0)
+  if (is.null(which_keep)) {
+    which_keep <- rep(TRUE, ploidy + 1)
+  }
+  stopifnot(length(which_keep) == ploidy + 1)
+  stopifnot(is.logical(which_keep))
+
+  ## Calculate covariance ----
+  n <- sum(nvec)
+  qhat <- nvec / n
+  fq <- freqnext(freq = qhat, alpha = alpha, check = FALSE)
+  A <- zsegarray(alpha = alpha, ploidy = ploidy)
+
+  Qmat <- diag(fq) - outer(X = fq, Y = fq, FUN = `*`)
+
+  crosscov <- 2 * tensr::mat(
+    A = tensr::atrans(A = A, B = list(diag(ploidy + 1), Qmat, matrix(fq, nrow = 1))),
+    k = 2
+  )
+
+  omega <- Qmat - crosscov - t(crosscov)
+
+  return(solve(omega[which_keep, which_keep]))
+}
+
+ucov3  <- function(nvec, alpha, which_keep = NULL) {
+  ## Check parameters ----
+  ploidy <- length(nvec) - 1
+  stopifnot(ploidy %% 2 == 0, ploidy > 0)
+  stopifnot(length(alpha) == floor(ploidy / 4))
+  stopifnot(nvec >= 0)
+  if (is.null(which_keep)) {
+    which_keep <- rep(TRUE, ploidy + 1)
+  }
+  stopifnot(length(which_keep) == ploidy + 1)
+  stopifnot(is.logical(which_keep))
+
+  n <- sum(nvec)
+  qhat <- nvec / n
+  fq <- freqnext(freq = qhat, alpha = alpha, check = FALSE)
+
+  return(diag(1 / fq[which_keep]))
+}
+
 #' U-process minimizer approach to equilibrium testing and double reduction
 #' estimation
 #'
@@ -165,7 +225,7 @@ ucov <- function(nvec, alpha, which_keep = NULL) {
 #' hweustat(nvec = nvec)
 #'
 #' @export
-hweustat <- function(nvec, thresh_mult = 100, thresh_tot = 10) {
+hweustat <- function(nvec, thresh_mult = Inf, thresh_tot = 10) {
   ploidy <- length(nvec) - 1
   stopifnot(ploidy %% 2 == 0, ploidy >= 4)
   ibdr <- floor(ploidy / 4)
@@ -201,7 +261,7 @@ hweustat <- function(nvec, thresh_mult = 100, thresh_tot = 10) {
 
     ## Calculate covariance ----
     alpha_tilde <- oout$par
-    omega <- ucov(nvec = nvec, alpha = alpha_tilde, which_keep = which_keep)
+    omega <- ucov3(nvec = nvec, alpha = alpha_tilde, which_keep = which_keep)
 
     ## step 2 ----
     oout <- stats::optim(par = minval,
@@ -227,7 +287,7 @@ hweustat <- function(nvec, thresh_mult = 100, thresh_tot = 10) {
 
     ## Calculate covariance ----
     alpha_tilde <- oout$par
-    omega <- ucov(nvec = nvec, alpha = alpha_tilde, which_keep = which_keep)
+    omega <- ucov3(nvec = nvec, alpha = alpha_tilde, which_keep = which_keep)
 
     ## step 2 ----
     oout <- stats::optim(par = rep(minval, ibdr),
@@ -242,9 +302,7 @@ hweustat <- function(nvec, thresh_mult = 100, thresh_tot = 10) {
 
   ## Calculate degrees of freedom ----
   df_hwe <- sum(which_keep) -
-    ibdr -
-    sum(eigen(omega)$values - 1 < sqrt(.Machine$double.eps)) -
-    1
+    ibdr - 2
 
   ## return ----
   retlist <- list(

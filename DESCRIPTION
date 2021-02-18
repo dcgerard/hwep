@@ -26,4 +26,5 @@ Imports:
     doFuture,
     foreach,
     iterators,
-    pracma
+    pracma,
+    tensr
