@@ -47,15 +47,20 @@ package.
 set.seed(5)
 ploidy <- 8
 nloc <- 1000
-size <- 1000
+size <- 1000000
 r <- 0.5
-alpha <- c(.1, 0)
+alpha <- c(0.1, 0.01)
 qvec <- hwefreq(r = r, alpha = alpha, ploidy = ploidy)
 nmat <- t(rmultinom(n = nloc, size = size, prob = qvec))
 
 ## Run the analysis in parallel on the local computer with two workers
 future::plan(future::multisession, workers = 6)
-hout <- hwefit(nmat = nmat, type = "ustat", thresh_mult = Inf, thresh_tot = 10)
+hout <- hwefit(nmat = nmat,
+               type = "ustat",
+               thresh_mult = Inf,
+               thresh_tot = 0,
+               covtype = "u2",
+               df = 5)
 
 ## Shut down parallel workers
 future::plan("sequential")
@@ -71,7 +76,7 @@ abline(0, 1, col = 2, lty = 2)
 mean(hout$p_hwe < 0.05, na.rm = TRUE)
 
 obs <- sort(hout$chisq_hwe)
-plot(x = qchisq(ppoints(n = length(obs)), df = 2),
+plot(x = qchisq(ppoints(n = length(obs)), df = 4),
      y = obs,
      xlab = "theoretical",
      ylab = "observed",

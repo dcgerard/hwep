@@ -47,4 +47,9 @@ test_that("hweustat() is ok", {
   u4$chisq_hwe
   u4$p_hwe
 
+
+  nvec <- c(524L, 359L, 96L, 18L, 3L, 0L, 0L)
+
+  nvec <- c(18L, 89L, 225L, 340L, 227L, 78L, 23L)
+
 })

@@ -55,42 +55,57 @@ uobj <- function(nvec, alpha, omega = NULL, which_keep = NULL) {
 #' @author David Gerard
 #'
 #' @noRd
-ginv <- function(omega) {
+ginv <- function(omega, tol = sqrt(.Machine$double.eps)) {
   stopifnot(is.matrix(omega))
   stopifnot(nrow(omega) == ncol(omega))
 
   eout <- eigen(omega, symmetric = TRUE)
 
-  stopifnot(eout$values > -sqrt(.Machine$double.eps))
+  stopifnot(eout$values > -tol)
 
-  which_pos <- eout$values > sqrt(.Machine$double.eps)
+  which_pos <- eout$values > tol
 
-  f <- c(1 / eout$values[which_pos], rep(1, length.out = sum(!which_pos)))
+  f <- c(1 / eout$values[which_pos], rep(0, length.out = sum(!which_pos)))
 
-  return(eout$vectors %*% diag(f) %*% t(eout$vectors))
+  return(list(mat = eout$vectors %*% diag(f) %*% t(eout$vectors),
+              nzero = sum(!which_pos)))
 }
 
-#' \emph{Inverse} covariance estimate of elements of ustat
+
+#' Same as \code{\link{ginv}()}, but explicitely specify rank
 #'
-#'
-#' @inheritParams uobj
-#'
-#' @return \emph{Generalized} inverse covariance estimate.
+#' @param Q The asymptotic covariance matrix, or an estimate of such matrix.
+#' @param df The degrees of freedom to use.
 #'
 #' @author David Gerard
 #'
 #' @noRd
-ucov <- function(nvec, alpha, which_keep = NULL) {
+projme <- function(Q, df = nrow(Q) - 1) {
+  stopifnot(is.matrix(Q))
+  K <- nrow(Q)
+  stopifnot(nrow(Q) == ncol(Q))
+  stopifnot(df > 0, df < K)
+
+  eout <- eigen(Q, symmetric = TRUE)
+  f <- c(1 / eout$values[1:df], rep(0, K - df))
+  return(mat = eout$vectors %*% diag(f) %*% t(eout$vectors))
+}
+
+#' Covariance estimate of elements of ustat
+#'
+#' @inheritParams uobj
+#'
+#' @return Covariance estimate.
+#'
+#' @author David Gerard
+#'
+#' @noRd
+ucov <- function(nvec, alpha) {
   ## Check parameters ----
   ploidy <- length(nvec) - 1
   stopifnot(ploidy %% 2 == 0, ploidy > 0)
   stopifnot(length(alpha) == floor(ploidy / 4))
   stopifnot(nvec >= 0)
-  if (is.null(which_keep)) {
-    which_keep <- rep(TRUE, ploidy + 1)
-  }
-  stopifnot(length(which_keep) == ploidy + 1)
-  stopifnot(is.logical(which_keep))
 
   ## Calculate covariance ----
   n <- sum(nvec)
@@ -112,70 +127,59 @@ ucov <- function(nvec, alpha, which_keep = NULL) {
     }
   }
 
-  ## return generalized inverse ----
-  ominv <- ginv(omega[which_keep, which_keep, drop = FALSE])
-
-  return(ominv)
+  return(omega)
 }
 
 
 #' \emph{Inverse} covariance estimate of elements of ustat
 #'
-#'
 #' @inheritParams uobj
 #'
-#' @return \emph{Generalized} inverse covariance estimate.
+#' @return Covariance estimate.
 #'
 #' @author David Gerard
 #'
 #' @noRd
-ucov2 <- function(nvec, alpha, which_keep = NULL) {
+ucov2 <- function(nvec, alpha) {
   ## Check parameters ----
   ploidy <- length(nvec) - 1
   stopifnot(ploidy %% 2 == 0, ploidy > 0)
   stopifnot(length(alpha) == floor(ploidy / 4))
   stopifnot(nvec >= 0)
-  if (is.null(which_keep)) {
-    which_keep <- rep(TRUE, ploidy + 1)
-  }
-  stopifnot(length(which_keep) == ploidy + 1)
-  stopifnot(is.logical(which_keep))
 
   ## Calculate covariance ----
   n <- sum(nvec)
   qhat <- nvec / n
   fq <- freqnext(freq = qhat, alpha = alpha, check = FALSE)
-  A <- zsegarray(alpha = alpha, ploidy = ploidy)
+  A <- aperm(zsegarray(alpha = alpha, ploidy = ploidy), c(3, 1, 2)) ## put offspring in first index
 
   Qmat <- diag(fq) - outer(X = fq, Y = fq, FUN = `*`)
 
-  crosscov <- 2 * tensr::mat(
-    A = tensr::atrans(A = A, B = list(diag(ploidy + 1), Qmat, matrix(fq, nrow = 1))),
-    k = 2
-  )
+  bread <- diag(ploidy + 1) -
+    2 * tensr::mat(
+      A = tensr::amprod(A = A, M = matrix(fq, nrow = 1), k = 2),
+      k = 3
+      )
 
-  omega <- Qmat - crosscov - t(crosscov)
+  omega <- t(bread) %*% Qmat %*% bread
 
-  return(solve(omega[which_keep, which_keep]))
+  return(omega)
 }
 
-ucov3  <- function(nvec, alpha, which_keep = NULL) {
+ucov3  <- function(nvec, alpha) {
   ## Check parameters ----
   ploidy <- length(nvec) - 1
   stopifnot(ploidy %% 2 == 0, ploidy > 0)
   stopifnot(length(alpha) == floor(ploidy / 4))
   stopifnot(nvec >= 0)
-  if (is.null(which_keep)) {
-    which_keep <- rep(TRUE, ploidy + 1)
-  }
-  stopifnot(length(which_keep) == ploidy + 1)
-  stopifnot(is.logical(which_keep))
 
   n <- sum(nvec)
   qhat <- nvec / n
   fq <- freqnext(freq = qhat, alpha = alpha, check = FALSE)
 
-  return(diag(1 / fq[which_keep]))
+  Qmat <- diag(fq) - outer(X = fq, Y = fq, FUN = `*`)
+
+  return(Qmat)
 }
 
 #' U-process minimizer approach to equilibrium testing and double reduction
@@ -200,6 +204,11 @@ ucov3  <- function(nvec, alpha, which_keep = NULL) {
 #' @param thresh_tot The threshhold for ignoring the genotype. We keep
 #'     genotypes such that \code{nvec >= thresh_tot}.
 #'     Setting this to \code{0} uses all genotypes.
+#' @param covtype What weight function should we use? "u2" is the
+#'     theoretically correct one.
+#' @param df What degrees of freedom should we use. Anything between
+#'     1 and ploidy-floor(ploidy/4)-1 will work. Lower df are more robust
+#'     to low counts, but have lower power.
 #'
 #' @return A list with some or all of the following elements:
 #' \describe{
@@ -225,17 +234,31 @@ ucov3  <- function(nvec, alpha, which_keep = NULL) {
 #' hweustat(nvec = nvec)
 #'
 #' @export
-hweustat <- function(nvec, thresh_mult = Inf, thresh_tot = 10) {
+hweustat <- function(nvec,
+                     thresh_mult = Inf,
+                     thresh_tot = 0,
+                     covtype = c("u2", "u3", "u1"),
+                     df = ploidy - floor(ploidy / 4) - 1) {
   ploidy <- length(nvec) - 1
   stopifnot(ploidy %% 2 == 0, ploidy >= 4)
   ibdr <- floor(ploidy / 4)
   stopifnot(thresh_mult >= 0, length(thresh_mult) == 1)
   stopifnot(thresh_tot >= 0, length(thresh_tot) == 1)
   minval <- sqrt(.Machine$double.eps)
+  covtype <- match.arg(covtype)
+  stopifnot(length(df) == 1, df >= 1, df <= ploidy - floor(ploidy / 4) - 1)
+
+  if (covtype == "u1") {
+    covfun <- ucov
+  } else if (covtype == "u2") {
+    covfun <- ucov2
+  } else if (covtype == "u3") {
+    covfun <- ucov3
+  }
 
   which_keep <- ((max(nvec) / nvec) <= thresh_mult) & (nvec >= thresh_tot)
 
-  if (sum(which_keep) < ibdr + 1) {
+  if (sum(which_keep) - ibdr - all(which_keep) - 1 <= 0) {
     return(
       list(
         alpha = NA_real_,
@@ -257,11 +280,12 @@ hweustat <- function(nvec, thresh_mult = Inf, thresh_tot = 10) {
                          upper = upper_alpha,
                          nvec = nvec,
                          omega = NULL,
-                         which_keep = which_keep)
+                         which_keep = NULL)
 
     ## Calculate covariance ----
     alpha_tilde <- oout$par
-    omega <- ucov3(nvec = nvec, alpha = alpha_tilde, which_keep = which_keep)
+    covmat <- covfun(nvec = nvec, alpha = alpha_tilde)
+    omega <- projme(Q = covmat, df = ibdr + df)
 
     ## step 2 ----
     oout <- stats::optim(par = minval,
@@ -277,17 +301,18 @@ hweustat <- function(nvec, thresh_mult = Inf, thresh_tot = 10) {
 
     ## step 1 ----
     oout <- stats::optim(par = rep(minval, ibdr),
-                         fn = uobj,
+                         fn = pearsondiv,
+                         gr = dpearsondiv_dalpha,
                          method = "L-BFGS-B",
                          lower = rep(minval, ibdr),
                          upper = upper_alpha,
                          nvec = nvec,
-                         omega = NULL,
-                         which_keep = which_keep)
+                         ngen = 1)
 
     ## Calculate covariance ----
     alpha_tilde <- oout$par
-    omega <- ucov3(nvec = nvec, alpha = alpha_tilde, which_keep = which_keep)
+    covmat <- covfun(nvec = nvec, alpha = alpha_tilde)
+    omega <- projme(Q = covmat, df = ibdr + df)
 
     ## step 2 ----
     oout <- stats::optim(par = rep(minval, ibdr),
@@ -300,19 +325,26 @@ hweustat <- function(nvec, thresh_mult = Inf, thresh_tot = 10) {
                          which_keep = which_keep)
   }
 
-  ## Calculate degrees of freedom ----
-  df_hwe <- sum(which_keep) -
-    ibdr - 2
+  ## Get alpha ----
+  alpha <- oout$par
+
+  ## Calculate chi-square statistic ---
+  chisq_hwe <- oout$value
+
+  ## Calculate degrees of freedom and run test----
+  df_hwe <- df
+
+  p_hwe <- stats::pchisq(q = chisq_hwe, df = df_hwe, lower.tail = FALSE)
 
   ## return ----
   retlist <- list(
-    alpha = oout$par,
-    chisq_hwe = oout$value,
-    df_hwe = df_hwe
+    alpha = alpha,
+    chisq_hwe = chisq_hwe,
+    df_hwe = df_hwe,
+    p_hwe = p_hwe
   )
-  retlist$p_hwe <- stats::pchisq(q = retlist$chisq_hwe,
-                                 df = retlist$df_hwe,
-                                 lower.tail = FALSE)
-  retlist$p_hwe[retlist$df_hwe <= 0] <- NA_real_
+
+  retlist$p_hwe[retlist$df_hwe == 0] <- NA_real_
+
   return(retlist)
 }

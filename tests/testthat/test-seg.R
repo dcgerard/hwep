@@ -269,3 +269,9 @@ test_that("freqnext and freqnext_ngen give same results at ngen = 1", {
     freqnext_ngen(freq = freq, alpha = alpha, ngen = 1)
   )
 })
+
+
+test_that("parental indices are transposable", {
+  A <- zsegarray(alpha = 0.1, ploidy = 6)
+  expect_equal(A, aperm(A, c(2, 1, 3)), tolerance = 10^-6)
+})
