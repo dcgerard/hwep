@@ -40,11 +40,11 @@
 #' @examples
 #' ## Generate random data
 #' set.seed(5)
-#' ploidy <- 8
+#' ploidy <- 6
 #' nloc <- 1000
-#' size <- 10000000
-#' r <- 0.5
-#' alpha <- c(0.1, 0.01)
+#' size <- 1000
+#' r <- 0.1
+#' alpha <- c(0)
 #' qvec <- hwefreq(r = r, alpha = alpha, ploidy = ploidy)
 #' nmat <- t(rmultinom(n = nloc, size = size, prob = qvec))
 #'
@@ -52,10 +52,7 @@
 #' future::plan(future::multisession, workers = 6)
 #' hout <- hwefit(nmat = nmat,
 #'                type = "ustat",
-#'                thresh_mult = Inf,
-#'                thresh_tot = 0,
-#'                covtype = "u2",
-#'                df = 5)
+#'                thresh = 10)
 #'
 #' ## Shut down parallel workers
 #' future::plan("sequential")

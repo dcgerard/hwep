@@ -10,11 +10,14 @@
 #'     \code{floor(ploidy/4)}. These should sum to less than 1, since
 #'     \code{1-sum(alpha)} is the assumed probability of no double
 #'     reduction.
-#' @param omega A (ploidy+1) by (ploidy+1) positive semidefinite matrix.
-#'     This is an estimate of the \emph{inverse} covariance of the elements
-#'     of the U-statistic.
-#' @param which_keep A logical vector. Which genotypes do we use in the
-#'     objective function evaluation?
+#' @param which_keep A lotical vector of length \code{ploidy + 1}. All of the
+#'     \code{FALSE}'s will be combined with each other. They form the last
+#'     group.
+#' @param omega A \code{sum(which_keep)+1} by \code{sum(which_keep)+1}
+#'     positive semidefinite matrix.
+#'     This is an estimate of the \emph{generalized inverse} covariance
+#'     of the elements of the U-statistic. The last row and column
+#'     correspond to all aggregated groups determined by \code{which_keep}.
 #'
 #' @author David Gerard
 #'
@@ -28,29 +31,36 @@ uobj <- function(nvec, alpha, omega = NULL, which_keep = NULL) {
   if (is.null(which_keep)) {
     which_keep <- rep(TRUE, ploidy + 1)
   }
-  stopifnot(length(which_keep) == ploidy + 1)
-  stopifnot(is.logical(which_keep))
+  stopifnot(is.logical(which_keep), length(which_keep) == ploidy + 1)
   numkeep <- sum(which_keep)
   if (!is.null(omega)) {
-    stopifnot(dim(omega) == c(sum(numkeep), sum(numkeep)))
+    stopifnot(dim(omega) == c(numkeep + 1, numkeep + 1))
   }
-
 
   ## Calculate objective ----
   n <- sum(nvec)
   qhat <- nvec / n
   fq <- freqnext(freq = qhat, alpha = alpha, check = FALSE)
 
+  qhat <- c(qhat[which_keep], sum(qhat[!which_keep]))
+  fq   <- c(fq[which_keep], sum(fq[!which_keep]))
+
   if (is.null(omega)) {
-    diff <- (qhat - fq)[which_keep]
+    diff <- (qhat - fq)
     return(sum(diff^2) * n)
   } else {
-    diff <- matrix((qhat - fq)[which_keep], ncol = 1)
+    diff <- matrix((qhat - fq), ncol = 1)
     return(c(t(diff) %*% omega %*% diff) * n)
   }
 }
 
 #' Generalized inverse of a symmetric p.d. matrix
+#'
+#' This is the Moore-penrose inverse of a \emph{symmetric positive definite}
+#' matrix.
+#'
+#' @param omega A matrix to invert. Must be symmetric and positive definite.
+#' @param tol The tolerance on the eigenvalues to discard.
 #'
 #' @author David Gerard
 #'
@@ -72,7 +82,7 @@ ginv <- function(omega, tol = sqrt(.Machine$double.eps)) {
 }
 
 
-#' Same as \code{\link{ginv}()}, but explicitely specify rank
+#' Same as \code{\link{ginv}()}, but explicitly specify rank
 #'
 #' @param Q The asymptotic covariance matrix, or an estimate of such matrix.
 #' @param df The degrees of freedom to use.
@@ -84,7 +94,7 @@ projme <- function(Q, df = nrow(Q) - 1) {
   stopifnot(is.matrix(Q))
   K <- nrow(Q)
   stopifnot(nrow(Q) == ncol(Q))
-  stopifnot(df > 0, df < K)
+  stopifnot(df >= 0, df <= K)
 
   eout <- eigen(Q, symmetric = TRUE)
   f <- c(1 / eout$values[1:df], rep(0, K - df))
@@ -198,17 +208,9 @@ ucov3  <- function(nvec, alpha) {
 #' @param nvec A vector containing the observed genotype counts,
 #'     where \code{nvec[[i]]} is the number of individuals with genotype
 #'     \code{i-1}. This should be of length \code{ploidy+1}.
-#' @param thresh_mult The threshhold for ignoring the genotype. We keep
-#'     genotypes such that \code{max(nvec) / nvec <= thresh_mult}.
-#'     Setting this to \code{Inf} uses all genotypes.
-#' @param thresh_tot The threshhold for ignoring the genotype. We keep
-#'     genotypes such that \code{nvec >= thresh_tot}.
+#' @param thresh The threshhold for ignoring the genotype. We keep
+#'     genotypes such that \code{nvec >= thresh}.
 #'     Setting this to \code{0} uses all genotypes.
-#' @param covtype What weight function should we use? "u2" is the
-#'     theoretically correct one.
-#' @param df What degrees of freedom should we use. Anything between
-#'     1 and ploidy-floor(ploidy/4)-1 will work. Lower df are more robust
-#'     to low counts, but have lower power.
 #'
 #' @return A list with some or all of the following elements:
 #' \describe{
@@ -235,19 +237,14 @@ ucov3  <- function(nvec, alpha) {
 #'
 #' @export
 hweustat <- function(nvec,
-                     thresh_mult = Inf,
-                     thresh_tot = 0,
-                     covtype = c("u2", "u3", "u1"),
-                     df = ploidy - floor(ploidy / 4) - 1) {
+                     thresh = 10) {
   ploidy <- length(nvec) - 1
   stopifnot(ploidy %% 2 == 0, ploidy >= 4)
   ibdr <- floor(ploidy / 4)
-  stopifnot(thresh_mult >= 0, length(thresh_mult) == 1)
-  stopifnot(thresh_tot >= 0, length(thresh_tot) == 1)
+  stopifnot(thresh >= 0, length(thresh) == 1)
   minval <- sqrt(.Machine$double.eps)
-  covtype <- match.arg(covtype)
-  stopifnot(length(df) == 1, df >= 1, df <= ploidy - floor(ploidy / 4) - 1)
 
+  covtype <- "u2"
   if (covtype == "u1") {
     covfun <- ucov
   } else if (covtype == "u2") {
@@ -256,9 +253,10 @@ hweustat <- function(nvec,
     covfun <- ucov3
   }
 
-  which_keep <- ((max(nvec) / nvec) <= thresh_mult) & (nvec >= thresh_tot)
+  which_keep <- nvec >= thresh
 
-  if (sum(which_keep) - ibdr - all(which_keep) - 1 <= 0) {
+  ## Return early if too few groups ----
+  if (sum(which_keep) - ibdr <= 0) {
     return(
       list(
         alpha = NA_real_,
@@ -269,6 +267,20 @@ hweustat <- function(nvec,
     )
   }
 
+  ## Create aggregation matrix ----
+  numkeep <- sum(which_keep)
+  H <- matrix(0, nrow = numkeep + 1, ncol = ploidy + 1)
+  j <- 1
+  for (i in 0:ploidy) {
+    if (which_keep[[i + 1]]) {
+      H[j, i + 1] <- 1
+      j <- j + 1
+    } else {
+      H[numkeep + 1, i + 1] <- 1
+    }
+  }
+
+  ## Run two-step procedure ----
   if (ibdr == 1) {
     upper_alpha <- drbounds(ploidy = ploidy)
 
@@ -280,12 +292,13 @@ hweustat <- function(nvec,
                          upper = upper_alpha,
                          nvec = nvec,
                          omega = NULL,
-                         which_keep = NULL)
+                         which_keep = which_keep)
 
     ## Calculate covariance ----
     alpha_tilde <- oout$par
     covmat <- covfun(nvec = nvec, alpha = alpha_tilde)
-    omega <- projme(Q = covmat, df = ibdr + df)
+    projout <- ginv(H %*% covmat %*% t(H))
+    omega <- projout$mat
 
     ## step 2 ----
     oout <- stats::optim(par = minval,
@@ -301,18 +314,19 @@ hweustat <- function(nvec,
 
     ## step 1 ----
     oout <- stats::optim(par = rep(minval, ibdr),
-                         fn = pearsondiv,
-                         gr = dpearsondiv_dalpha,
+                         fn = uobj,
                          method = "L-BFGS-B",
                          lower = rep(minval, ibdr),
                          upper = upper_alpha,
                          nvec = nvec,
-                         ngen = 1)
+                         omega = NULL,
+                         which_keep = which_keep)
 
     ## Calculate covariance ----
     alpha_tilde <- oout$par
     covmat <- covfun(nvec = nvec, alpha = alpha_tilde)
-    omega <- projme(Q = covmat, df = ibdr + df)
+    projout <- ginv(H %*% covmat %*% t(H))
+    omega <- projout$mat
 
     ## step 2 ----
     oout <- stats::optim(par = rep(minval, ibdr),
@@ -332,7 +346,7 @@ hweustat <- function(nvec,
   chisq_hwe <- oout$value
 
   ## Calculate degrees of freedom and run test----
-  df_hwe <- df
+  df_hwe <- sum(which_keep) + 1 - projout$nzero - ibdr
 
   p_hwe <- stats::pchisq(q = chisq_hwe, df = df_hwe, lower.tail = FALSE)
 

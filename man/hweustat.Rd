@@ -5,33 +5,16 @@
 \title{U-process minimizer approach to equilibrium testing and double reduction
 estimation}
 \usage{
-hweustat(
-  nvec,
-  thresh_mult = Inf,
-  thresh_tot = 0,
-  covtype = c("u2", "u3", "u1"),
-  df = ploidy - floor(ploidy/4) - 1
-)
+hweustat(nvec, thresh = 20)
 }
 \arguments{
 \item{nvec}{A vector containing the observed genotype counts,
 where \code{nvec[[i]]} is the number of individuals with genotype
 \code{i-1}. This should be of length \code{ploidy+1}.}
 
-\item{thresh_mult}{The threshhold for ignoring the genotype. We keep
-genotypes such that \code{max(nvec) / nvec <= thresh_mult}.
-Setting this to \code{Inf} uses all genotypes.}
-
-\item{thresh_tot}{The threshhold for ignoring the genotype. We keep
-genotypes such that \code{nvec >= thresh_tot}.
+\item{thresh}{The threshhold for ignoring the genotype. We keep
+genotypes such that \code{nvec >= thresh}.
 Setting this to \code{0} uses all genotypes.}
-
-\item{covtype}{What weight function should we use? "u2" is the
-theoretically correct one.}
-
-\item{df}{What degrees of freedom should we use. Anything between
-1 and ploidy-floor(ploidy/4)-1 will work. Lower df are more robust
-to low counts, but have lower power.}
 }
 \value{
 A list with some or all of the following elements:
