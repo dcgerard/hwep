@@ -103,6 +103,8 @@ projme <- function(Q, df = nrow(Q) - 1) {
 
 #' Covariance estimate of elements of ustat
 #'
+#' This is an empirical one, that doesn't work as well as ucov2 in practice
+#'
 #' @inheritParams uobj
 #'
 #' @return Covariance estimate.
@@ -143,6 +145,8 @@ ucov <- function(nvec, alpha) {
 
 #' \emph{Inverse} covariance estimate of elements of ustat
 #'
+#' This is the theoretical one, based on U-statistic theory.
+#'
 #' @inheritParams uobj
 #'
 #' @return Covariance estimate.
@@ -163,7 +167,7 @@ ucov2 <- function(nvec, alpha) {
   fq <- freqnext(freq = qhat, alpha = alpha, check = FALSE)
   A <- aperm(zsegarray(alpha = alpha, ploidy = ploidy), c(3, 1, 2)) ## put offspring in first index
 
-  Qmat <- diag(fq) - outer(X = fq, Y = fq, FUN = `*`)
+  Qmat <- diag(fq) - tcrossprod(fq)
 
   bread <- diag(ploidy + 1) -
     2 * tensr::mat(
@@ -176,6 +180,18 @@ ucov2 <- function(nvec, alpha) {
   return(omega)
 }
 
+#' \emph{Inverse} covariance estimate of elements of ustat
+#'
+#' This is the naive one, based only on the multinomial distribution
+#' and ignoring that we are estimating q in f(q). Does not work well.
+#'
+#' @inheritParams uobj
+#'
+#' @return Covariance estimate.
+#'
+#' @author David Gerard
+#'
+#' @noRd
 ucov3  <- function(nvec, alpha) {
   ## Check parameters ----
   ploidy <- length(nvec) - 1

@@ -5,7 +5,7 @@
 \title{U-process minimizer approach to equilibrium testing and double reduction
 estimation}
 \usage{
-hweustat(nvec, thresh = 20)
+hweustat(nvec, thresh = 10)
 }
 \arguments{
 \item{nvec}{A vector containing the observed genotype counts,

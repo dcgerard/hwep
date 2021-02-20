@@ -47,9 +47,9 @@ package.
 set.seed(5)
 ploidy <- 6
 nloc <- 1000
-size <- 100
+size <- 1000
 r <- 0.1
-alpha <- c(0.1)
+alpha <- c(0)
 qvec <- hwefreq(r = r, alpha = alpha, ploidy = ploidy)
 nmat <- t(rmultinom(n = nloc, size = size, prob = qvec))
 
@@ -57,7 +57,7 @@ nmat <- t(rmultinom(n = nloc, size = size, prob = qvec))
 future::plan(future::multisession, workers = 6)
 hout <- hwefit(nmat = nmat,
                type = "ustat",
-               thresh = 20)
+               thresh = 10)
 
 ## Shut down parallel workers
 future::plan("sequential")
