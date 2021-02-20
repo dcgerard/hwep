@@ -46,10 +46,10 @@ package.
 ## Generate random data
 set.seed(5)
 ploidy <- 6
-nloc <- 1000
+nloc <- 100
 size <- 1000
-r <- 0.1
-alpha <- c(0)
+r <- 0.5
+alpha <- 1/12
 qvec <- hwefreq(r = r, alpha = alpha, ploidy = ploidy)
 nmat <- t(rmultinom(n = nloc, size = size, prob = qvec))
 
@@ -73,7 +73,7 @@ abline(0, 1, col = 2, lty = 2)
 mean(hout$p_hwe < 0.05, na.rm = TRUE)
 
 obs <- sort(hout$chisq_hwe)
-plot(x = qchisq(ppoints(n = length(obs)), df = 6),
+plot(x = qchisq(ppoints(n = length(obs)), df = 4),
      y = obs,
      xlab = "theoretical",
      ylab = "observed",
@@ -82,6 +82,7 @@ abline(0, 1, col = 2, lty = 2)
 hist(obs, breaks = 30)
 
 ## Consistent estimate for alpha
+alpha
 mean(hout$alpha)
 
 }

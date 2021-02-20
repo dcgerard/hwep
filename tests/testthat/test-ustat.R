@@ -4,7 +4,8 @@ test_that("ginv works", {
   A <- matrix(rnorm(n * (n-1)), nrow = n)
   omega <- tcrossprod(A)
 
-  gomega <- ginv(omega)
+  gout <- ginv(omega)
+  gomega <- gout$mat
 
   expect_equal(gomega, t(gomega))
 
@@ -25,7 +26,7 @@ test_that("hweustat() is ok", {
 
   thresh <- 100
   nvec <- c(7363L, 2297L, 316L, 24L, 0L, 0L, 0L)
-  u1 <- hweustat(nvec = nvec, thresh_mult = Inf, thresh_tot = 0)
+  u1 <- hweustat(nvec = nvec, thresh = 0)
   u1 <- hweustat(nvec = nvec)
   u1$chisq_hwe
   u1$df_hwe
