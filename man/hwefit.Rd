@@ -2,9 +2,9 @@
 % Please edit documentation in R/multi.R
 \name{hwefit}
 \alias{hwefit}
-\title{HWE and random mating estimation and testing for many loci.}
+\title{Equilibrium and random mating estimation and testing for many loci.}
 \usage{
-hwefit(nmat, type = c("ustat", "rm", "nodr", "gmm"), overwrite = FALSE, ...)
+hwefit(nmat, type = c("ustat", "mle", "rm", "nodr"), ...)
 }
 \arguments{
 \item{nmat}{A matrix of counts. The rows index the loci and the columns
@@ -12,31 +12,34 @@ index the genotypes. So \code{nmat[i, j]} is the number of individuals
 that have genotype \code{j-1} at locus \code{i}. The ploidy is
 assumed to be \code{ncol(nmat)-1}.}
 
-\item{type}{Should we test for random mating (\code{type = "rm"})
-equilibrium using a U-statistic approach (\code{type = "ustat"}),
-equilibrium using an ad-hoc generalized method of moments approach
-(\code{type = "gmm"}), or equilibrium assuming no double reduction
-(\code{type = "nodr"})? This is only applicable for ploidies greater
-than 4 (unless \code{overwrite = TRUE}).}
-
-\item{overwrite}{A logical. The default is to run \code{hwetetra()} if
-you have tetraploids, regardless of the selection of \code{type}. Set
-this to \code{TRUE} to overwrite this default.}
+\item{type}{The method to use:
+\describe{
+\item{\code{"ustat"}}{U-statistic approach to test for equilibrium and
+estimate double reduction rates givene equilibrium. The default.
+See \code{\link{hweustat}()}.}
+\item{\code{"mle"}}{Maximum likelihood estimation and testing. Only
+supported for tetraploids. This will test for equilibrium and
+random mating, and is generally better than \code{"ustat"}
+for tetraploids. See \code{\link{hwetetra}()}.}
+\item{\code{"rm"}}{Testing random mating, and estimating gamete
+frequencies given random mating. See \code{\link{rmlike}()}.}
+\item{\code{"nodr"}}{Testing equilibrium given no double reduction.
+See \code{\link{hwenodr}()}.}
+}}
 
 \item{...}{Any other parameters to send to \code{\link{hweustat}()},
-\code{\link{hwetetra}()}, \code{\link{hwemom}()},
+\code{\link{hwetetra}()},
 \code{\link{rmlike}()}, or \code{\link{hwenodr}()}.}
 }
 \value{
 A data frame. The columns of which can are described in
 \code{\link{hwetetra}()}, \code{\link{hweustat}()},
-\code{\link{hwemom}()}, \code{\link{rmlike}()},
-or \code{\link{hwenodr}()}.
+\code{\link{rmlike}()}, or \code{\link{hwenodr}()}.
 }
 \description{
-Estimates and tests for either random mating or HWE across many loci
+Estimates and tests for either equilibrium or random mating  across many loci
 using \code{\link{hwetetra}()}, \code{\link{hweustat}()},
-\code{\link{hwemom}()}, \code{\link{rmlike}()}, or \code{\link{hwenodr}()}.
+\code{\link{rmlike}()}, or \code{\link{hwenodr}()}.
 }
 \details{
 We provide parallelization support through the \link[future]{future}
@@ -71,15 +74,6 @@ plot(x = ppoints(n = length(obs)),
      main = "qqplot")
 abline(0, 1, col = 2, lty = 2)
 mean(hout$p_hwe < 0.05, na.rm = TRUE)
-
-obs <- sort(hout$chisq_hwe)
-plot(x = qchisq(ppoints(n = length(obs)), df = 4),
-     y = obs,
-     xlab = "theoretical",
-     ylab = "observed",
-     main = "qqplot")
-abline(0, 1, col = 2, lty = 2)
-hist(obs, breaks = 30)
 
 ## Consistent estimate for alpha
 alpha

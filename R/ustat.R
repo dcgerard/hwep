@@ -34,7 +34,11 @@ uobj <- function(nvec, alpha, omega = NULL, which_keep = NULL) {
   stopifnot(is.logical(which_keep), length(which_keep) == ploidy + 1)
   numkeep <- sum(which_keep)
   if (!is.null(omega)) {
-    stopifnot(dim(omega) == c(numkeep + 1, numkeep + 1))
+    if (numkeep == ploidy + 1) {
+      stopifnot(dim(omega) == c(ploidy + 1, ploidy + 1))
+    } else {
+      stopifnot(dim(omega) == c(numkeep + 1, numkeep + 1))
+    }
   }
 
   ## Calculate objective ----
@@ -42,8 +46,10 @@ uobj <- function(nvec, alpha, omega = NULL, which_keep = NULL) {
   qhat <- nvec / n
   fq <- freqnext(freq = qhat, alpha = alpha, check = FALSE)
 
-  qhat <- c(qhat[which_keep], sum(qhat[!which_keep]))
-  fq   <- c(fq[which_keep], sum(fq[!which_keep]))
+  if (numkeep != ploidy + 1) {
+    qhat <- c(qhat[which_keep], sum(qhat[!which_keep]))
+    fq   <- c(fq[which_keep], sum(fq[!which_keep]))
+  }
 
   if (is.null(omega)) {
     diff <- (qhat - fq)
@@ -78,7 +84,7 @@ ginv <- function(omega, tol = sqrt(.Machine$double.eps)) {
   f <- c(1 / eout$values[which_pos], rep(0, length.out = sum(!which_pos)))
 
   return(list(mat = eout$vectors %*% diag(f) %*% t(eout$vectors),
-              nzero = sum(!which_pos)))
+              rank = sum(which_pos)))
 }
 
 
@@ -285,14 +291,22 @@ hweustat <- function(nvec,
 
   ## Create aggregation matrix ----
   numkeep <- sum(which_keep)
-  H <- matrix(0, nrow = numkeep + 1, ncol = ploidy + 1)
-  j <- 1
-  for (i in 0:ploidy) {
-    if (which_keep[[i + 1]]) {
-      H[j, i + 1] <- 1
-      j <- j + 1
-    } else {
-      H[numkeep + 1, i + 1] <- 1
+  if (numkeep >= ploidy) {
+    H <- diag(ploidy + 1)
+
+    ## aggregating one group = no aggregation at all.
+    which_keep <- rep(TRUE, ploidy + 1)
+    numkeep <- ploidy + 1
+  } else {
+    H <- matrix(0, nrow = numkeep + 1, ncol = ploidy + 1)
+    j <- 1
+    for (i in 0:ploidy) {
+      if (which_keep[[i + 1]]) {
+        H[j, i + 1] <- 1
+        j <- j + 1
+      } else {
+        H[numkeep + 1, i + 1] <- 1
+      }
     }
   }
 
@@ -362,7 +376,7 @@ hweustat <- function(nvec,
   chisq_hwe <- oout$value
 
   ## Calculate degrees of freedom and run test----
-  df_hwe <- sum(which_keep) + 1 - projout$nzero - ibdr
+  df_hwe <- projout$rank - ibdr
 
   p_hwe <- stats::pchisq(q = chisq_hwe, df = df_hwe, lower.tail = FALSE)
 

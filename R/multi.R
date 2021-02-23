@@ -2,11 +2,11 @@
 ## Code to fit across multiple loci
 #################################
 
-#' HWE and random mating estimation and testing for many loci.
+#' Equilibrium and random mating estimation and testing for many loci.
 #'
-#' Estimates and tests for either random mating or HWE across many loci
+#' Estimates and tests for either equilibrium or random mating  across many loci
 #' using \code{\link{hwetetra}()}, \code{\link{hweustat}()},
-#' \code{\link{hwemom}()}, \code{\link{rmlike}()}, or \code{\link{hwenodr}()}.
+#' \code{\link{rmlike}()}, or \code{\link{hwenodr}()}.
 #'
 #' We provide parallelization support through the \link[future]{future}
 #' package.
@@ -15,23 +15,27 @@
 #'     index the genotypes. So \code{nmat[i, j]} is the number of individuals
 #'     that have genotype \code{j-1} at locus \code{i}. The ploidy is
 #'     assumed to be \code{ncol(nmat)-1}.
-#' @param type Should we test for random mating (\code{type = "rm"})
-#'     equilibrium using a U-statistic approach (\code{type = "ustat"}),
-#'     equilibrium using an ad-hoc generalized method of moments approach
-#'     (\code{type = "gmm"}), or equilibrium assuming no double reduction
-#'     (\code{type = "nodr"})? This is only applicable for ploidies greater
-#'     than 4 (unless \code{overwrite = TRUE}).
-#' @param overwrite A logical. The default is to run \code{hwetetra()} if
-#'     you have tetraploids, regardless of the selection of \code{type}. Set
-#'     this to \code{TRUE} to overwrite this default.
+#' @param type The method to use:
+#' \describe{
+#'   \item{\code{"ustat"}}{U-statistic approach to test for equilibrium and
+#'       estimate double reduction rates givene equilibrium. The default.
+#'       See \code{\link{hweustat}()}.}
+#'   \item{\code{"mle"}}{Maximum likelihood estimation and testing. Only
+#'       supported for tetraploids. This will test for equilibrium and
+#'       random mating, and is generally better than \code{"ustat"}
+#'       for tetraploids. See \code{\link{hwetetra}()}.}
+#'   \item{\code{"rm"}}{Testing random mating, and estimating gamete
+#'       frequencies given random mating. See \code{\link{rmlike}()}.}
+#'   \item{\code{"nodr"}}{Testing equilibrium given no double reduction.
+#'       See \code{\link{hwenodr}()}.}
+#' }
 #' @param ... Any other parameters to send to \code{\link{hweustat}()},
-#'     \code{\link{hwetetra}()}, \code{\link{hwemom}()},
+#'     \code{\link{hwetetra}()},
 #'     \code{\link{rmlike}()}, or \code{\link{hwenodr}()}.
 #'
 #' @return A data frame. The columns of which can are described in
 #'     \code{\link{hwetetra}()}, \code{\link{hweustat}()},
-#'     \code{\link{hwemom}()}, \code{\link{rmlike}()},
-#'     or \code{\link{hwenodr}()}.
+#'     \code{\link{rmlike}()}, or \code{\link{hwenodr}()}.
 #'
 #' @author David Gerard
 #'
@@ -67,28 +71,19 @@
 #' abline(0, 1, col = 2, lty = 2)
 #' mean(hout$p_hwe < 0.05, na.rm = TRUE)
 #'
-#' obs <- sort(hout$chisq_hwe)
-#' plot(x = qchisq(ppoints(n = length(obs)), df = 4),
-#'      y = obs,
-#'      xlab = "theoretical",
-#'      ylab = "observed",
-#'      main = "qqplot")
-#' abline(0, 1, col = 2, lty = 2)
-#' hist(obs, breaks = 30)
-#'
 #' ## Consistent estimate for alpha
 #' alpha
 #' mean(hout$alpha)
 #'
-hwefit <- function(nmat, type = c("ustat", "rm", "nodr", "gmm"), overwrite = FALSE, ...) {
+hwefit <- function(nmat, type = c("ustat", "mle", "rm", "nodr"), ...) {
   stopifnot(is.matrix(nmat))
   ploidy <- ncol(nmat) - 1
   stopifnot(ploidy %% 2 == 0, ploidy > 2)
-  stopifnot(length(overwrite) == 1, is.logical(overwrite))
   type <- match.arg(type)
 
   ## Choose appropriate function ----
-  if (ploidy == 4 & !overwrite) {
+  if (type == "mle") {
+    stopifnot(ploidy == 4)
     fun <- hwetetra
   } else if (type == "ustat") {
     fun <- hweustat
