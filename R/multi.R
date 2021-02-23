@@ -56,7 +56,7 @@
 #' future::plan(future::multisession, workers = 6)
 #' hout <- hwefit(nmat = nmat,
 #'                type = "ustat",
-#'                thresh = 10)
+#'                thresh = 5)
 #'
 #' ## Shut down parallel workers
 #' future::plan("sequential")

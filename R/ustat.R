@@ -259,7 +259,7 @@ ucov3  <- function(nvec, alpha) {
 #'
 #' @export
 hweustat <- function(nvec,
-                     thresh = 10) {
+                     thresh = 5) {
   ploidy <- length(nvec) - 1
   stopifnot(ploidy %% 2 == 0, ploidy >= 4)
   ibdr <- floor(ploidy / 4)
@@ -275,7 +275,11 @@ hweustat <- function(nvec,
     covfun <- ucov3
   }
 
+  ## Choose which groups to aggregate
   which_keep <- nvec >= thresh
+  if (sum(!which_keep) >= 1) {
+    which_keep[which_keep][which.min(nvec[which_keep])] <- FALSE
+  }
 
   ## Return early if too few groups ----
   if (sum(which_keep) - ibdr <= 0) {
