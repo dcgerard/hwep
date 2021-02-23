@@ -182,3 +182,39 @@ test_that("dfreqnext_dalpha_ngen works", {
 })
 
 
+test_that("duobj_dalpha works", {
+  set.seed(75)
+  ploidy <- 10
+  alpha <- c(0.2, 0.14)
+  q <- runif(ploidy + 1)
+  q <- q / sum(q)
+  nvec <- c(rmultinom(n = 1, size = 100, prob = q))
+  which_keep <- sample(x = c(TRUE, FALSE), size = ploidy + 1, replace = TRUE)
+
+
+  expect_equal(
+    duobj_dalpha(nvec = nvec, alpha = alpha, omega = NULL, which_keep = NULL),
+    c(pracma::jacobian(f = uobj, x0 = alpha, nvec = nvec, omega = NULL, which_keep = NULL))
+  )
+
+  expect_equal(
+    duobj_dalpha(nvec = nvec, alpha = alpha, omega = NULL, which_keep = which_keep),
+    c(pracma::jacobian(f = uobj, x0 = alpha, nvec = nvec, omega = NULL, which_keep = which_keep))
+  )
+
+  A <- matrix(rnorm((ploidy + 1) * (ploidy - 1)), ncol = ploidy - 1)
+  omega <- tcrossprod(A)
+  expect_equal(
+    duobj_dalpha(nvec = nvec, alpha = alpha, omega = omega, which_keep = NULL),
+    c(pracma::jacobian(f = uobj, x0 = alpha, nvec = nvec, omega = omega, which_keep = NULL))
+  )
+
+  numkeep <- sum(which_keep)
+  A <- matrix(rnorm((numkeep + 1) * (numkeep - 1)), ncol = numkeep - 1)
+  omega <- tcrossprod(A)
+  expect_equal(
+    duobj_dalpha(nvec = nvec, alpha = alpha, omega = omega, which_keep = which_keep),
+    c(pracma::jacobian(f = uobj, x0 = alpha, nvec = nvec, omega = omega, which_keep = which_keep))
+  )
+})
+

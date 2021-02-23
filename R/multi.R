@@ -46,7 +46,7 @@
 #' set.seed(5)
 #' ploidy <- 6
 #' nloc <- 100
-#' size <- 1000
+#' size <- 100
 #' r <- 0.5
 #' alpha <- 1/12
 #' qvec <- hwefreq(r = r, alpha = alpha, ploidy = ploidy)

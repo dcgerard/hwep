@@ -102,6 +102,45 @@ dfreqnext_dalpha <- function(freq, alpha, ngen = 1) {
   dg_dp(p = p) %*% dp_dB(q = freq) %*% dB_dalpha(ploidy = ploidy)
 }
 
+#' Gradient of \code{\link{uobj}()} with respect to alpha.
+#'
+#' @inheritParams uobj
+#'
+#' @author David Gerard
+#'
+#' @noRd
+duobj_dalpha <- function(nvec, alpha, omega = NULL, which_keep = NULL) {
+  ## check parameters ----
+  ploidy <- length(nvec) - 1
+  stopifnot(ploidy %% 2 == 0, ploidy > 0)
+  stopifnot(length(alpha) == floor(ploidy / 4))
+  stopifnot(nvec >= 0)
+  if (is.null(which_keep)) {
+    which_keep <- rep(TRUE, ploidy + 1)
+  }
+  stopifnot(is.logical(which_keep), length(which_keep) == ploidy + 1)
+  numkeep <- sum(which_keep)
+  if (!is.null(omega)) {
+    if (numkeep == ploidy + 1) {
+      stopifnot(dim(omega) == c(ploidy + 1, ploidy + 1))
+    } else {
+      stopifnot(dim(omega) == c(numkeep + 1, numkeep + 1))
+    }
+  }
+
+  ## Get gradient of freqnext
+  n <- sum(nvec)
+  qhat <- nvec / n
+  fq <- freqnext(freq = qhat, alpha = alpha)
+  df_dalpha <- dfreqnext_dalpha(freq = qhat, alpha = alpha, ngen = 1)
+  H <- aggfun(which_keep = which_keep)
+  if (is.null(omega)) {
+    return(-n * c(crossprod(2 * crossprod(H) %*% (qhat - fq), df_dalpha)))
+  } else {
+    return(-n * c(crossprod(2 * t(H) %*% omega %*% H %*% (qhat - fq), df_dalpha)))
+  }
+}
+
 
 #' Gradient of multiple iterations of \code{\link{freqnext}()} with
 #' respect to alpha

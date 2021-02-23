@@ -30,6 +30,36 @@ expit <- function(x) {
   1 / (1 + exp(-x))
 }
 
+
+#' Function to aggregate groups.
+#'
+#' @param which_keep A logical vector. Should be \code{FALSE} if that
+#'     group is being aggregated.
+#'
+#' @author David Gerard
+#'
+#' @noRd
+aggfun <- function(which_keep) {
+  stopifnot(is.logical(which_keep))
+  ploidy <- length(which_keep) - 1
+  numkeep <- sum(which_keep)
+  if (numkeep >= ploidy) {
+    H <- diag(ploidy + 1)
+  } else {
+    H <- matrix(0, nrow = numkeep + 1, ncol = ploidy + 1)
+    j <- 1
+    for (i in 0:ploidy) {
+      if (which_keep[[i + 1]]) {
+        H[j, i + 1] <- 1
+        j <- j + 1
+      } else {
+        H[numkeep + 1, i + 1] <- 1
+      }
+    }
+  }
+  return(H)
+}
+
 #' Applies a transform from simplex to reals.
 #'
 #' Transform due to Betancourt (2012).

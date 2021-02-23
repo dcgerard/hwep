@@ -36,3 +36,18 @@ test_that("simplex transform works", {
   expect_equal(real_to_simplex(simplex_to_real(x)), x)
 
 })
+
+test_that("aggfun works", {
+  expect_equal(
+    aggfun(c(TRUE, TRUE, TRUE)),
+    aggfun(c(TRUE, FALSE, TRUE))
+  )
+
+  expect_equal(
+    aggfun(c(TRUE, FALSE, FALSE)),
+    matrix(c(1, 0 , 0,
+             0, 1, 1),
+           nrow = 2,
+           byrow = TRUE)
+  )
+})

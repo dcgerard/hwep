@@ -275,7 +275,7 @@ hweustat <- function(nvec,
     covfun <- ucov3
   }
 
-  ## Choose which groups to aggregate
+  ## Choose which groups to aggregate ----
   which_keep <- nvec >= thresh
   if (sum(!which_keep) >= 1) {
     which_keep[which_keep][which.min(nvec[which_keep])] <- FALSE
@@ -295,23 +295,11 @@ hweustat <- function(nvec,
 
   ## Create aggregation matrix ----
   numkeep <- sum(which_keep)
+  H <- aggfun(which_keep = which_keep)
   if (numkeep >= ploidy) {
-    H <- diag(ploidy + 1)
-
     ## aggregating one group = no aggregation at all.
     which_keep <- rep(TRUE, ploidy + 1)
     numkeep <- ploidy + 1
-  } else {
-    H <- matrix(0, nrow = numkeep + 1, ncol = ploidy + 1)
-    j <- 1
-    for (i in 0:ploidy) {
-      if (which_keep[[i + 1]]) {
-        H[j, i + 1] <- 1
-        j <- j + 1
-      } else {
-        H[numkeep + 1, i + 1] <- 1
-      }
-    }
   }
 
   ## Run two-step procedure ----
