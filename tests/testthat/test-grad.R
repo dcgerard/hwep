@@ -197,6 +197,11 @@ test_that("duobj_dalpha works", {
     c(pracma::jacobian(f = uobj, x0 = alpha, nvec = nvec, omega = NULL, which_keep = NULL))
   )
 
+  # microbenchmark::microbenchmark(
+  #   duobj_dalpha(nvec = nvec, alpha = alpha, omega = NULL, which_keep = NULL),
+  #   c(pracma::jacobian(f = uobj, x0 = alpha, nvec = nvec, omega = NULL, which_keep = NULL))
+  # )
+
   expect_equal(
     duobj_dalpha(nvec = nvec, alpha = alpha, omega = NULL, which_keep = which_keep),
     c(pracma::jacobian(f = uobj, x0 = alpha, nvec = nvec, omega = NULL, which_keep = which_keep))
@@ -216,5 +221,10 @@ test_that("duobj_dalpha works", {
     duobj_dalpha(nvec = nvec, alpha = alpha, omega = omega, which_keep = which_keep),
     c(pracma::jacobian(f = uobj, x0 = alpha, nvec = nvec, omega = omega, which_keep = which_keep))
   )
+
+  # microbenchmark::microbenchmark(
+  #   duobj_dalpha(nvec = nvec, alpha = alpha, omega = omega, which_keep = which_keep),
+  #   c(pracma::jacobian(f = uobj, x0 = alpha, nvec = nvec, omega = omega, which_keep = which_keep))
+  # )
 })
 
