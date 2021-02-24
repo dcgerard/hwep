@@ -276,7 +276,7 @@ hweustat <- function(nvec,
   if (sum(which_keep) - ibdr <= 0) {
     return(
       list(
-        alpha = NA_real_,
+        alpha = rep(NA_real_, ibdr),
         chisq_hwe = NA_real_,
         df_hwe = NA_real_,
         p_hwe = NA_real_

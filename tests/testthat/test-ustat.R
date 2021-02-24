@@ -18,39 +18,26 @@ test_that("ginv works", {
 
 test_that("hweustat() is ok", {
 
-  ## Simulation setting
-  # ploidy <- 6
-  # size <- 10000
-  # r <- 0.05
-  # alpha <- 0
-
-  thresh <- 100
   nvec <- c(7363L, 2297L, 316L, 24L, 0L, 0L, 0L)
-  u1 <- hweustat(nvec = nvec, thresh = 0)
-  u1 <- hweustat(nvec = nvec)
-  u1$chisq_hwe
-  u1$df_hwe
-  u1$p_hwe
+  expect_error(hweustat(nvec = nvec, thresh = 0), NA)
+  expect_error(hweustat(nvec = nvec), NA)
 
   nvec <- c(7319L, 2366L, 293L, 21L, 1L, 0L, 0L)
-  u2 <- hweustat(nvec = nvec)
-  u2$chisq_hwe
-  u2$df_hwe
-  u2$p_hwe
+  expect_error(hweustat(nvec = nvec), NA)
 
   nvec <- c(7379L, 2287L, 310L, 23L, 1L, 0L, 0L)
-  u3 <- hweustat(nvec = nvec)
-  u3$chisq_hwe
-  u3$p_hwe
+  expect_error(hweustat(nvec = nvec), NA)
 
   nvec <- c(7301L, 2313L, 344L, 42L, 0L, 0L, 0L)
-  u4 <- hweustat(nvec = nvec)
-  u4$chisq_hwe
-  u4$p_hwe
-
+  expect_error(hweustat(nvec = nvec), NA)
 
   nvec <- c(524L, 359L, 96L, 18L, 3L, 0L, 0L)
+  expect_error(hweustat(nvec = nvec), NA)
 
   nvec <- c(18L, 89L, 225L, 340L, 227L, 78L, 23L)
+  expect_error(hweustat(nvec = nvec), NA)
 
+  nmat <- structure(c(84L, 79L, 3L, 5L, 11L, 6L, 2L, 8L, 0L, 2L, 0L, 0L,
+0L, 0L, 0L, 0L, 0L, 0L), .Dim = c(2L, 9L))
+  expect_error(hwefit(nmat, type = "ustat"), NA)
 })
