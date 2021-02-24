@@ -109,7 +109,7 @@ projme <- function(Q, df = nrow(Q) - 1) {
 
 #' Covariance estimate of elements of ustat
 #'
-#' This is an empirical one, that doesn't work as well as ucov2 in practice
+#' This is an empirical one, that doesn't work as well as ucov in practice
 #'
 #' @inheritParams uobj
 #'
@@ -118,7 +118,7 @@ projme <- function(Q, df = nrow(Q) - 1) {
 #' @author David Gerard
 #'
 #' @noRd
-ucov <- function(nvec, alpha) {
+ucov_empirical <- function(nvec, alpha) {
   ## Check parameters ----
   ploidy <- length(nvec) - 1
   stopifnot(ploidy %% 2 == 0, ploidy > 0)
@@ -160,7 +160,7 @@ ucov <- function(nvec, alpha) {
 #' @author David Gerard
 #'
 #' @noRd
-ucov2 <- function(nvec, alpha) {
+ucov <- function(nvec, alpha) {
   ## Check parameters ----
   ploidy <- length(nvec) - 1
   stopifnot(ploidy %% 2 == 0, ploidy > 0)
@@ -198,7 +198,7 @@ ucov2 <- function(nvec, alpha) {
 #' @author David Gerard
 #'
 #' @noRd
-ucov3  <- function(nvec, alpha) {
+ucov_naive  <- function(nvec, alpha) {
   ## Check parameters ----
   ploidy <- length(nvec) - 1
   stopifnot(ploidy %% 2 == 0, ploidy > 0)
@@ -266,15 +266,6 @@ hweustat <- function(nvec,
   stopifnot(thresh >= 0, length(thresh) == 1)
   minval <- sqrt(.Machine$double.eps)
 
-  covtype <- "u2"
-  if (covtype == "u1") {
-    covfun <- ucov
-  } else if (covtype == "u2") {
-    covfun <- ucov2
-  } else if (covtype == "u3") {
-    covfun <- ucov3
-  }
-
   ## Choose which groups to aggregate ----
   which_keep <- nvec >= thresh
   if (sum(!which_keep) >= 1) {
@@ -302,64 +293,39 @@ hweustat <- function(nvec,
     numkeep <- ploidy + 1
   }
 
-  ## Run two-step procedure ----
-  if (ibdr == 1) {
-    upper_alpha <- drbounds(ploidy = ploidy)
+  ## Upper bounds on alpha ----
+  upper_alpha <- drbounds(ploidy = ploidy)
 
-    ## step 1 ----
-    oout <- stats::optim(par = minval,
-                         fn = uobj,
-                         method = "Brent",
-                         lower = minval,
-                         upper = upper_alpha,
-                         nvec = nvec,
-                         omega = NULL,
-                         which_keep = which_keep)
+  ## optimization method ----
+  ometh <- ifelse(ibdr == 1, "Brent", "L-BFGS-B")
 
-    ## Calculate covariance ----
-    alpha_tilde <- oout$par
-    covmat <- covfun(nvec = nvec, alpha = alpha_tilde)
-    projout <- ginv(H %*% covmat %*% t(H))
-    omega <- projout$mat
+  ## Run two-step procedure ---------------------------------------------------
 
-    ## step 2 ----
-    oout <- stats::optim(par = minval,
-                         fn = uobj,
-                         method = "Brent",
-                         lower = minval,
-                         upper = upper_alpha,
-                         nvec = nvec,
-                         omega = omega,
-                         which_keep = which_keep)
-  } else {
-    upper_alpha <- drbounds(ploidy = ploidy)
+  ## step 1 ----
+  oout <- stats::optim(par = rep(minval, ibdr),
+                       fn = uobj,
+                       method = ometh,
+                       lower = rep(minval, ibdr),
+                       upper = upper_alpha,
+                       nvec = nvec,
+                       omega = NULL,
+                       which_keep = which_keep)
 
-    ## step 1 ----
-    oout <- stats::optim(par = rep(minval, ibdr),
-                         fn = uobj,
-                         method = "L-BFGS-B",
-                         lower = rep(minval, ibdr),
-                         upper = upper_alpha,
-                         nvec = nvec,
-                         omega = NULL,
-                         which_keep = which_keep)
+  ## Calculate covariance ----
+  alpha_tilde <- oout$par
+  covmat <- ucov(nvec = nvec, alpha = alpha_tilde)
+  projout <- ginv(H %*% covmat %*% t(H))
+  omega <- projout$mat
 
-    ## Calculate covariance ----
-    alpha_tilde <- oout$par
-    covmat <- covfun(nvec = nvec, alpha = alpha_tilde)
-    projout <- ginv(H %*% covmat %*% t(H))
-    omega <- projout$mat
-
-    ## step 2 ----
-    oout <- stats::optim(par = rep(minval, ibdr),
-                         fn = uobj,
-                         method = "L-BFGS-B",
-                         lower = rep(minval, ibdr),
-                         upper = upper_alpha,
-                         nvec = nvec,
-                         omega = omega,
-                         which_keep = which_keep)
-  }
+  ## step 2 ----
+  oout <- stats::optim(par = rep(minval, ibdr),
+                       fn = uobj,
+                       method = ometh,
+                       lower = rep(minval, ibdr),
+                       upper = upper_alpha,
+                       nvec = nvec,
+                       omega = omega,
+                       which_keep = which_keep)
 
   ## Get alpha ----
   alpha <- oout$par
@@ -369,7 +335,6 @@ hweustat <- function(nvec,
 
   ## Calculate degrees of freedom and run test----
   df_hwe <- projout$rank - ibdr
-
   p_hwe <- stats::pchisq(q = chisq_hwe, df = df_hwe, lower.tail = FALSE)
 
   ## return ----

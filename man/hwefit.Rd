@@ -50,14 +50,14 @@ package.
 set.seed(5)
 ploidy <- 6
 nloc <- 100
-size <- 100
+size <- 1000
 r <- 0.5
 alpha <- 1/12
 qvec <- hwefreq(r = r, alpha = alpha, ploidy = ploidy)
 nmat <- t(rmultinom(n = nloc, size = size, prob = qvec))
 
 ## Run the analysis in parallel on the local computer with two workers
-future::plan(future::multisession, workers = 6)
+future::plan(future::multisession, workers = 2)
 hout <- hwefit(nmat = nmat,
                type = "ustat",
                thresh = 5)
