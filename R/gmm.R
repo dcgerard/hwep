@@ -17,6 +17,11 @@
 #'
 #' @export
 #'
+#' @references
+#' \itemize{
+#'   \item{Huang, K., Wang, T., Dunn, D. W., Zhang, P., Cao, X., Liu, R., & Li, B. (2019). Genotypic frequencies at equilibrium for polysomic inheritance under double-reduction. \emph{G3: Genes, Genomes, Genetics}, 9(5), 1693-1706. \doi{10.1534/g3.119.400132}}
+#' }
+#'
 #' @examples
 #' drbounds(4)
 #' drbounds(6)
@@ -217,8 +222,6 @@ obj_reals <- function(y, nvec, denom = c("expected", "observed")) {
 #'
 #' @author David Gerard
 #'
-#' @export
-#'
 #' @references
 #' \itemize{
 #'   \item{Agresti, A., & Coull, B. A. (1998). Approximate is better than "exact" for interval estimation of binomial proportions. The American Statistician, 52(2), 119-126. \doi{10.1080/00031305.1998.10480550}}
@@ -252,6 +255,7 @@ obj_reals <- function(y, nvec, denom = c("expected", "observed")) {
 #'                       tol = -Inf) * 1000)
 #' hwemom(nvec)
 #'
+#' @noRd
 hwemom <- function(nvec,
                    obj = c("g", "pearson", "neyman"),
                    ngen = 1) {

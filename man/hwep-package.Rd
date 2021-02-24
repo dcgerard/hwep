@@ -18,7 +18,7 @@ equilibrium given rates of double reduction.
 
 \describe{
 \item{\code{\link{hwefit}()}}{Fit either \code{\link{hwetetra}()},
-\code{\link{rmlike}()}, or \code{\link{hwemom}()} across
+\code{\link{rmlike}()}, or \code{\link{hweustat}()} across
 many loci. Parallelization is supported through the
 \link{future} package.}
 \item{\code{\link{hwetetra}()}}{Likelihood inference for tetraploids.
@@ -29,10 +29,9 @@ mating in polyploids. This function tests for random mating
 and estimates gametic frequencies given random mating.
 This function does not assume a model for meiosis.
 You should use \code{\link{hwetetra}()} for tetraploids.}
-\item{\code{\link{hwemom}()}}{Generalized method of moments inference
-for double reduction. This function tests for equilibrium given
-double reduction rates and estimates these rates given equilibrium.
-You should use \code{\link{hwetetra}()} for tetraploids.}
+\item{\code{\link{hweustat}()}}{U-statistic approach for equilibrium
+and double reduction. This function tests for equilibrium given
+double reduction rates and estimates these rates given equilibrium.}
 \item{\code{\link{hwenodr}()}}{Implements a likelihood ratio test
 that tests for HWE in autopolyploids given no double reduction.}
 }

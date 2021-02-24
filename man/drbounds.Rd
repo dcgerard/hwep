@@ -28,6 +28,11 @@ drbounds(14)
 drbounds(16)
 
 }
+\references{
+\itemize{
+\item{Huang, K., Wang, T., Dunn, D. W., Zhang, P., Cao, X., Liu, R., & Li, B. (2019). Genotypic frequencies at equilibrium for polysomic inheritance under double-reduction. \emph{G3: Genes, Genomes, Genetics}, 9(5), 1693-1706. \doi{10.1534/g3.119.400132}}
+}
+}
 \author{
 David Gerard
 }

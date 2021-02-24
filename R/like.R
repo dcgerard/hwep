@@ -132,7 +132,9 @@ rmem <- function(nvec, tol = 10^-3, maxit = 100, addval = 1 / 100) {
 #' \code{q == stats::convolve(p, rev(p), type = "open")}. We test for
 #' this hypothesis using likelihood inference, while estimating \code{p}.
 #'
-#' @inheritParams hwemom
+#' @param nvec A vector containing the observed genotype counts,
+#'     where \code{nvec[[i]]} is the number of individuals with genotype
+#'     \code{i-1}. This should be of length \code{ploidy+1}.
 #'
 #' @return A list with the following elements:
 #' \describe{

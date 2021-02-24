@@ -34,10 +34,9 @@ The main functions are:
     This function tests for random mating and estimates gametic
     frequencies given random mating. This function does not assume a
     model for meiosis. You should use `hwetetra()` for tetraploids.
--   `hwemom()`: Generalized method of moments inference for double
+-   `hweustat()`: U-statistic approach for equilibrium and double
     reduction. This function tests for equilibrium given double
-    reduction rates and estimates these rates given equilibrium. You
-    should use `hwetetra()` for tetraploids.
+    reduction rates and estimates these rates given equilibrium.
 -   `hwenodr()`: Implements a likelihood ratio test that tests for HWE
     in autopolyploids given no double reduction.
 
