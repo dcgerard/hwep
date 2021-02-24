@@ -73,7 +73,7 @@
 #'
 #' ## Consistent estimate for alpha
 #' alpha
-#' mean(hout$alpha)
+#' mean(hout$alpha1)
 #'
 hwefit <- function(nmat, type = c("ustat", "mle", "rm", "nodr"), ...) {
   stopifnot(is.matrix(nmat))
@@ -95,17 +95,22 @@ hwefit <- function(nmat, type = c("ustat", "mle", "rm", "nodr"), ...) {
     fun <- hwenodr
   }
 
-  ## Register doFutures()
+  ## Register doFutures() ----
   oldDoPar <- registerDoFuture()
   on.exit(with(oldDoPar, foreach::setDoPar(fun=fun, data=data, info=info)), add = TRUE)
 
-  ## Run foreach
+  ## Run foreach ----
   nvec <- NULL
   outdf <- foreach(nvec = iterators::iter(nmat, by = "row"),
                    .combine = rbind) %dopar% {
                      hout <- fun(nvec = c(nvec), ...)
                      unlist(hout)
-                     }
+                   }
+
+  ## for consistency with higher ploidy levels ----
+  if (ploidy %in% c(4, 6)) {
+    colnames(outdf)[colnames(outdf) == "alpha"] <- "alpha1"
+  }
 
   return(as.data.frame(outdf))
 }

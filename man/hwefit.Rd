@@ -77,7 +77,7 @@ mean(hout$p_hwe < 0.05, na.rm = TRUE)
 
 ## Consistent estimate for alpha
 alpha
-mean(hout$alpha)
+mean(hout$alpha1)
 
 }
 \author{
