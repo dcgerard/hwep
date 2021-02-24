@@ -20,8 +20,7 @@
 #'   \item{\code{\link{rmlike}()}}{Likelihood inference for random
 #'       mating in polyploids. This function tests for random mating
 #'       and estimates gametic frequencies given random mating.
-#'       This function does not assume a model for meiosis.
-#'       You should use \code{\link{hwetetra}()} for tetraploids.}
+#'       This function does not assume a model for meiosis.}
 #'   \item{\code{\link{hweustat}()}}{U-statistic approach for equilibrium
 #'       and double reduction. This function tests for equilibrium given
 #'       double reduction rates and estimates these rates given equilibrium.}

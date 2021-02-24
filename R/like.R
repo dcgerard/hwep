@@ -173,9 +173,7 @@ rmlike <- function(nvec) {
   stopifnot(nvec >= 0)
   stopifnot(is.vector(nvec))
 
-  if (ploidy == 4) {
-    message("You should use `hwetetra()` for tetraploids")
-  } else if (ploidy == 2) {
+  if (ploidy == 2) {
     message("Don't use this function. There are far better packages for diploids.")
   }
 
@@ -201,11 +199,3 @@ rmlike <- function(nvec) {
 
   return(retlist)
 }
-
-
-
-
-
-
-
-
