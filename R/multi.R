@@ -47,7 +47,7 @@
 #' ploidy <- 6
 #' nloc <- 100
 #' size <- 1000
-#' r <- 0.5
+#' r <- 0.1
 #' alpha <- 1/12
 #' qvec <- hwefreq(r = r, alpha = alpha, ploidy = ploidy)
 #' nmat <- t(rmultinom(n = nloc, size = size, prob = qvec))
