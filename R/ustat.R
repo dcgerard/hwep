@@ -233,6 +233,8 @@ ucov_naive  <- function(nvec, alpha) {
 #' @param thresh The threshhold for ignoring the genotype. We keep
 #'     genotypes such that \code{nvec >= thresh}.
 #'     Setting this to \code{0} uses all genotypes.
+#' @param effdf A logical. Should we use the ad-hoc
+#'     "effective degrees of freedom" (\code{TRUE}) or not (\code{FALSE})?
 #'
 #' @return A list with some or all of the following elements:
 #' \describe{
@@ -259,11 +261,13 @@ ucov_naive  <- function(nvec, alpha) {
 #'
 #' @export
 hweustat <- function(nvec,
-                     thresh = 5) {
+                     thresh = 1,
+                     effdf = TRUE) {
   ploidy <- length(nvec) - 1
   stopifnot(ploidy %% 2 == 0, ploidy >= 4)
   ibdr <- floor(ploidy / 4)
   stopifnot(thresh >= 0, length(thresh) == 1)
+  stopifnot(is.logical(effdf), length(effdf) == 1)
   minval <- sqrt(.Machine$double.eps)
 
   ## Choose which groups to aggregate ----
@@ -333,8 +337,20 @@ hweustat <- function(nvec,
   ## Calculate chi-square statistic ---
   chisq_hwe <- oout$value
 
-  ## Calculate degrees of freedom and run test----
-  df_hwe <- projout$rank - ibdr
+  ## Calculate degrees of freedom ----
+  if (effdf) {
+    dfadd <- sum((abs(alpha - minval) < minval) | (abs(alpha - upper_alpha) < minval))
+    ecounts <- freqnext(freq = nvec / sum(nvec), alpha = alpha) * sum(nvec)
+    if (any(!which_keep)) {
+      ecounts <- c(ecounts[which_keep], sum(ecounts[!which_keep]))
+    }
+    dfadd <- dfadd - sum(ecounts < 0.1)
+  } else {
+    dfadd <- 0
+  }
+  df_hwe <- projout$rank - ibdr + dfadd
+
+  ## Run test ----
   p_hwe <- stats::pchisq(q = chisq_hwe, df = df_hwe, lower.tail = FALSE)
 
   ## return ----

@@ -5,7 +5,7 @@
 \title{U-process minimizer approach to equilibrium testing and double reduction
 estimation}
 \usage{
-hweustat(nvec, thresh = 5)
+hweustat(nvec, thresh = 1, effdf = TRUE)
 }
 \arguments{
 \item{nvec}{A vector containing the observed genotype counts,
@@ -15,6 +15,9 @@ where \code{nvec[[i]]} is the number of individuals with genotype
 \item{thresh}{The threshhold for ignoring the genotype. We keep
 genotypes such that \code{nvec >= thresh}.
 Setting this to \code{0} uses all genotypes.}
+
+\item{effdf}{A logical. Should we use the ad-hoc
+"effective degrees of freedom" (\code{TRUE}) or not (\code{FALSE})?}
 }
 \value{
 A list with some or all of the following elements:
