@@ -54,9 +54,7 @@
 #' ## Run the analysis in parallel on the local computer with two workers
 #' future::plan(future::multisession, workers = 2)
 #' hout <- hwefit(nmat = nmat,
-#'                type = "ustat",
-#'                thresh = 1,
-#'                effdf = TRUE)
+#'                type = "mle")
 #'
 #' ## Shut down parallel workers
 #' future::plan("sequential")

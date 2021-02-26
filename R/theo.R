@@ -144,7 +144,11 @@ theofreq <- function(alpha, r, ploidy) {
   stopifnot(ploidy %% 2 == 0)
   stopifnot(ploidy > 1, ploidy < 11)
   stopifnot(length(alpha) == floor(ploidy / 4))
-  stopifnot(sum(alpha) <= 1, alpha >= 0)
+  stopifnot(sum(alpha) <= 1)
+
+  stopifnot(alpha > -sqrt(.Machine$double.eps))
+
+  alpha[alpha < 0] <- 0
 
   if (ploidy == 2) {
     hout <- c(r, 1-r)
@@ -180,8 +184,16 @@ theofreq <- function(alpha, r, ploidy) {
     )
   }
 
+  ## Fix numerical issues
+  stopifnot(hout > -sqrt(.Machine$double.eps))
+  hout[hout < 0] <- 0
+  hout <- hout / sum(hout)
+  q <- stats::convolve(x = hout, y = rev(hout), type = "open")
+  q[q < 0] <- 0
+  q <- q / sum(q)
+
   retlist <- list(p = hout,
-                  q = stats::convolve(x = hout, y = rev(hout), type = "open"))
+                  q = q)
 
   return(retlist)
 }
@@ -245,12 +257,13 @@ hwelike <- function(nvec) {
 
   rinit <- sum(0:ploidy * nvec) / (ploidy * sum(nvec))
 
+  minval <- sqrt(.Machine$double.eps)
   upper_alpha <- drbounds(ploidy = ploidy)
-  oout <- stats::optim(par = c(rinit, rep(0, ibdr)),
+  oout <- stats::optim(par = c(rinit, rep(minval, ibdr)),
                        fn = like_obj,
                        method = "L-BFGS-B",
-                       lower = rep(0, ibdr + 1),
-                       upper = c(1, upper_alpha),
+                       lower = rep(0.001, ibdr + 1),
+                       upper = c(0.999, upper_alpha),
                        control = list(fnscale = -1),
                        nvec = nvec)
 
@@ -261,7 +274,7 @@ hwelike <- function(nvec) {
   ll_u <- stats::dmultinom(x = nvec, prob = q_u, log = TRUE)
 
   chisq_hwe <- -2 * (oout$value - ll_u)
-  df_hwe <- ploidy - 2
+  df_hwe <- ploidy - ibdr - 1
   p_hwe <- stats::pchisq(q = chisq_hwe, df = df_hwe, lower.tail = FALSE)
 
   retlist <- list(alpha = alphahat,
