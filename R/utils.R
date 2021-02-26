@@ -2,6 +2,23 @@
 ## Utility functions
 ###########################
 
+#' Greatest common divisor
+#'
+#' @param x An integer
+#' @param y Anothe rinteger
+#'
+#' @author David Gerard
+#'
+#' @examples
+#' gcd(105, 168)
+#'
+#' @noRd
+gcd <- function(x, y) {
+  r <- x %% y
+  return(ifelse(r > 0, gcd(y, r), y))
+}
+
+
 #' Use log-sum-exp trick on vector
 #'
 #' Calculates \deqn{\log(\sum_i\exp(x_i))}

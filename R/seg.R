@@ -246,6 +246,9 @@ gsegmat_symb <- function(ploidy, out = c("str", "exp")) {
                        "0", "1"),
                      ncol = 2,
                      byrow = TRUE)
+    if (out == "exp") {
+      segmat <- matrix(str2expression(segmat), nrow = ploidy + 1)
+    }
     return(segmat)
   }
 
@@ -260,11 +263,17 @@ gsegmat_symb <- function(ploidy, out = c("str", "exp")) {
         outer(X = ellvec, Y = kvec, FUN = function(x, y) choose(x - j, y - 2 * j)) *
         outer(X = choose(n = ploidy - ellvec, i - j), Y = rep(1, ploidy / 2 + 1), FUN = `*`) *
         outer(X = ellvec, Y = kvec, FUN = function(x, y) choose(ploidy - x - (i - j), ploidy / 2 - y - 2 * (i - j)))
-      nummat <- nummat_num
-      class(nummat) <- "character"
 
       denmat_num <- matrix(choose(ploidy, i), nrow = ploidy + 1, ncol = ploidy / 2 + 1) *
         matrix(choose(ploidy - i, ploidy / 2 - 2 * i), nrow = ploidy + 1, ncol = ploidy / 2 + 1)
+
+      gcdmat <- matrix(mapply(nummat_num, denmat_num, FUN = gcd), nrow = ploidy + 1)
+
+      nummat_num <- nummat_num / gcdmat
+      denmat_num <- denmat_num / gcdmat
+
+      nummat <- nummat_num
+      class(nummat) <- "character"
       denmat <- denmat_num
       class(denmat) <- "character"
 
