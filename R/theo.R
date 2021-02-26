@@ -186,7 +186,92 @@ theofreq <- function(alpha, r, ploidy) {
   return(retlist)
 }
 
+#' log-likelihood used in hwelike
+#'
+#' @param par first element is r, rest are alpha
+#' @param nvec the counts
+#'
+#' @author David Gerard
+#'
+#' @noRd
+like_obj <- function(par, nvec) {
+  ploidy <- length(nvec) - 1
+  r <- par[[1]]
+  alpha <- par[-1]
+  fq <- theofreq(alpha = alpha, r = r, ploidy = ploidy)
+  return(stats::dmultinom(x = nvec, prob = fq$q, log = TRUE))
+}
 
+#' Maximum likelihood approach for equilibrium testing and double reduction
+#' estimation.
+#'
+#' Genotype frequencies from Huang et al (2019) are used to implement a
+#' likelihood procedure to estimate double reduction rates and to test
+#' for equilibrium while accounting for double reduction.
+#'
+#' @inheritParams hweustat
+#'
+#' @author David Gerard
+#'
+#' @references
+#' \itemize{
+#'   \item{Huang, K., Wang, T., Dunn, D. W., Zhang, P., Cao, X., Liu, R., & Li, B. (2019). Genotypic frequencies at equilibrium for polysomic inheritance under double-reduction. G3: Genes, Genomes, Genetics, 9(5), 1693-1706. \doi{10.1534/g3.119.400132}}
+#' }
+#'
+#' @return A list with some or all of the following elements:
+#' \describe{
+#'   \item{\code{alpha}}{The estimated double reduction parameter(s).
+#'       In diploids, this value is \code{NULL}.}
+#'   \item{\code{r}}{The estimated allele frequency.}
+#'   \item{\code{chisq_hwe}}{The chi-square test statistic for testing
+#'       against the null of equilibrium.}
+#'   \item{\code{df_hwe}}{The degrees of freedom associated with
+#'       \code{chisq_hwe}.}
+#'   \item{\code{p_hwe}}{The p-value against the null of equilibrium.}
+#' }
+#'
+#' @export
+#'
+#' @examples
+#' thout <- theofreq(alpha = 0.1, r = 0.3, ploidy = 6)
+#' nvec <- c(stats::rmultinom(n = 1, size = 100, prob = thout$q))
+#' hwelike(nvec = nvec)
+#'
+hwelike <- function(nvec) {
+  ploidy <- length(nvec) - 1
+  stopifnot(ploidy %% 2 == 0, ploidy >= 4, ploidy <= 10)
+  stopifnot(nvec >= 0)
+  ibdr <- floor(ploidy / 4)
+
+  rinit <- sum(0:ploidy * nvec) / (ploidy * sum(nvec))
+
+  upper_alpha <- drbounds(ploidy = ploidy)
+  oout <- stats::optim(par = c(rinit, rep(0, ibdr)),
+                       fn = like_obj,
+                       method = "L-BFGS-B",
+                       lower = rep(0, ibdr + 1),
+                       upper = c(1, upper_alpha),
+                       control = list(fnscale = -1),
+                       nvec = nvec)
+
+  rhat <- oout$par[[1]]
+  alphahat <- oout$par[-1]
+
+  q_u <- nvec / sum(nvec)
+  ll_u <- stats::dmultinom(x = nvec, prob = q_u, log = TRUE)
+
+  chisq_hwe <- -2 * (oout$value - ll_u)
+  df_hwe <- ploidy - 2
+  p_hwe <- stats::pchisq(q = chisq_hwe, df = df_hwe, lower.tail = FALSE)
+
+  retlist <- list(alpha = alphahat,
+                  r = rhat,
+                  chisq_hwe = chisq_hwe,
+                  df_hwe = df_hwe,
+                  p_hwe = p_hwe)
+
+  return(retlist)
+}
 
 
 

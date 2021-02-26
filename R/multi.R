@@ -5,7 +5,7 @@
 #' Equilibrium and random mating estimation and testing for many loci.
 #'
 #' Estimates and tests for either equilibrium or random mating  across many loci
-#' using \code{\link{hwetetra}()}, \code{\link{hweustat}()},
+#' using \code{\link{hwelike}()}, \code{\link{hweustat}()},
 #' \code{\link{rmlike}()}, or \code{\link{hwenodr}()}.
 #'
 #' We provide parallelization support through the \link[future]{future}
@@ -21,20 +21,19 @@
 #'       estimate double reduction rates givene equilibrium. The default.
 #'       See \code{\link{hweustat}()}.}
 #'   \item{\code{"mle"}}{Maximum likelihood estimation and testing. Only
-#'       supported for tetraploids. This will test for equilibrium and
-#'       random mating, and is generally better than \code{"ustat"}
-#'       for tetraploids. See \code{\link{hwetetra}()}.}
+#'       supported for ploidies less than or equal to 10.
+#'       See \code{\link{hwelike}()}.}
 #'   \item{\code{"rm"}}{Testing random mating, and estimating gamete
 #'       frequencies given random mating. See \code{\link{rmlike}()}.}
 #'   \item{\code{"nodr"}}{Testing equilibrium given no double reduction.
 #'       See \code{\link{hwenodr}()}.}
 #' }
 #' @param ... Any other parameters to send to \code{\link{hweustat}()},
-#'     \code{\link{hwetetra}()},
+#'     \code{\link{hwelike}()},
 #'     \code{\link{rmlike}()}, or \code{\link{hwenodr}()}.
 #'
 #' @return A data frame. The columns of which can are described in
-#'     \code{\link{hwetetra}()}, \code{\link{hweustat}()},
+#'     \code{\link{hwelike}()}, \code{\link{hweustat}()},
 #'     \code{\link{rmlike}()}, or \code{\link{hwenodr}()}.
 #'
 #' @author David Gerard
@@ -84,8 +83,8 @@ hwefit <- function(nmat, type = c("ustat", "mle", "rm", "nodr"), ...) {
 
   ## Choose appropriate function ----
   if (type == "mle") {
-    stopifnot(ploidy == 4)
-    fun <- hwetetra
+    stopifnot(ploidy <= 10)
+    fun <- hwelike
   } else if (type == "ustat") {
     fun <- hweustat
   } else if (type == "gmm") {
