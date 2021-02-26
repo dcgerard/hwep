@@ -171,7 +171,7 @@ gsegmat2 <- function(alpha, ploidy) {
 gsegmat <- function(alpha, ploidy) {
 
   ## Check lengths ----
-  stopifnot(ploidy %% 2 == 0, ploidy >=2, length(ploidy) == 1)
+  stopifnot(ploidy %% 2 == 0, ploidy >= 2, length(ploidy) == 1)
   stopifnot(length(alpha) == floor(ploidy / 4))
 
   ## Early return for special cases ----
@@ -205,6 +205,89 @@ gsegmat <- function(alpha, ploidy) {
         ) * alphavec[[i + 1]]
     }
   }
+  return(segmat)
+}
+
+
+#' Symbolic representation of the segregation probability matrix
+#'
+#' Two alleles are identitcal-by-double-reduction (IBDR) if they originate from
+#' the same (by origin) allele in the parent. We let "a" be the probability of
+#' zero IBDR alleles, "b" be the probability of one IBDR pair,
+#' "c" be the probability of two IBDR pairs, etc...
+#'
+#' @param ploidy The ploidy of the species
+#' @param out Should we return a character matrix
+#'     (\code{"str"}) or an expression matrix (\code{"exp"})?
+#'
+#' @return A character or expression matrix containing the mathematical
+#'     form for the segregation matrix. Element (i, j) is the probability
+#'     a parent with dosage i-1 produces a gamete with dosage j-1.
+#'
+#' @seealso \code{\link{gsegmat}()} for numerical expressions.
+#'
+#' @export
+#'
+#' @author David Gerard
+#'
+#' @examples
+#' gsegmat_symb(4)
+#' gsegmat_symb(6)
+#' gsegmat_symb(8)
+gsegmat_symb <- function(ploidy, out = c("str", "exp")) {
+  stopifnot(ploidy %% 2 == 0, ploidy >= 2, length(ploidy) == 1)
+  out <- match.arg(out)
+  ibdr <- floor(ploidy / 4)
+
+  ## Early stopping for diploids
+  if (ploidy == 2) {
+    segmat <- matrix(c("1", "0",
+                       "1/2", "1/2",
+                       "0", "1"),
+                     ncol = 2,
+                     byrow = TRUE)
+    return(segmat)
+  }
+
+  avec <- letters[0:ibdr + 1]
+  ellvec <- 0:ploidy
+  kvec <- 0:(ploidy / 2)
+
+  segmat <- matrix("", nrow = ploidy + 1, ncol = ploidy / 2 + 1)
+  for (i in 0:ibdr) {
+    for (j in 0:i) {
+      nummat_num <- outer(X = choose(ellvec, j), Y = rep(1, ploidy / 2 + 1), FUN = `*`) *
+        outer(X = ellvec, Y = kvec, FUN = function(x, y) choose(x - j, y - 2 * j)) *
+        outer(X = choose(n = ploidy - ellvec, i - j), Y = rep(1, ploidy / 2 + 1), FUN = `*`) *
+        outer(X = ellvec, Y = kvec, FUN = function(x, y) choose(ploidy - x - (i - j), ploidy / 2 - y - 2 * (i - j)))
+      nummat <- nummat_num
+      class(nummat) <- "character"
+
+      denmat_num <- matrix(choose(ploidy, i), nrow = ploidy + 1, ncol = ploidy / 2 + 1) *
+        matrix(choose(ploidy - i, ploidy / 2 - 2 * i), nrow = ploidy + 1, ncol = ploidy / 2 + 1)
+      denmat <- denmat_num
+      class(denmat) <- "character"
+
+      addmat <- matrix(paste0("(", nummat, "/", denmat, ")"), nrow = ploidy + 1)
+
+      addmat[nummat_num == denmat_num] <- ""
+      addmat <- matrix(paste0("+", addmat, "*", avec[[i + 1]]), nrow = ploidy + 1)
+      addmat[nummat_num == 0] <- ""
+
+      segmat <- matrix(paste0(segmat, addmat), nrow = ploidy + 1)
+    }
+  }
+
+  segmat[segmat == ""] <- "0"
+  segmat <- gsub(pattern = "^\\+", replacement = "", x = segmat)
+  segmat <- gsub(pattern = "^\\*", replacement = "", x = segmat)
+  segmat <- gsub(pattern = "\\+\\*", replacement = "\\+", x = segmat)
+  if (out == "str") {
+    segmat <- gsub(pattern = "\\*", replacement = "", x = segmat)
+  } else {
+    segmat <- matrix(str2expression(segmat), nrow = ploidy + 1)
+  }
+
   return(segmat)
 }
 
