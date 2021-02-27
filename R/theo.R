@@ -257,13 +257,13 @@ hwelike <- function(nvec) {
 
   rinit <- sum(0:ploidy * nvec) / (ploidy * sum(nvec))
 
-  minval <- sqrt(.Machine$double.eps)
+  minval <- 0.00001
   upper_alpha <- drbounds(ploidy = ploidy)
   oout <- stats::optim(par = c(rinit, rep(minval, ibdr)),
                        fn = like_obj,
                        method = "L-BFGS-B",
-                       lower = rep(0.001, ibdr + 1),
-                       upper = c(0.999, upper_alpha),
+                       lower = rep(minval, ibdr + 1),
+                       upper = c(1 - minval, upper_alpha),
                        control = list(fnscale = -1),
                        nvec = nvec)
 

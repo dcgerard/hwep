@@ -14,3 +14,9 @@ test_that("rmem works", {
 
   expect_equal(pest, pvec, tolerance = 10^-4)
 })
+
+test_that("hwelike works", {
+  # hard nvec
+  nvec <- c(421L, 390L, 159L, 27L, 3L, 0L, 0L, 0L, 0L)
+  hwelike(nvec = nvec)
+})
