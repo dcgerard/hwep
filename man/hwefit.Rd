@@ -47,18 +47,18 @@ package.
 \examples{
 ## Generate random data
 set.seed(5)
-ploidy <- 8
+ploidy <- 6
 nloc <- 100
 size <- 1000
 r <- 0.1
-alpha <- c(0, 0)
+alpha <- c(0.1)
 qvec <- hwefreq(r = r, alpha = alpha, ploidy = ploidy)
 nmat <- t(rmultinom(n = nloc, size = size, prob = qvec))
 
 ## Run the analysis in parallel on the local computer with two workers
 future::plan(future::multisession, workers = 2)
 hout <- hwefit(nmat = nmat,
-               type = "mle")
+               type = "mle", effdf = TRUE)
 
 ## Shut down parallel workers
 future::plan("sequential")

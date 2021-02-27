@@ -280,7 +280,7 @@ like_obj2 <- function(alpha, r, nvec, which_keep = NULL) {
 #'
 hwelike <- function(nvec,
                     thresh = 1,
-                    effdf = FALSE) {
+                    effdf = TRUE) {
   ploidy <- length(nvec) - 1
   stopifnot(ploidy %% 2 == 0, ploidy >= 4, ploidy <= 10)
   stopifnot(nvec >= 0)
@@ -354,6 +354,11 @@ hwelike <- function(nvec,
   TOL <- sqrt(.Machine$double.eps)
   if (effdf) {
     dfadd <- sum((abs(alphahat - minval) < TOL) | (abs(alphahat - upper_alpha) < TOL))
+    ecounts <- theofreq(alpha = alphahat, r = rhat, ploidy = ploidy)$q * sum(nvec)
+    if (any(!which_keep)) {
+      ecounts <- c(ecounts[which_keep], sum(ecounts[!which_keep]))
+    }
+    dfadd <- dfadd - sum(ecounts < 0.5)
   } else {
     dfadd <- 0
   }
