@@ -5,12 +5,19 @@
 \title{Maximum likelihood approach for equilibrium testing and double reduction
 estimation.}
 \usage{
-hwelike(nvec)
+hwelike(nvec, thresh = 1, effdf = FALSE)
 }
 \arguments{
 \item{nvec}{A vector containing the observed genotype counts,
 where \code{nvec[[i]]} is the number of individuals with genotype
 \code{i-1}. This should be of length \code{ploidy+1}.}
+
+\item{thresh}{The threshhold for ignoring the genotype. We keep
+genotypes such that \code{nvec >= thresh}.
+Setting this to \code{0} uses all genotypes.}
+
+\item{effdf}{A logical. Should we use the ad-hoc
+"effective degrees of freedom" (\code{TRUE}) or not (\code{FALSE})?}
 }
 \value{
 A list with some or all of the following elements:

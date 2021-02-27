@@ -202,16 +202,45 @@ theofreq <- function(alpha, r, ploidy) {
 #'
 #' @param par first element is r, rest are alpha
 #' @param nvec the counts
+#' @param which_keep A logical vector the same length as nvec, indicating
+#'     which genotypes to aggregate.
 #'
 #' @author David Gerard
 #'
 #' @noRd
-like_obj <- function(par, nvec) {
+like_obj <- function(par, nvec, which_keep = NULL) {
+  if (is.null(which_keep)) {
+    which_keep <- rep(TRUE, length(nvec))
+  }
+
   ploidy <- length(nvec) - 1
   r <- par[[1]]
   alpha <- par[-1]
   fq <- theofreq(alpha = alpha, r = r, ploidy = ploidy)
-  return(stats::dmultinom(x = nvec, prob = fq$q, log = TRUE))
+  q <- fq$q
+
+  if (!all(which_keep)) {
+    nvec <- c(nvec[which_keep], sum(nvec[!which_keep]))
+    q <- c(q[which_keep], sum(q[!which_keep]))
+  }
+
+  return(stats::dmultinom(x = nvec, prob = q, log = TRUE))
+}
+
+
+#' log-likelihood used in hwelike
+#'
+#' @param alpha double reduction parameter
+#' @param r allele frequency
+#' @param nvec the counts
+#' @param which_keep A logical vector the same length as nvec, indicating
+#'     which genotypes to aggregate.
+#'
+#' @author David Gerard
+#'
+#' @noRd
+like_obj2 <- function(alpha, r, nvec, which_keep = NULL) {
+  like_obj(par = c(r, alpha), nvec = nvec, which_keep = which_keep)
 }
 
 #' Maximum likelihood approach for equilibrium testing and double reduction
@@ -249,32 +278,88 @@ like_obj <- function(par, nvec) {
 #' nvec <- c(stats::rmultinom(n = 1, size = 100, prob = thout$q))
 #' hwelike(nvec = nvec)
 #'
-hwelike <- function(nvec) {
+hwelike <- function(nvec,
+                    thresh = 1,
+                    effdf = FALSE) {
   ploidy <- length(nvec) - 1
   stopifnot(ploidy %% 2 == 0, ploidy >= 4, ploidy <= 10)
   stopifnot(nvec >= 0)
+  stopifnot(length(thresh) == 1, thresh >= 0)
+  stopifnot(is.logical(effdf), length(effdf) == 1)
   ibdr <- floor(ploidy / 4)
+  omethod <- ifelse(ibdr == 1, "Brent", "L-BFGS-B")
 
-  rinit <- sum(0:ploidy * nvec) / (ploidy * sum(nvec))
+  ## Choose which groups to aggregate ----
+  which_keep <- nvec >= thresh
+  if (sum(!which_keep) >= 1) {
+    which_keep[which_keep][which.min(nvec[which_keep])] <- FALSE
+  }
+  numkeep <- sum(which_keep)
+  if (numkeep >= ploidy) {
+    ## aggregating one group = no aggregation at all.
+    which_keep <- rep(TRUE, ploidy + 1)
+    numkeep <- ploidy + 1
+  }
 
-  minval <- 0.00001
+  ## Return early if too few groups ----
+  if (sum(which_keep) - ibdr - 1 <= 0) {
+    return(
+      list(
+        alpha = rep(NA_real_, ibdr),
+        r = NA_real_,
+        chisq_hwe = NA_real_,
+        df_hwe = NA_real_,
+        p_hwe = NA_real_
+      )
+    )
+  }
+
+  ## Find MLE under null ----
+  rhat <- sum(0:ploidy * nvec) / (ploidy * sum(nvec))
+  minval <- 0.0001
   upper_alpha <- drbounds(ploidy = ploidy)
-  oout <- stats::optim(par = c(rinit, rep(minval, ibdr)),
-                       fn = like_obj,
-                       method = "L-BFGS-B",
-                       lower = rep(minval, ibdr + 1),
-                       upper = c(1 - minval, upper_alpha),
+  oout <- stats::optim(par = rep(minval, ibdr),
+                       fn = like_obj2,
+                       method = omethod,
+                       lower = rep(minval, ibdr),
+                       upper = upper_alpha,
                        control = list(fnscale = -1),
-                       nvec = nvec)
+                       nvec = nvec,
+                       r = rhat,
+                       which_keep = which_keep)
 
-  rhat <- oout$par[[1]]
-  alphahat <- oout$par[-1]
+  alphahat <- oout$par
+  ll_e <- oout$value
 
-  q_u <- nvec / sum(nvec)
-  ll_u <- stats::dmultinom(x = nvec, prob = q_u, log = TRUE)
+  ## MLE under alternative ----
+  if (all(which_keep)) {
+    q_u <- nvec / sum(nvec)
+    ll_u <- stats::dmultinom(x = nvec, prob = q_u, log = TRUE)
+  } else {
+    ntemp <- c(nvec[which_keep], sum(nvec[!which_keep]))
+    q_temp <- ntemp / sum(ntemp)
+    ll_u <- stats::dmultinom(x = ntemp, prob = q_temp, log = TRUE)
+  }
 
-  chisq_hwe <- -2 * (oout$value - ll_u)
-  df_hwe <- ploidy - ibdr - 1
+  ## Test statistic ----
+  chisq_hwe <- -2 * (ll_e - ll_u)
+
+  ## Find degrees of freedom ----
+  if (all(which_keep)) {
+    df_hwe <- ploidy - ibdr - 1
+  } else {
+    df_hwe <- sum(which_keep) + 1 - ibdr - 1 ## unconstrained as sum(which_keep) + 1, alpha is ibdr, r is 1.
+  }
+
+  TOL <- sqrt(.Machine$double.eps)
+  if (effdf) {
+    dfadd <- sum((abs(alphahat - minval) < TOL) | (abs(alphahat - upper_alpha) < TOL))
+  } else {
+    dfadd <- 0
+  }
+  df_hwe <- df_hwe + dfadd
+
+  ## Run test ----
   p_hwe <- stats::pchisq(q = chisq_hwe, df = df_hwe, lower.tail = FALSE)
 
   retlist <- list(alpha = alphahat,
