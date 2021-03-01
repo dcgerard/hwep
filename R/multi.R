@@ -28,9 +28,11 @@
 #'   \item{\code{"nodr"}}{Testing equilibrium given no double reduction.
 #'       See \code{\link{hwenodr}()}.}
 #' }
-#' @param ... Any other parameters to send to \code{\link{hweustat}()},
-#'     \code{\link{hwelike}()},
-#'     \code{\link{rmlike}()}, or \code{\link{hwenodr}()}.
+#' @param effdf A logical. Should we use the effective degrees of freedom?
+#'     Only applicable if \code{type = "mle"} or \code{type = "ustat"}.
+#' @param thresh A non-negative numeric. The threshhold for aggregating
+#'     genotypes. Only applicable if \code{type = "mle"} or
+#'     \code{type = "ustat"}.
 #'
 #' @return A data frame. The columns of which can are described in
 #'     \code{\link{hwelike}()}, \code{\link{hweustat}()},
@@ -43,18 +45,18 @@
 #' @examples
 #' ## Generate random data
 #' set.seed(5)
-#' ploidy <- 6
+#' ploidy <- 4
 #' nloc <- 100
 #' size <- 1000
-#' r <- 0.1
-#' alpha <- c(0.1)
+#' r <- 0.5
+#' alpha <- 1/12
 #' qvec <- hwefreq(r = r, alpha = alpha, ploidy = ploidy)
 #' nmat <- t(rmultinom(n = nloc, size = size, prob = qvec))
 #'
 #' ## Run the analysis in parallel on the local computer with two workers
 #' future::plan(future::multisession, workers = 2)
 #' hout <- hwefit(nmat = nmat,
-#'                type = "mle", effdf = TRUE)
+#'                type = "ustat")
 #'
 #' ## Shut down parallel workers
 #' future::plan("sequential")
@@ -73,24 +75,20 @@
 #' alpha
 #' mean(hout$alpha1)
 #'
-hwefit <- function(nmat, type = c("ustat", "mle", "rm", "nodr"), ...) {
+hwefit <- function(nmat,
+                   type = c("ustat", "mle", "rm", "nodr"),
+                   effdf = TRUE,
+                   thresh = 1) {
+  ## Check parameters ----
   stopifnot(is.matrix(nmat))
   ploidy <- ncol(nmat) - 1
   stopifnot(ploidy %% 2 == 0, ploidy > 2)
+  stopifnot(is.logical(effdf), length(effdf) == 1)
+  stopifnot(length(thresh) == 1, thresh >= 0)
   type <- match.arg(type)
 
-  ## Choose appropriate function ----
   if (type == "mle") {
     stopifnot(ploidy <= 10)
-    fun <- hwelike
-  } else if (type == "ustat") {
-    fun <- hweustat
-  } else if (type == "gmm") {
-    fun <- hwemom
-  } else if (type == "rm") {
-    fun <- rmlike
-  } else if (type == "nodr") {
-    fun <- hwenodr
   }
 
   ## Register doFutures() ----
@@ -101,7 +99,19 @@ hwefit <- function(nmat, type = c("ustat", "mle", "rm", "nodr"), ...) {
   nvec <- NULL
   outdf <- foreach(nvec = iterators::iter(nmat, by = "row"),
                    .combine = rbind) %dopar% {
-                     hout <- fun(nvec = c(nvec), ...)
+                     if (type == "mle") {
+                       hout <- hwelike(nvec = c(nvec),
+                                       thresh = thresh,
+                                       effdf = effdf)
+                     } else if (type == "ustat") {
+                       hout <- hweustat(nvec = c(nvec),
+                                        thresh = thresh,
+                                        effdf = effdf)
+                     } else if (type == "rm") {
+                       hout <- rmlike(nvec = c(nvec))
+                     } else if (type == "nodr") {
+                       hout <- hwenodr(nvec = c(nvec))
+                     }
                      unlist(hout)
                    }
 

@@ -42,3 +42,23 @@ test_that("Huang theoretical genotypes are correct", {
     tolerance = 10^-4
   )
 })
+
+test_that("hwelike and hwetetra are same when ploidy=4", {
+  set.seed(1)
+  freq <- theofreq(alpha = 0.1, r = 0.4, ploidy = 4)$q
+  n <- 100
+  nvec <- c(rmultinom(n = 1, size = n, prob = freq))
+  lout <- hwelike(nvec)
+  tout <- hwetetra(nvec = nvec)
+
+  expect_equal(
+    lout$p_hwe,
+    tout$p_hwe
+  )
+
+  expect_equal(
+    lout$alpha,
+    tout$alpha,
+    tolerance = 10^-4
+  )
+})

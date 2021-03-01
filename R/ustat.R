@@ -344,7 +344,7 @@ hweustat <- function(nvec,
     if (any(!which_keep)) {
       ecounts <- c(ecounts[which_keep], sum(ecounts[!which_keep]))
     }
-    dfadd <- dfadd - sum(ecounts < 0.5)
+    dfadd <- dfadd - sum(ecounts < 0.1)
   } else {
     dfadd <- 0
   }

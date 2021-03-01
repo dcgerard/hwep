@@ -4,7 +4,7 @@
 \alias{hwefit}
 \title{Equilibrium and random mating estimation and testing for many loci.}
 \usage{
-hwefit(nmat, type = c("ustat", "mle", "rm", "nodr"), ...)
+hwefit(nmat, type = c("ustat", "mle", "rm", "nodr"), effdf = TRUE, thresh = 1)
 }
 \arguments{
 \item{nmat}{A matrix of counts. The rows index the loci and the columns
@@ -26,9 +26,12 @@ frequencies given random mating. See \code{\link{rmlike}()}.}
 See \code{\link{hwenodr}()}.}
 }}
 
-\item{...}{Any other parameters to send to \code{\link{hweustat}()},
-\code{\link{hwelike}()},
-\code{\link{rmlike}()}, or \code{\link{hwenodr}()}.}
+\item{effdf}{A logical. Should we use the effective degrees of freedom?
+Only applicable if \code{type = "mle"} or \code{type = "ustat"}.}
+
+\item{thresh}{A non-negative numeric. The threshhold for aggregating
+genotypes. Only applicable if \code{type = "mle"} or
+\code{type = "ustat"}.}
 }
 \value{
 A data frame. The columns of which can are described in
@@ -47,18 +50,18 @@ package.
 \examples{
 ## Generate random data
 set.seed(5)
-ploidy <- 6
+ploidy <- 4
 nloc <- 100
 size <- 1000
-r <- 0.1
-alpha <- c(0.1)
+r <- 0.5
+alpha <- 1/12
 qvec <- hwefreq(r = r, alpha = alpha, ploidy = ploidy)
 nmat <- t(rmultinom(n = nloc, size = size, prob = qvec))
 
 ## Run the analysis in parallel on the local computer with two workers
 future::plan(future::multisession, workers = 2)
 hout <- hwefit(nmat = nmat,
-               type = "mle", effdf = TRUE)
+               type = "ustat")
 
 ## Shut down parallel workers
 future::plan("sequential")

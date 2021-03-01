@@ -113,8 +113,6 @@ lltetra <- function(a, r, nvec) {
 #'   \item{Mather, K. (1935). Reductional and equational separation of the chromosomes in bivalents and multivalents. Journal of Genetics, 30(1), 53-78. \doi{10.1007/BF02982205}}
 #' }
 #'
-#' @export
-#'
 #' @examples
 #' ## Generate data under HWE
 #' set.seed(1)

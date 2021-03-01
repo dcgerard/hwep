@@ -279,8 +279,8 @@ like_obj2 <- function(alpha, r, nvec, which_keep = NULL) {
 #' hwelike(nvec = nvec)
 #'
 hwelike <- function(nvec,
-                    thresh = 1,
-                    effdf = TRUE) {
+                    thresh = 0,
+                    effdf = FALSE) {
   ploidy <- length(nvec) - 1
   stopifnot(ploidy %% 2 == 0, ploidy >= 4, ploidy <= 10)
   stopifnot(nvec >= 0)
@@ -308,7 +308,7 @@ hwelike <- function(nvec,
         alpha = rep(NA_real_, ibdr),
         r = NA_real_,
         chisq_hwe = NA_real_,
-        df_hwe = NA_real_,
+        df_hwe = sum(which_keep) - ibdr - 1,
         p_hwe = NA_real_
       )
     )
@@ -348,7 +348,7 @@ hwelike <- function(nvec,
   if (all(which_keep)) {
     df_hwe <- ploidy - ibdr - 1
   } else {
-    df_hwe <- sum(which_keep) + 1 - ibdr - 1 ## unconstrained as sum(which_keep) + 1, alpha is ibdr, r is 1.
+    df_hwe <- sum(which_keep) - ibdr - 1 ## unconstrained as sum(which_keep) + 1, alpha is ibdr, r is 1.
   }
 
   TOL <- sqrt(.Machine$double.eps)
@@ -358,14 +358,18 @@ hwelike <- function(nvec,
     if (any(!which_keep)) {
       ecounts <- c(ecounts[which_keep], sum(ecounts[!which_keep]))
     }
-    dfadd <- dfadd - sum(ecounts < 0.5)
+    dfadd <- dfadd - sum(ecounts < 0.1)
   } else {
     dfadd <- 0
   }
   df_hwe <- df_hwe + dfadd
 
   ## Run test ----
-  p_hwe <- stats::pchisq(q = chisq_hwe, df = df_hwe, lower.tail = FALSE)
+  if (df_hwe > 0) {
+    p_hwe <- stats::pchisq(q = chisq_hwe, df = df_hwe, lower.tail = FALSE)
+  } else {
+    p_hwe <- NA_real_
+  }
 
   retlist <- list(alpha = alphahat,
                   r = rhat,

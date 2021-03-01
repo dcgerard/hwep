@@ -16,7 +16,7 @@ status](https://www.r-pkg.org/badges/version/hwep)](https://CRAN.R-project.org/p
 <!-- badges: end -->
 
 Inference concerning Hardy-Weinberg equilibrium (HWE) in polyploids.
-Methods are available to test for HWE at any ploidy level in the
+Methods are available to test for HWE at any ploidy level (&gt;2) in the
 presence of double reduction. For autopolyploid populations in HWE,
 methods are available to estimate the degree of double reduction. We
 also provide functions to calculate genotype frequencies at equilibrium
@@ -24,12 +24,12 @@ given rates of double reduction.
 
 The main functions are:
 
--   `hwefit()`: Fit either `hwetetra()`,`rmlike()`, or `hwemom()` across
-    many loci. Parallelization is supported through the
-    [future](https://cran.r-project.org/package=future) package.
--   `hwetetra()`: Likelihood inference for tetraploids. Includes tests
-    for random mating, only small deviations from HWE, and the presence
-    of double reduction.
+-   `hwefit()`: Fit either `hwelike()`,`rmlike()`, `hweustat()`, or
+    `hwenodr()` across many loci. Parallelization is supported through
+    the [future](https://cran.r-project.org/package=future) package.
+-   `hwelike()`: Likelihood inference for equilibrium. This function
+    estimates the rate of double reduction given equilibrium, and tests
+    for at most small deviations from equilibrium.
 -   `rmlike()`: Likelihood inference for random mating in polyploids.
     This function tests for random mating and estimates gametic
     frequencies given random mating. This function does not assume a

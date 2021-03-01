@@ -5,7 +5,7 @@
 \title{Maximum likelihood approach for equilibrium testing and double reduction
 estimation.}
 \usage{
-hwelike(nvec, thresh = 1, effdf = TRUE)
+hwelike(nvec, thresh = 0, effdf = FALSE)
 }
 \arguments{
 \item{nvec}{A vector containing the observed genotype counts,
