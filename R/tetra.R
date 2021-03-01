@@ -122,7 +122,7 @@ lltetra <- function(a, r, nvec) {
 #' nvec <- c(stats::rmultinom(n = 1, size = 500, prob = q))
 #' hwetetra(nvec = nvec)
 #'
-#'
+#' @noRd
 hwetetra <- function(nvec, upperdr = 1/6, addval = 1 / 100, more = FALSE) {
   stopifnot(length(nvec) == 5)
   stopifnot(nvec >= 0)
