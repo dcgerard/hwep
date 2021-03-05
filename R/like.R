@@ -68,10 +68,11 @@ rmem <- function(nvec, tol = 10^-3, maxit = 100, addval = 1 / 100) {
   stopifnot(nvec >= 0)
   stopifnot(addval >= 0, length(addval) == 1)
 
-  ## Initialize under assumption of random mating with alpha = 0 ----
+  ## Initialize under assumption of random mating with alpha = 0 (small penalty) ----
   pvec <- stats::dbinom(x = 0:(ploidy / 2),
                         size = ploidy / 2,
-                        prob = sum(nvec * 0:ploidy) / (sum(nvec) * ploidy))
+                        prob = sum(nvec * 0:ploidy) / (sum(nvec) * ploidy)) + addval
+  pvec <- pvec / sum(pvec)
   ll <- llike(nvec = nvec, pvec = pvec, addval = addval)
 
   ## Initialize parameters -----
