@@ -13,20 +13,35 @@
 #' @param addval The penalization applied to each genotype for the random
 #'     mating hypothesis. This corresponds to the number of counts each
 #'     genotype has \emph{a priori}.
+#' @param which_keep A logical vector. The \code{FALSE}'s will be aggregated
+#'     into one group.
 #'
 #' @author David Gerard
 #'
 #' @noRd
-llike <- function(nvec, pvec, addval = 0) {
+llike <- function(nvec, pvec, addval = 0, which_keep = NULL) {
+
+  ## Check input ----
   ploidy <- length(nvec) - 1
   stopifnot(ploidy %% 2 == 0)
   stopifnot(length(pvec) == ploidy / 2 + 1)
   stopifnot(abs(sum(pvec) - 1) < 10^-6)
   stopifnot(nvec >= 0)
   stopifnot(addval >= 0, length(addval) == 1)
+  if (is.null(which_keep)) {
+    which_keep <- rep(TRUE, ploidy + 1)
+  }
 
+  ## Calculate frequencies ----
+  q <- stats::convolve(pvec, rev(pvec), type = "open")
+  if (!all(which_keep)) {
+    nvec <- c(nvec[which_keep], sum(nvec[!which_keep]))
+    q <- c(q[which_keep], sum(q[!which_keep]))
+  }
+
+  ## Calculate likelihood ----
   stats::dmultinom(x = nvec,
-                   prob = stats::convolve(pvec, rev(pvec), type = "open"),
+                   prob = q,
                    log = TRUE) +
     addval * sum(log(pvec[pvec > sqrt(.Machine$double.eps)]))
 }
@@ -136,6 +151,8 @@ rmem <- function(nvec, tol = 10^-3, maxit = 100, addval = 1 / 100) {
 #' @param nvec A vector containing the observed genotype counts,
 #'     where \code{nvec[[i]]} is the number of individuals with genotype
 #'     \code{i-1}. This should be of length \code{ploidy+1}.
+#' @param thresh All groups with counts less than \code{nvec} will
+#'     be aggregated together.
 #'
 #' @return A list with the following elements:
 #' \describe{
@@ -168,14 +185,29 @@ rmem <- function(nvec, tol = 10^-3, maxit = 100, addval = 1 / 100) {
 #' ## Run rmlike()
 #' rmlike(nvec = nvec)
 #'
-rmlike <- function(nvec) {
+rmlike <- function(nvec, thresh = 1) {
   ploidy <- length(nvec) - 1
   stopifnot(ploidy %% 2 == 0)
   stopifnot(nvec >= 0)
   stopifnot(is.vector(nvec))
+  stopifnot(length(thresh) == 1, thresh >= 0)
 
   if (ploidy == 2) {
     message("Don't use this function. There are far better packages for diploids.")
+  }
+
+  ## Choose which groups to aggregate ----
+  which_keep <- nvec >= thresh
+  if (sum(!which_keep) >= 1) {
+    which_keep[which_keep][which.min(nvec[which_keep])] <- FALSE
+  }
+  if (sum(which_keep) <= ploidy / 2) {
+    which_keep <- rep(TRUE, ploidy + 1)
+    which_keep[order(nvec, decreasing = FALSE)[1:(ploidy / 2)]] <- FALSE
+  }
+  if (sum(which_keep) >= ploidy) {
+    ## aggregating one group = no aggregation at all.
+    which_keep <- rep(TRUE, ploidy + 1)
   }
 
   ## Estimate gametic frequencies ----
@@ -183,19 +215,36 @@ rmlike <- function(nvec) {
   names(hout) <- 0:(ploidy / 2)
 
   ## Get log-likelihood under null ----
-  ll0 <- llike(nvec = nvec, pvec = hout)
+  ll0 <- llike(nvec = nvec, pvec = hout, which_keep = which_keep)
 
   ## Get log-likelihood under alternative ----
   qmle <- nvec / sum(nvec)
-  lla <- stats::dmultinom(x = nvec, prob = qmle, log = TRUE)
+  if (!all(which_keep)) {
+    nmle <- c(nvec[which_keep], sum(nvec[!which_keep]))
+    qmle <- c(qmle[which_keep], sum(qmle[!which_keep]))
+  } else {
+    nmle <- nvec
+  }
+  lla <- stats::dmultinom(x = nmle, prob = qmle, log = TRUE)
+
+  ## Get degrees of freedom ---
+  if (!all(which_keep)) {
+    df_rm <- sum(which_keep) - ploidy / 2 + sum(hout < 0.0001)
+  } else {
+    df_rm <- ploidy / 2
+  }
 
   ## Run likelihood ratio test against null of random mating ----
   chisq <- -2 * (ll0 - lla)
-  pval <- stats::pchisq(q = chisq, df = ploidy / 2, lower.tail = FALSE)
+  pval <- stats::pchisq(q = chisq, df = df_rm, lower.tail = FALSE)
+
+  if (df_rm <= 0) {
+    pval <- NA_real_
+  }
 
   retlist <- list(p = hout,
                   chisq_rm = chisq,
-                  df_rm = ploidy / 2,
+                  df_rm = df_rm,
                   p_rm = pval)
 
   return(retlist)

@@ -31,8 +31,8 @@
 #' @param effdf A logical. Should we use the effective degrees of freedom?
 #'     Only applicable if \code{type = "mle"} or \code{type = "ustat"}.
 #' @param thresh A non-negative numeric. The threshhold for aggregating
-#'     genotypes. Only applicable if \code{type = "mle"} or
-#'     \code{type = "ustat"}.
+#'     genotypes. Only applicable if \code{type = "mle"},
+#'     \code{type = "ustat"}, or \code{type = "rm"}.
 #'
 #' @return A data frame. The columns of which can are described in
 #'     \code{\link{hwelike}()}, \code{\link{hweustat}()},
@@ -48,7 +48,7 @@
 #' ploidy <- 4
 #' nloc <- 100
 #' size <- 1000
-#' r <- 0.5
+#' r <- 0.25
 #' alpha <- 1/12
 #' qvec <- hwefreq(r = r, alpha = alpha, ploidy = ploidy)
 #' nmat <- t(rmultinom(n = nloc, size = size, prob = qvec))
@@ -108,7 +108,8 @@ hwefit <- function(nmat,
                                         thresh = thresh,
                                         effdf = effdf)
                      } else if (type == "rm") {
-                       hout <- rmlike(nvec = c(nvec))
+                       hout <- rmlike(nvec = c(nvec),
+                                      thresh = thresh)
                      } else if (type == "nodr") {
                        hout <- hwenodr(nvec = c(nvec))
                      }

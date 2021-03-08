@@ -4,12 +4,15 @@
 \alias{rmlike}
 \title{Likelihood inference for random mating}
 \usage{
-rmlike(nvec)
+rmlike(nvec, thresh = 1)
 }
 \arguments{
 \item{nvec}{A vector containing the observed genotype counts,
 where \code{nvec[[i]]} is the number of individuals with genotype
 \code{i-1}. This should be of length \code{ploidy+1}.}
+
+\item{thresh}{All groups with counts less than \code{nvec} will
+be aggregated together.}
 }
 \value{
 A list with the following elements:

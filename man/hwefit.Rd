@@ -30,8 +30,8 @@ See \code{\link{hwenodr}()}.}
 Only applicable if \code{type = "mle"} or \code{type = "ustat"}.}
 
 \item{thresh}{A non-negative numeric. The threshhold for aggregating
-genotypes. Only applicable if \code{type = "mle"} or
-\code{type = "ustat"}.}
+genotypes. Only applicable if \code{type = "mle"},
+\code{type = "ustat"}, or \code{type = "rm"}.}
 }
 \value{
 A data frame. The columns of which can are described in
@@ -53,7 +53,7 @@ set.seed(5)
 ploidy <- 4
 nloc <- 100
 size <- 1000
-r <- 0.5
+r <- 0.25
 alpha <- 1/12
 qvec <- hwefreq(r = r, alpha = alpha, ploidy = ploidy)
 nmat <- t(rmultinom(n = nloc, size = size, prob = qvec))
