@@ -198,9 +198,9 @@ rmlike <- function(nvec, thresh = 1) {
 
   ## Choose which groups to aggregate ----
   which_keep <- nvec >= thresh
-  if (sum(!which_keep) >= 1) {
-    which_keep[which_keep][which.min(nvec[which_keep])] <- FALSE
-  }
+  # if (sum(!which_keep) >= 1) {
+  #   which_keep[which_keep][which.min(nvec[which_keep])] <- FALSE
+  # }
   if (sum(which_keep) <= ploidy / 2) {
     which_keep <- rep(TRUE, ploidy + 1)
     which_keep[order(nvec, decreasing = FALSE)[1:(ploidy / 2)]] <- FALSE
@@ -229,7 +229,7 @@ rmlike <- function(nvec, thresh = 1) {
 
   ## Get degrees of freedom ---
   if (!all(which_keep)) {
-    df_rm <- sum(which_keep) - ploidy / 2 + sum(hout < 0.0001)
+    df_rm <- sum(which_keep) - ploidy / 2 + sum(hout < 0.001)
   } else {
     df_rm <- ploidy / 2
   }
