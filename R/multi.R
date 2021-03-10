@@ -18,7 +18,7 @@
 #' @param type The method to use:
 #' \describe{
 #'   \item{\code{"ustat"}}{U-statistic approach to test for equilibrium and
-#'       estimate double reduction rates givene equilibrium. The default.
+#'       estimate double reduction rates given equilibrium. The default.
 #'       See \code{\link{hweustat}()}.}
 #'   \item{\code{"mle"}}{Maximum likelihood estimation and testing. Only
 #'       supported for ploidies less than or equal to 10.
@@ -30,7 +30,7 @@
 #' }
 #' @param effdf A logical. Should we use the effective degrees of freedom?
 #'     Only applicable if \code{type = "mle"} or \code{type = "ustat"}.
-#' @param thresh A non-negative numeric. The threshhold for aggregating
+#' @param thresh A non-negative numeric. The threshold for aggregating
 #'     genotypes. Only applicable if \code{type = "mle"},
 #'     \code{type = "ustat"}, or \code{type = "rm"}.
 #'

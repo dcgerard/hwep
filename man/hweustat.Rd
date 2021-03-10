@@ -12,7 +12,7 @@ hweustat(nvec, thresh = 1, effdf = TRUE)
 where \code{nvec[[i]]} is the number of individuals with genotype
 \code{i-1}. This should be of length \code{ploidy+1}.}
 
-\item{thresh}{The threshhold for ignoring the genotype. We keep
+\item{thresh}{The threshold for ignoring the genotype. We keep
 genotypes such that \code{nvec >= thresh}.
 Setting this to \code{0} uses all genotypes.}
 

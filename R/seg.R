@@ -117,7 +117,7 @@ dgamete <- function(x, alpha, G, ploidy, log_p = FALSE) {
 #' @inheritParams dgamete
 #'
 #' @return A matrix of dimension \code{ploidy + 1} by \code{ploidy / 2 + 1}.
-#'     Element (i, j) is the probability that a parent carying dosage
+#'     Element (i, j) is the probability that a parent carrying dosage
 #'     j - 1 produces a gamete with dosage i - 1.
 #'
 #' @author David Gerard
@@ -150,7 +150,7 @@ gsegmat2 <- function(alpha, ploidy) {
 #' @inheritParams dgamete
 #'
 #' @return A matrix of dimension \code{ploidy + 1} by \code{ploidy / 2 + 1}.
-#'     Element (i, j) is the probability that a parent carying dosage
+#'     Element (i, j) is the probability that a parent carrying dosage
 #'     j - 1 produces a gamete with dosage i - 1.
 #'
 #' @author David Gerard
@@ -214,7 +214,7 @@ gsegmat <- function(alpha, ploidy) {
 
 #' Symbolic representation of the segregation probability matrix
 #'
-#' Two alleles are identitcal-by-double-reduction (IBDR) if they originate from
+#' Two alleles are identical-by-double-reduction (IBDR) if they originate from
 #' the same (by origin) allele in the parent. We let "a" be the probability of
 #' zero IBDR alleles, "b" be the probability of one IBDR pair,
 #' "c" be the probability of two IBDR pairs, etc...
@@ -368,7 +368,7 @@ gsegmat_hexaploid <- function(alpha) {
   return(segmat)
 }
 
-#' Zygote dosage probabiltites.
+#' Zygote dosage probabilities.
 #'
 #' Calculates the distribution of an offspring dosages given
 #' parental dosages (\code{G1} and \code{G2}), the ploidy of the

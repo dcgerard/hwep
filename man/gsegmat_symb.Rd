@@ -18,7 +18,7 @@ form for the segregation matrix. Element (i, j) is the probability
 a parent with dosage i-1 produces a gamete with dosage j-1.
 }
 \description{
-Two alleles are identitcal-by-double-reduction (IBDR) if they originate from
+Two alleles are identical-by-double-reduction (IBDR) if they originate from
 the same (by origin) allele in the parent. We let "a" be the probability of
 zero IBDR alleles, "b" be the probability of one IBDR pair,
 "c" be the probability of two IBDR pairs, etc...

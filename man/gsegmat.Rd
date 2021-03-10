@@ -19,7 +19,7 @@ integer.}
 }
 \value{
 A matrix of dimension \code{ploidy + 1} by \code{ploidy / 2 + 1}.
-Element (i, j) is the probability that a parent carying dosage
+Element (i, j) is the probability that a parent carrying dosage
 j - 1 produces a gamete with dosage i - 1.
 }
 \description{

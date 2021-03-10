@@ -6,21 +6,21 @@
 \alias{hwep}
 \title{Hardy-Weinberg Equilibrium in Polyploids}
 \description{
-Inference concerning Hardy-Weinberg equilibrium (HWE) in
-polyploids. Methods are available to test for HWE at any
-ploidy level in the presence of double reduction. For
-autopolyploid populations in HWE, methods are available
-to estimate the degree of double reduction. We also
-provide functions to calculate genotype frequencies at
-equilibrium given rates of double reduction.
+Inference concerning equilibrium and random mating in autopolyploids.
+Methods are available to test for equilibrium and random mating at
+any even ploidy level (>2) in the presence of double reduction. For
+autopolyploid populations in equilibrium, methods are available to
+estimate the degree of double reduction. We also provide functions
+to calculate genotype frequencies at equilibrium, or after one or
+several rounds of random mating, given rates of double reduction.
 }
 \section{Main Functions}{
 
 \describe{
 \item{\code{\link{hwefit}()}}{Fit either \code{\link{hwelike}()},
-\code{\link{rmlike}()}, or \code{\link{hweustat}()} across
-many loci. Parallelization is supported through the
-\link{future} package.}
+\code{\link{rmlike}()}, \code{\link{hweustat}()}, or
+\code{\link{hwenodr}()} across many loci.
+Parallelization is supported through the \link{future} package.}
 \item{\code{\link{hwelike}()}}{Likelihood inference for equilibrium.
 This function estimates the rate of double reduction given
 equilibrium, and tests for at most small deviations from
@@ -33,7 +33,7 @@ This function does not assume a model for meiosis.}
 and double reduction. This function tests for equilibrium given
 double reduction rates and estimates these rates given equilibrium.}
 \item{\code{\link{hwenodr}()}}{Implements a likelihood ratio test
-that tests for HWE in autopolyploids given no double reduction.}
+that tests for equilibrium in autopolyploids given no double reduction.}
 }
 }
 
@@ -48,7 +48,7 @@ reduction given the complete equational segregation model.}
 generation of random mating.}
 \item{\code{\link{gsegmat}()}}{Gamete dosage probabilities for all
 possible parental dosages.}
-\item{\code{\link{hwefreq}()}}{Generate Hardy-Weinberg equilibrium
+\item{\code{\link{hwefreq}()}}{Generate equilibrium
 genotype frequencies.}
 \item{\code{\link{p_from_alpha}()}}{Obtain gamete frequencies from
 the major allele frequency and double reduction rates.}

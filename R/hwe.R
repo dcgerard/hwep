@@ -246,7 +246,7 @@ hwefreq <- function(r,
 
 #' Obtain gamete frequencies at equilibrium given rates of double reduction.
 #'
-#' Given the rate of doulbe reduction and the major allele frequency, this
+#' Given the rate of double reduction and the major allele frequency, this
 #' function will calculate the gametic frequencies.
 #'
 #' @inheritParams dgamete

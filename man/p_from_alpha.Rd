@@ -24,7 +24,7 @@ A numeric vector of length \code{ploidy / 2 + 1}, where element
 the major allele.
 }
 \description{
-Given the rate of doulbe reduction and the major allele frequency, this
+Given the rate of double reduction and the major allele frequency, this
 function will calculate the gametic frequencies.
 }
 \examples{

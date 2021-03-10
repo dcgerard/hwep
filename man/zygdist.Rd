@@ -2,7 +2,7 @@
 % Please edit documentation in R/seg.R
 \name{zygdist}
 \alias{zygdist}
-\title{Zygote dosage probabiltites.}
+\title{Zygote dosage probabilities.}
 \usage{
 zygdist(alpha, G1, G2, ploidy)
 }

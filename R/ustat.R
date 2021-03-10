@@ -160,7 +160,7 @@ ucov <- function(nvec, alpha) {
 #' @param nvec A vector containing the observed genotype counts,
 #'     where \code{nvec[[i]]} is the number of individuals with genotype
 #'     \code{i-1}. This should be of length \code{ploidy+1}.
-#' @param thresh The threshhold for ignoring the genotype. We keep
+#' @param thresh The threshold for ignoring the genotype. We keep
 #'     genotypes such that \code{nvec >= thresh}.
 #'     Setting this to \code{0} uses all genotypes.
 #' @param effdf A logical. Should we use the ad-hoc
