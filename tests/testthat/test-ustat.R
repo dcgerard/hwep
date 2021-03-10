@@ -41,3 +41,16 @@ test_that("hweustat() is ok", {
 0L, 0L, 0L, 0L, 0L, 0L), .Dim = c(2L, 9L))
   expect_error(hwefit(nmat, type = "ustat"), NA)
 })
+
+
+test_that("hweustat() returns early same elements", {
+  nvec <- c(1, 0, 0, 0, 0)
+  nfull <- c(1, 1, 1, 1, 1)
+  h1 <- hweustat(nvec = nvec, thresh = 1)
+  h2 <- hweustat(nvec = nfull, thresh = 1)
+
+  expect_equal(
+    names(h1),
+    names(h2)
+  )
+})

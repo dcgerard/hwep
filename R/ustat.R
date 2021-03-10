@@ -107,48 +107,6 @@ projme <- function(Q, df = nrow(Q) - 1) {
   return(mat = eout$vectors %*% diag(f) %*% t(eout$vectors))
 }
 
-#' Covariance estimate of elements of ustat
-#'
-#' This is an empirical one, that doesn't work as well as ucov in practice
-#'
-#' @inheritParams uobj
-#'
-#' @return Covariance estimate.
-#'
-#' @author David Gerard
-#'
-#' @noRd
-ucov_empirical <- function(nvec, alpha) {
-  ## Check parameters ----
-  ploidy <- length(nvec) - 1
-  stopifnot(ploidy %% 2 == 0, ploidy > 0)
-  stopifnot(length(alpha) == floor(ploidy / 4))
-  stopifnot(nvec >= 0)
-
-  ## Calculate covariance ----
-  n <- sum(nvec)
-  qhat <- nvec / n
-  fq <- freqnext(freq = qhat, alpha = alpha, check = FALSE)
-  A <- zsegarray(alpha = alpha, ploidy = ploidy)
-
-  omega <- diag(qhat) - tcrossprod(qhat, fq) - tcrossprod(fq, qhat)
-
-  indset <- 0:ploidy
-  for (p in indset) {
-    for (r in indset) {
-      for (ell in indset) {
-        for (m in indset) {
-          omega[p + 1, r + 1] <- omega[p + 1, r + 1] +
-            A[ell + 1, m + 1, p + 1] * A[ell + 1, m + 1, r + 1] * qhat[[ell + 1]] * qhat[[m + 1]]
-        }
-      }
-    }
-  }
-
-  return(omega)
-}
-
-
 #' \emph{Inverse} covariance estimate of elements of ustat
 #'
 #' This is the theoretical one, based on U-statistic theory.
@@ -184,34 +142,6 @@ ucov <- function(nvec, alpha) {
   omega <- t(bread) %*% Qmat %*% bread
 
   return(omega)
-}
-
-#' \emph{Inverse} covariance estimate of elements of ustat
-#'
-#' This is the naive one, based only on the multinomial distribution
-#' and ignoring that we are estimating q in f(q). Does not work well.
-#'
-#' @inheritParams uobj
-#'
-#' @return Covariance estimate.
-#'
-#' @author David Gerard
-#'
-#' @noRd
-ucov_naive  <- function(nvec, alpha) {
-  ## Check parameters ----
-  ploidy <- length(nvec) - 1
-  stopifnot(ploidy %% 2 == 0, ploidy > 0)
-  stopifnot(length(alpha) == floor(ploidy / 4))
-  stopifnot(nvec >= 0)
-
-  n <- sum(nvec)
-  qhat <- nvec / n
-  fq <- freqnext(freq = qhat, alpha = alpha, check = FALSE)
-
-  Qmat <- diag(fq) - outer(X = fq, Y = fq, FUN = `*`)
-
-  return(Qmat)
 }
 
 #' U-process minimizer approach to equilibrium testing and double reduction

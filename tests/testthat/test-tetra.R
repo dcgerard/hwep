@@ -26,3 +26,23 @@ test_that("random mating same for tetraploids", {
 
   expect_equal(rout$chisq_rm, tout$chisq_rm)
 })
+
+
+test_that("early return is same as late return", {
+  nvec <- c(1, 0, 0, 0, 0)
+  nvec_full <- c(1, 1, 1, 1, 1)
+
+  hout1 <- hwetetra(nvec = nvec, more = TRUE)
+  hout2 <- hwetetra(nvec = nvec_full, more = TRUE)
+  expect_equal(
+    names(hout1),
+    names(hout2)
+  )
+
+  hout1 <- hwetetra(nvec = nvec, more = FALSE)
+  hout2 <- hwetetra(nvec = nvec_full, more = FALSE)
+  expect_equal(
+    names(hout1),
+    names(hout2)
+  )
+})

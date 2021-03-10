@@ -51,3 +51,19 @@ test_that("aggfun works", {
            byrow = TRUE)
   )
 })
+
+test_that("projme() and ginv() provides same results", {
+  set.seed(1)
+  r <- 3
+  n <- 10
+  A <- matrix(rnorm(n = n * r), nrow = n)
+  B <- tcrossprod(A)
+
+  pout <- projme(Q = B, df = r)
+  gout <- ginv(omega = B)
+
+  expect_equal(
+    gout$mat,
+    pout
+  )
+})
