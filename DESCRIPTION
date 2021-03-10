@@ -1,17 +1,21 @@
 Package: hwep
 Title: Hardy-Weinberg Equilibrium in Polyploids
-Version: 0.0.0.9000
+Version: 0.0.1
 Authors@R:
     person(given = "David",
            family = "Gerard",
            role = c("aut", "cre"),
            email = "gerard.1787@gmail.com",
            comment = c(ORCID = "0000-0001-9450-5023"))
-Description: Inference concerning Hardy-Weinberg equilibrium (HWE) in polyploids.
-    Methods are available to test for HWE at any ploidy level in the presence
-    of double reduction. For autopolyploid populations in HWE, methods are available
-    to estimate the degree of double reduction. We also provide functions
-    to calculate genotype frequencies at equilibrium given rates of double reduction.
+Description: Inference concerning equilibrium and random mating in 
+    autopolyploids. Methods are available to test for equilibrium 
+    and random mating at any even ploidy level (>2) in the presence
+    of double reduction. For autopolyploid populations in equilibrium,
+    methods are available to estimate the degree of double reduction. 
+    We also provide functions to calculate genotype frequencies at
+    equilibrium, or after one or several rounds of random mating, 
+    given rates of double reduction. The main function is
+    `hwefit()`.
 License: GPL (>= 3)
 Encoding: UTF-8
 LazyData: true

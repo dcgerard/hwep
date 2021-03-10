@@ -287,3 +287,23 @@ test_that("parental indices are transposable", {
                tolerance = 10^-6,
                ignore_attr = TRUE)
 })
+
+
+test_that("gsegmat_symb works", {
+
+  ploidy <- 4
+  a <- 0.1
+  b <- 0.9
+  symbout <- gsegmat_symb(ploidy = ploidy, out = "exp")
+  segmat <- gsegmat(alpha = b, ploidy = ploidy)
+
+  for (i in 0:ploidy) {
+    for (j in 0:(ploidy / 2)) {
+      expect_equal(
+        eval(symbout[i+1, j+1]),
+        segmat[i+1, j+1]
+      )
+    }
+  }
+
+})
