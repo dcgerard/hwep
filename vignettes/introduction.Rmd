@@ -1,0 +1,173 @@
+---
+title: "Introduction to the `hwep` package"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Introduction to the `hwep` package}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+set.seed(999)
+```
+
+# Introduction
+
+This vignette covers the basic usage of the `hwep` package. The methods implemented here are described in detail in Gerard (2021). We will cover:
+
+1. Functions for calculating segregation probabilities.
+2. Functions for calculating equilibrium genotype frequencies.
+3. Functions for testing for equilibrium and random mating.
+
+Let's load the package so we can begin.
+
+```{r setup}
+library(hwep)
+```
+
+# The double reduction parameter. 
+
+Throughout this vignette, we will discuss the "double reduction parameter", which we should briefly clarify. This parameter is a vector of probabilities of length `floor(ploidy / 4)`, where `ploidy` is the ploidy of the species. Element `i` of this vector is the probability that an offspring will have exactly `i` copies of identical-by-double-reduction (IBDR) alleles. If `alpha` is this parameter vector, than `1 - sum(alpha)` is the probability that an offspring has no IBDR alleles. 
+
+The double reduction parameter is known to have an upper bound, based on the model for meiosis considered. The largest bound typically assumed in the literature is derived from the "complete equational segregation model", introduced by Mather (1935) and later generalized in Huang et al. (2019). These bounds can be calculated by the `drbounds()` function for different ploidies.
+
+```{r}
+drbounds(ploidy = 4)
+drbounds(ploidy = 6)
+drbounds(ploidy = 8)
+drbounds(ploidy = 10)
+drbounds(ploidy = 12)
+```
+
+During our analysis procedures, we typically assume that the double reduction parameter is between 0 and these upper bounds.
+
+# Segregation probabilities
+
+This package comes with a few functions to calculate the probabilities of gamete and offspring dosages given parental dosages. These generalize classical Mendelian inheritance to include rates of double reduction. We use the specific model derived by Fisher & Mather (1943), and later generalized by Huang et al. (2019).
+
+- `dgamete()`: This function will calculate gamete dosage probabilities given the parental genotype. So, if we want to calculate the probability of gametes having dosage 0, 1, and 2 when the parent has a dosage of 3, the double reduction rate is 0.1, and the ploidy is 4, we would run:
+    ```{r}
+    dgamete(x = 0:2, alpha = 0.1, G = 3, ploidy = 4)
+    ```
+
+- `gsegmat()`: Given a ploidy level and a double reduction rate, this function will calculate all possible gamete dosage probabilities for each possible parental genotype. The rows index the parental genotypes and the columns index the gamete genotypes.
+
+    ```{r}
+    gsegmat(alpha = 0.1, ploidy = 4)
+    ```
+
+    From the above matrix, the probability of a gamete having dosage 1 when the parental dosage is 2 is 0.6.
+    
+    ```{r}
+    gsegmat(alpha = 0.1, ploidy = 4)[3, 2]
+    ```
+
+- `gsegmat_symb()`: This function provides a symbolic representation of the gamete segregation probabilities. In the output `a` represents the probability of exactly zero copies of IBDR alleles, `b` represents the probability of exactly one copy of IBDR alleles, `c` represents the probability of exactly two copies of IBDR alleles, etc...
+
+    ```{r}
+    gsegmat_symb(ploidy = 4)
+    ```
+
+- `zsegarray()`: Instead of considering gamete dosages, this function will calculate *zygote* dosage probabilities given both parental genotypes. It will do this for each possible offspring dosage and each possible parental genotype.
+
+    ```{r}
+    sega <- zsegarray(alpha = 0.1, ploidy = 4)
+    sega
+    ```
+Thus, the probability of an offspring dosage of 3 when parental dosages are 2 and 4, is
+    ```{r}
+    sega[4, 3, 5]
+    ```
+
+# Equilibrium genotype frequencies
+
+Equilibrium frequencies can be generated with `hwefreq()` for arbitrary ploidy levels. 
+
+```{r}
+hout <- hwefreq(r = 0.1, alpha = 0.1, ploidy = 6)
+round(hout, digits = 5)
+```
+
+Alternatively, you can control the number of iterations of random mating before stopping. The population begins in a state where `r` proportion of individuals have genotype `ploidy` and `1-r` proportion has genotype `0`. It then updates each generation's genotype frequencies using `freqnext()`. E.g., for `r=0.1` and `alpha=0.1`, after the first round of random mating, we have:
+
+```{r}
+freqnext(freq = c(0.9, 0, 0, 0, 0.1), alpha = 0.1)
+```
+
+```{r}
+hwefreq(r = 0.1, alpha = 0.1, niter = 1, ploidy = 4)
+```
+
+# Testing for equilibrium and random mating
+
+The main function for this package is `hwefit()`, which implements various tests for random mating and equilibrium. This function has parallelization support through the future package. We'll demonstrate using the future package assuming at least two cores are available.
+
+```{r}
+library(future)
+availableCores()
+plan(multisession, workers = 2)
+```
+
+Let's simulate some data at equilibrium to demonstrate our methods:
+```{r}
+geno_freq <- hwefreq(r = 0.5, alpha = 0.1, ploidy = 6)
+nmat <- t(rmultinom(n = 1000, size = 100, prob = geno_freq))
+head(nmat)
+```
+
+`hwefit()` expects a matrix of genotype counts, where the rows index the loci and the columns index the genotype. So `nmat[i, j]` is the count of the number of individuals that have dosage `j-1` at locus `i`.
+
+You control the type of test via the `type` argument. Using `type = "ustat"` will use the $U$-statistic approach to test for equilibrium, as implemented in `hweustat()`.
+
+```{r}
+uout <- hwefit(nmat = nmat, type = "ustat")
+```
+
+The output is a list-like object that contains the estimates of double reduction (`alpha`), the $p$-values for the test against the null of equilibrium (`p_hwe`), as well as the test-statistics (`chisq_hwe`) and degrees of freedom (`df_hwe`) of this test.
+
+On average, we obtain good estimates of the double reduction rate
+```{r}
+mean(uout$alpha1)
+```
+But the sampling properties of this estimator are highly variable, even for such a large sample size:
+```{r}
+hist(uout$alpha1)
+```
+
+This highlights the difficulty in estimating double reduction using just a single biallelic locus.
+
+The p-values are generally uniformly distributed, as they should be since we generated data under the null of equilibrium.
+```{r}
+hist(uout$p_hwe, breaks = 10, xlab = "P-values", main = "")
+qqplot(x = ppoints(length(uout$p_hwe)), 
+       y = uout$p_hwe, 
+       xlab = "Theoretical Quantiles",
+       ylab = "Empirical Quantiles",
+       main = "QQ-plot")
+abline(0, 1, lty = 2, col = 2)
+```
+
+Make sure to shut down your workers after you are done:
+```{r}
+plan("sequential")
+```
+
+The other values of "type" run different procedures:
+
+- `"mle"`: Runs likelihood procedures to test for equilibrium and estimate double reduction. Only available for ploidies less than or equal to 10. This generally behaves similarly to the $U$-statistic approach. This is implemented by the `hwelike()` function.
+- `"rm"`: Runs likelihood procedures to test for random mating. This is implemented by the `rmlike()` function.
+- `"nodr"`: Runs likelihood procedures to test for equilibrium assuming no double reduction. This is implemented by the `hwenodr()` function.
+
+# References
+
+- Fisher, R. A., & Mather, K. (1943). The inheritance of style length in *Lythrum salicaria*. *Annals of Eugenics*, 12(1), 1-23. [doi:10.1111/j.1469-1809.1943.tb02307.x](https://doi.org/10.1111/j.1469-1809.1943.tb02307.x)
+
+- Gerard, D. (2021). Double reduction estimation and equilibrium tests in natural autopolyploid populations. *Unpublished manuscript*.
+
+- Huang, K., Wang, T., Dunn, D. W., Zhang, P., Cao, X., Liu, R., & Li, B. (2019). Genotypic frequencies at equilibrium for polysomic inheritance under double-reduction. *G3: Genes | Genomes | Genetics*, 9(5), 1693-1706. [doi:10.1534/g3.119.400132](http://doi.org/10.1534/g3.119.400132)
+
+- Mather, K. (1935). Reductional and equational separation of the chromosomes in bivalents and multivalents. *Journal of Genetics*, 30(1), 53-78. [doi:10.1007/BF02982205](http://doi.org/10.1007/BF02982205)

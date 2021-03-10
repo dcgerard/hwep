@@ -86,7 +86,8 @@ test_that("gsegmat() and gsegmat2() are same as special cases", {
 
   expect_equal(
     gsegmat2(alpha = alpha, ploidy = 4),
-    gsegmat_tetraploid(alpha = alpha)
+    gsegmat_tetraploid(alpha = alpha),
+    ignore_attr = TRUE
   )
 
   expect_equal(
@@ -96,7 +97,8 @@ test_that("gsegmat() and gsegmat2() are same as special cases", {
 
   expect_equal(
     gsegmat2(alpha = alpha, ploidy = 6),
-    gsegmat_hexaploid(alpha = alpha)
+    gsegmat_hexaploid(alpha = alpha),
+    ignore_attr = TRUE
   )
 
   # microbenchmark::microbenchmark(
@@ -112,7 +114,8 @@ test_that("zsegarray() works", {
 
   expect_equal(
     segarray[1, 4, 1:6],
-    dgamete(x = 0:5, alpha = c(0.14, 0.1), G = 3, ploidy = 10)
+    dgamete(x = 0:5, alpha = c(0.14, 0.1), G = 3, ploidy = 10),
+    ignore_attr = TRUE
   )
 
 })
@@ -135,7 +138,8 @@ test_that("freqnext() and freqnext2() give same results", {
 
   expect_equal(
     freqnext(freq = freq, alpha = alpha),
-    freqnext2(freq = freq, alpha = alpha)
+    freqnext2(freq = freq, alpha = alpha),
+    ignore_attr = TRUE
   )
 
   # microbenchmark::microbenchmark(
@@ -151,7 +155,8 @@ test_that("gsegmat() and gsegmat2() give same results", {
   expect_equal(
     gsegmat(alpha = alpha, ploidy = ploidy),
     gsegmat2(alpha = alpha, ploidy = ploidy),
-    tolerance = 10^-6
+    tolerance = 10^-6,
+    ignore_attr = TRUE
   )
 
   ploidy <- 4
@@ -160,7 +165,8 @@ test_that("gsegmat() and gsegmat2() give same results", {
   expect_equal(
     gsegmat(alpha = alpha, ploidy = ploidy),
     gsegmat2(alpha = alpha, ploidy = ploidy),
-    tolerance = 10^-6
+    tolerance = 10^-6,
+    ignore_attr = TRUE
   )
 
   ploidy <- 6
@@ -169,7 +175,8 @@ test_that("gsegmat() and gsegmat2() give same results", {
   expect_equal(
     gsegmat(alpha = alpha, ploidy = ploidy),
     gsegmat2(alpha = alpha, ploidy = ploidy),
-    tolerance = 10^-6
+    tolerance = 10^-6,
+    ignore_attr = TRUE
   )
 
   ploidy <- 8
@@ -178,7 +185,8 @@ test_that("gsegmat() and gsegmat2() give same results", {
   expect_equal(
     gsegmat(alpha = alpha, ploidy = ploidy),
     gsegmat2(alpha = alpha, ploidy = ploidy),
-    tolerance = 10^-6
+    tolerance = 10^-6,
+    ignore_attr = TRUE
   )
 
   ploidy <- 10
@@ -187,7 +195,8 @@ test_that("gsegmat() and gsegmat2() give same results", {
   expect_equal(
     gsegmat(alpha = alpha, ploidy = ploidy),
     gsegmat2(alpha = alpha, ploidy = ploidy),
-    tolerance = 10^-6
+    tolerance = 10^-6,
+    ignore_attr = TRUE
   )
 
   ploidy <- 12
@@ -196,7 +205,8 @@ test_that("gsegmat() and gsegmat2() give same results", {
   expect_equal(
     gsegmat(alpha = alpha, ploidy = ploidy),
     gsegmat2(alpha = alpha, ploidy = ploidy),
-    tolerance = 10^-6
+    tolerance = 10^-6,
+    ignore_attr = TRUE
   )
 
   # microbenchmark::microbenchmark(
@@ -273,5 +283,7 @@ test_that("freqnext and freqnext_ngen give same results at ngen = 1", {
 
 test_that("parental indices are transposable", {
   A <- zsegarray(alpha = 0.1, ploidy = 6)
-  expect_equal(A, aperm(A, c(2, 1, 3)), tolerance = 10^-6)
+  expect_equal(A, aperm(A, c(2, 1, 3)),
+               tolerance = 10^-6,
+               ignore_attr = TRUE)
 })

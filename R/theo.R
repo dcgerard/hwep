@@ -138,7 +138,7 @@ GFG10_iiijj <- function(a1, a2, pi, pj) {
 #'
 #' @author David Gerard
 #'
-#' @export
+#' @noRd
 theofreq <- function(alpha, r, ploidy) {
   stopifnot(length(r) == 1L, length(ploidy) == 1L)
   stopifnot(ploidy %% 2 == 0)
@@ -192,8 +192,8 @@ theofreq <- function(alpha, r, ploidy) {
   q[q < 0] <- 0
   q <- q / sum(q)
 
-  retlist <- list(p = hout,
-                  q = q)
+  retlist <- list(q = q,
+                  p = hout)
 
   return(retlist)
 }
@@ -274,8 +274,8 @@ like_obj2 <- function(alpha, r, nvec, which_keep = NULL) {
 #' @export
 #'
 #' @examples
-#' thout <- theofreq(alpha = 0.1, r = 0.3, ploidy = 6)
-#' nvec <- c(stats::rmultinom(n = 1, size = 100, prob = thout$q))
+#' thout <- hwefreq(alpha = 0.1, r = 0.3, ploidy = 6)
+#' nvec <- c(stats::rmultinom(n = 1, size = 100, prob = thout))
 #' hwelike(nvec = nvec)
 #'
 hwelike <- function(nvec,

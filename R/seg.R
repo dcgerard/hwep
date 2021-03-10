@@ -205,6 +205,9 @@ gsegmat <- function(alpha, ploidy) {
         ) * alphavec[[i + 1]]
     }
   }
+
+  colnames(segmat) <- 0:(ploidy / 2)
+  rownames(segmat) <- 0:ploidy
   return(segmat)
 }
 
@@ -297,6 +300,9 @@ gsegmat_symb <- function(ploidy, out = c("str", "exp")) {
     segmat <- matrix(str2expression(segmat), nrow = ploidy + 1)
   }
 
+  colnames(segmat) <- 0:(ploidy / 2)
+  rownames(segmat) <- 0:ploidy
+
   return(segmat)
 }
 
@@ -307,12 +313,15 @@ gsegmat_symb <- function(ploidy, out = c("str", "exp")) {
 #'
 #' @noRd
 gsegmat_diploid <- function() {
-  matrix(c(1.0, 0.0,
-           0.5, 0.5,
-           0.0, 1.0),
-         byrow = TRUE,
-         ncol = 2,
-         nrow = 3)
+  segmat <- matrix(c(1.0, 0.0,
+                     0.5, 0.5,
+                     0.0, 1.0),
+                   byrow = TRUE,
+                   ncol = 2,
+                   nrow = 3)
+  colnames(segmat) <- 0:1
+  rownames(segmat) <- 0:2
+  return(segmat)
 }
 
 #' Special case of gsegmat() for tetraploids
@@ -323,14 +332,17 @@ gsegmat_diploid <- function() {
 gsegmat_tetraploid <- function(alpha) {
   stopifnot(length(alpha) == 1)
   ## stopifnot(alpha >= 0, alpha <= 1)
-  matrix(c(1, 0, 0,
-           0.25 * (2 + alpha), 0.5 * (1 - alpha), 0.25 * alpha,
-           (1 + 2 * alpha) / 6, 4 * (1 - alpha) / 6, (1 + 2 * alpha) / 6,
-           0.25 * alpha, 0.5 * (1 - alpha), 0.25 * (2 + alpha),
-           0, 0, 1),
-         byrow = TRUE,
-         ncol = 3,
-         nrow = 5)
+  segmat <- matrix(c(1, 0, 0,
+                     0.25 * (2 + alpha), 0.5 * (1 - alpha), 0.25 * alpha,
+                     (1 + 2 * alpha) / 6, 4 * (1 - alpha) / 6, (1 + 2 * alpha) / 6,
+                     0.25 * alpha, 0.5 * (1 - alpha), 0.25 * (2 + alpha),
+                     0, 0, 1),
+                   byrow = TRUE,
+                   ncol = 3,
+                   nrow = 5)
+  colnames(segmat) <- 0:2
+  rownames(segmat) <- 0:4
+  return(segmat)
 }
 
 #' Special case of gsegmat() for tetraploids
@@ -341,16 +353,19 @@ gsegmat_tetraploid <- function(alpha) {
 gsegmat_hexaploid <- function(alpha) {
   stopifnot(length(alpha) == 1)
   ## stopifnot(alpha >= 0, alpha <= 1)
-  matrix(c(1, 0, 0, 0,
-           (3 + alpha) / 6, (3 - 2 * alpha) / 6, alpha / 6, 0,
-           (3 + 3 * alpha) / 15, (9 - 5 * alpha) / 15, (3 + alpha) / 15, alpha / 15,
-           (1 + 3 * alpha) / 20, (9 - 3 * alpha) / 20, (9 - 3 * alpha) / 20, (1 + 3 * alpha) / 20,
-           alpha / 15, (3 + alpha) / 15, (9 - 5 * alpha) / 15, (3 + 3 * alpha) / 15,
-           0, alpha / 6, (3 - 2 * alpha) / 6, (3 + alpha) / 6,
-           0, 0, 0, 1),
-         byrow = TRUE,
-         ncol = 4,
-         nrow = 7)
+  segmat <- matrix(c(1, 0, 0, 0,
+                     (3 + alpha) / 6, (3 - 2 * alpha) / 6, alpha / 6, 0,
+                     (3 + 3 * alpha) / 15, (9 - 5 * alpha) / 15, (3 + alpha) / 15, alpha / 15,
+                     (1 + 3 * alpha) / 20, (9 - 3 * alpha) / 20, (9 - 3 * alpha) / 20, (1 + 3 * alpha) / 20,
+                     alpha / 15, (3 + alpha) / 15, (9 - 5 * alpha) / 15, (3 + 3 * alpha) / 15,
+                     0, alpha / 6, (3 - 2 * alpha) / 6, (3 + alpha) / 6,
+                     0, 0, 0, 1),
+                   byrow = TRUE,
+                   ncol = 4,
+                   nrow = 7)
+  colnames(segmat) <- 0:3
+  rownames(segmat) <- 0:6
+  return(segmat)
 }
 
 #' Zygote dosage probabiltites.
@@ -454,6 +469,10 @@ zsegarray <- function(alpha, ploidy) {
                                             ploidy = ploidy)
     }
   }
+
+  dimnames(segarray) <- list(offspring = 0:ploidy,
+                             parent1 = 0:ploidy,
+                             parent2 = 0:ploidy)
 
   return(segarray)
 }

@@ -38,8 +38,8 @@ likelihood procedure to estimate double reduction rates and to test
 for equilibrium while accounting for double reduction.
 }
 \examples{
-thout <- theofreq(alpha = 0.1, r = 0.3, ploidy = 6)
-nvec <- c(stats::rmultinom(n = 1, size = 100, prob = thout$q))
+thout <- hwefreq(alpha = 0.1, r = 0.3, ploidy = 6)
+nvec <- c(stats::rmultinom(n = 1, size = 100, prob = thout))
 hwelike(nvec = nvec)
 
 }
