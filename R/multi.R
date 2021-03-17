@@ -149,6 +149,7 @@ hwefit <- function(nmat,
 #'
 #' @author David Gerard
 #'
+#' @noRd
 hwefit_genolike <- function(genoarray, nboot = 2000) {
   stopifnot(is.array(genoarray))
 
