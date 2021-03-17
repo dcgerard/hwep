@@ -4,7 +4,13 @@
 \alias{hwefit}
 \title{Equilibrium and random mating estimation and testing for many loci.}
 \usage{
-hwefit(nmat, type = c("ustat", "mle", "rm", "nodr"), effdf = TRUE, thresh = 1)
+hwefit(
+  nmat,
+  type = c("ustat", "mle", "rm", "nodr", "boot"),
+  effdf = TRUE,
+  thresh = 1,
+  nboot = 2000
+)
 }
 \arguments{
 \item{nmat}{A matrix of counts. The rows index the loci and the columns
@@ -24,6 +30,8 @@ See \code{\link{hwelike}()}.}
 frequencies given random mating. See \code{\link{rmlike}()}.}
 \item{\code{"nodr"}}{Testing equilibrium given no double reduction.
 See \code{\link{hwenodr}()}.}
+\item{\code{"boot"}}{Bootstrap approach to test for equilibrium.
+See \code{\link{hweboot}()}.}
 }}
 
 \item{effdf}{A logical. Should we use the effective degrees of freedom?
@@ -32,6 +40,9 @@ Only applicable if \code{type = "mle"} or \code{type = "ustat"}.}
 \item{thresh}{A non-negative numeric. The threshold for aggregating
 genotypes. Only applicable if \code{type = "mle"},
 \code{type = "ustat"}, or \code{type = "rm"}.}
+
+\item{nboot}{The number of bootstrap iterations to use if
+\code{type = "boot"}.}
 }
 \value{
 A data frame. The columns of which can are described in
@@ -41,7 +52,7 @@ A data frame. The columns of which can are described in
 \description{
 Estimates and tests for either equilibrium or random mating  across many loci
 using \code{\link{hwelike}()}, \code{\link{hweustat}()},
-\code{\link{rmlike}()}, or \code{\link{hwenodr}()}.
+\code{\link{rmlike}()}, \code{\link{hwenodr}()}, or \code{\link{hweboot}()}.
 }
 \details{
 We provide parallelization support through the \link[future]{future}

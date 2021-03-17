@@ -6,7 +6,7 @@
 #'
 #' Estimates and tests for either equilibrium or random mating  across many loci
 #' using \code{\link{hwelike}()}, \code{\link{hweustat}()},
-#' \code{\link{rmlike}()}, or \code{\link{hwenodr}()}.
+#' \code{\link{rmlike}()}, \code{\link{hwenodr}()}, or \code{\link{hweboot}()}.
 #'
 #' We provide parallelization support through the \link[future]{future}
 #' package.
@@ -27,12 +27,16 @@
 #'       frequencies given random mating. See \code{\link{rmlike}()}.}
 #'   \item{\code{"nodr"}}{Testing equilibrium given no double reduction.
 #'       See \code{\link{hwenodr}()}.}
+#'   \item{\code{"boot"}}{Bootstrap approach to test for equilibrium.
+#'       See \code{\link{hweboot}()}.}
 #' }
 #' @param effdf A logical. Should we use the effective degrees of freedom?
 #'     Only applicable if \code{type = "mle"} or \code{type = "ustat"}.
 #' @param thresh A non-negative numeric. The threshold for aggregating
 #'     genotypes. Only applicable if \code{type = "mle"},
 #'     \code{type = "ustat"}, or \code{type = "rm"}.
+#' @param nboot The number of bootstrap iterations to use if
+#'     \code{type = "boot"}.
 #'
 #' @return A data frame. The columns of which can are described in
 #'     \code{\link{hwelike}()}, \code{\link{hweustat}()},
@@ -76,15 +80,17 @@
 #' mean(hout$alpha1)
 #'
 hwefit <- function(nmat,
-                   type = c("ustat", "mle", "rm", "nodr"),
+                   type = c("ustat", "mle", "rm", "nodr", "boot"),
                    effdf = TRUE,
-                   thresh = 1) {
+                   thresh = 1,
+                   nboot = 2000) {
   ## Check parameters ----
   stopifnot(is.matrix(nmat))
   ploidy <- ncol(nmat) - 1
   stopifnot(ploidy %% 2 == 0, ploidy > 2)
   stopifnot(is.logical(effdf), length(effdf) == 1)
   stopifnot(length(thresh) == 1, thresh >= 0)
+  stopifnot(length(nboot) == 1, nboot >= 1)
   type <- match.arg(type)
 
   if (type == "mle") {
@@ -112,6 +118,8 @@ hwefit <- function(nmat,
                                       thresh = thresh)
                      } else if (type == "nodr") {
                        hout <- hwenodr(nvec = c(nvec))
+                     } else if (type == "boot") {
+                       hout <- hweboot(n = c(nvec), nboot = nboot, more = FALSE)
                      }
                      unlist(hout)
                    }
@@ -122,4 +130,26 @@ hwefit <- function(nmat,
   }
 
   return(as.data.frame(outdf))
+}
+
+#' Equilibrium and random mating estimation and testing for many loci using
+#' posterior genotype probabilities.
+#'
+#' Right now, only the bootstrap method in \code{\link{hweboot}()} is
+#' implemented. We hope in the future to offer more options.
+#'
+#' @param genoarray A three-dimensional array of posterior genotype probabilties.
+#'     The first dimension indexes
+#'     the loci, the second dimension indexes the individuals, and the
+#'     third dimension indexes the genotypes. So \code{genoarray[i,j,k]}
+#'     contains the posterior probability that individual \code{j} at locus
+#'     \code{i} has genotype \code{k-1}.
+#' @param nboot The number of bootstrap samples to apply to
+#'     \code{\link{hweboot}()}.
+#'
+#' @author David Gerard
+#'
+hwefit_genolike <- function(genoarray, nboot = 2000) {
+  stopifnot(is.array(genoarray))
+
 }
