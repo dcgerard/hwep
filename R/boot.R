@@ -128,7 +128,7 @@ hweboot <- function(n, nboot = 2000, more = FALSE) {
   ## Calculate test_boot
   omega <- ginv(stats::cov(u_boot))$mat
   u_mean <- colMeans(u_boot)
-  diffmat <- t(t(u_boot) - u_mean)
+  diffmat <- t(t(u_boot) - u_stat)
   test_boot <- apply(X = diffmat, MARGIN = 1, FUN = function(x) t(x) %*% omega %*% x)
   test_stat <- c(t(u_stat) %*% omega %*% u_stat)
 
@@ -147,6 +147,8 @@ hweboot <- function(n, nboot = 2000, more = FALSE) {
     retlist$alpha_boot <- alpha_boot
     retlist$u_boot <- u_boot
     retlist$test_boot <- test_boot
+    retlist$u_mean <- u_mean
+    retlist$omega <- omega
   }
 
   return(retlist)
