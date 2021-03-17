@@ -104,7 +104,7 @@ hwefit <- function(nmat,
   ## Run foreach ----
   nvec <- NULL
   outdf <- foreach(nvec = iterators::iter(nmat, by = "row"),
-                   .combine = rbind) %dopar% {
+                   .combine = rbind) %dorng% {
                      if (type == "mle") {
                        hout <- hwelike(nvec = c(nvec),
                                        thresh = thresh,

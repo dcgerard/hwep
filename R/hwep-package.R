@@ -54,6 +54,7 @@
 #' in R for citation information: \code{citation("hwep")}
 #'
 #' @importFrom foreach %dopar%
+#' @importFrom doRNG %dorng%
 #' @import doFuture
 #' @importFrom foreach foreach
 #'

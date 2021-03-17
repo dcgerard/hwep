@@ -33,5 +33,6 @@ Imports:
     foreach,
     iterators,
     pracma,
-    tensr
+    tensr,
+    doRNG
 VignetteBuilder: knitr
