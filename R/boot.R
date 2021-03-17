@@ -93,16 +93,14 @@ hweboot <- function(n, nboot = 2000, more = FALSE) {
   alphahat <- oout$par
   fq <- freqnext(freq = qhat, alpha = oout$par, check = FALSE)
   u_stat <- (qhat - fq) * sqrt(nind)
-  test_stat <- sum(u_stat^2) ## same as oout$value
 
   ## Run bootstrap ----
   alpha_boot <- matrix(NA_real_, nrow = nboot, ncol = ibdr)
   u_boot <- matrix(NA_real_, nrow = nboot, ncol = ploidy + 1)
-  test_boot <- rep(NA_real_, length.out = nboot)
   for (b in seq_len(nboot)) {
     ## Resample
     if (type == "geno") {
-      n_boot <- c(stats::rmultinom(n = 1, size = ploidy + 1, prob = qhat))
+      n_boot <- c(stats::rmultinom(n = 1, size = nind, prob = qhat))
     } else if (type == "genolike") {
       ind_boot <- sample(x = seq_len(nind), size = nind, replace = TRUE)
       genovec <- apply(X = n[ind_boot, ], MARGIN = 1, FUN = function(x) sample(x = 0:ploidy, size = 1, prob = x))
@@ -125,21 +123,30 @@ hweboot <- function(n, nboot = 2000, more = FALSE) {
     qhat_boot <- n_boot / nind
     fq_boot <- freqnext(freq = qhat_boot, alpha = oout$par, check = FALSE)
     u_boot[b, ] <- (qhat_boot - fq_boot) * sqrt(nind)
-    test_boot[[b]] <- sum((u_boot[b, ] - u_stat)^2)
   }
 
+  ## Calculate test_boot
+  omega <- ginv(stats::cov(u_boot))$mat
+  u_mean <- colMeans(u_boot)
+  diffmat <- t(t(u_boot) - u_mean)
+  test_boot <- apply(X = diffmat, MARGIN = 1, FUN = function(x) t(x) %*% omega %*% x)
+  test_stat <- c(t(u_stat) %*% omega %*% u_stat)
+
+  ## p-values
   p_hwe <- mean(test_boot > test_stat)
   p_ci <- stats::binom.test(x = sum(test_boot > test_stat), n = nboot)$conf.int
 
+  ## Return
   retlist <- list(alpha = alphahat,
                   p_hwe = p_hwe,
                   p_ci = p_ci)
 
   if (more) {
+    retlist$u_stat <- u_stat
+    retlist$test_stat <- test_stat
     retlist$alpha_boot <- alpha_boot
     retlist$u_boot <- u_boot
     retlist$test_boot <- test_boot
-    retlist$test_stat <- test_stat
   }
 
   return(retlist)
