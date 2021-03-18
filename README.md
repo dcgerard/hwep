@@ -6,7 +6,7 @@
 <!-- badges: start -->
 
 [![Lifecycle:
-experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html)
+stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
 [![License: GPL
 v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![CRAN
@@ -25,9 +25,10 @@ rounds of random mating, given rates of double reduction.
 
 The main functions for inference are:
 
--   `hwefit()`: Fit either `hwelike()`,`rmlike()`, `hweustat()`, or
-    `hwenodr()` across many loci. Parallelization is supported through
-    the [future](https://cran.r-project.org/package=future) package.
+-   `hwefit()`: Fit either `hwelike()`,`rmlike()`, `hweustat()`,
+    `hwenodr()`, or `hweboot()` across many loci. Parallelization is
+    supported through the
+    [future](https://cran.r-project.org/package=future) package.
 
 -   `hwelike()`: Likelihood inference for equilibrium. This function
     estimates the rate of double reduction given equilibrium, and tests
@@ -45,6 +46,9 @@ The main functions for inference are:
 -   `hwenodr()`: Implements a likelihood ratio test that tests for
     Hardy-Weinberg equilibrium in autopolyploids given no double
     reduction.
+
+-   `hweboot()`: Implements a bootstrap approach to test for equilibrium
+    which is more appropriate for small samples and uncertain genotypes.
 
 Functions are provided for calculating genotype frequencies for
 individuals and gametes:

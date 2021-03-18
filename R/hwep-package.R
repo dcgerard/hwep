@@ -27,6 +27,9 @@
 #'       double reduction rates and estimates these rates given equilibrium.}
 #'   \item{\code{\link{hwenodr}()}}{Implements a likelihood ratio test
 #'       that tests for equilibrium in autopolyploids given no double reduction.}
+#'   \item{\code{\link{hweboot}()}}{Implements a bootstrap approach to test
+#'       for equilibrium which is more appropriate for small samples and
+#'       uncertain genotypes.}
 #' }
 #'
 #' @section Other Functions:
