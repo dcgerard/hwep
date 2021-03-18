@@ -42,7 +42,7 @@
 <meta property="og:title" content="Equilibrium and random mating estimation and testing for many loci. — hwefit" />
 <meta property="og:description" content="Estimates and tests for either equilibrium or random mating  across many loci
 using hwelike(), hweustat(),
-rmlike(), or hwenodr()." />
+rmlike(), hwenodr(), or hweboot()." />
 
 
 
@@ -101,6 +101,9 @@ rmlike(), or hwenodr()." />
     </li>
   </ul>
 </li>
+<li>
+  <a href="../news/index.html">Changelog</a>
+</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         
@@ -125,10 +128,16 @@ rmlike(), or hwenodr()." />
     <div class="ref-description">
     <p>Estimates and tests for either equilibrium or random mating  across many loci
 using <code><a href='hwelike.html'>hwelike</a>()</code>, <code><a href='hweustat.html'>hweustat</a>()</code>,
-<code><a href='rmlike.html'>rmlike</a>()</code>, or <code><a href='hwenodr.html'>hwenodr</a>()</code>.</p>
+<code><a href='rmlike.html'>rmlike</a>()</code>, <code><a href='hwenodr.html'>hwenodr</a>()</code>, or <code><a href='hweboot.html'>hweboot</a>()</code>.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>hwefit</span><span class='op'>(</span><span class='va'>nmat</span>, type <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"ustat"</span>, <span class='st'>"mle"</span>, <span class='st'>"rm"</span>, <span class='st'>"nodr"</span><span class='op'>)</span>, effdf <span class='op'>=</span> <span class='cn'>TRUE</span>, thresh <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>hwefit</span><span class='op'>(</span>
+  <span class='va'>nmat</span>,
+  type <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"ustat"</span>, <span class='st'>"mle"</span>, <span class='st'>"rm"</span>, <span class='st'>"nodr"</span>, <span class='st'>"boot"</span><span class='op'>)</span>,
+  effdf <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  thresh <span class='op'>=</span> <span class='fl'>1</span>,
+  nboot <span class='op'>=</span> <span class='fl'>2000</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -153,6 +162,8 @@ See <code><a href='hwelike.html'>hwelike</a>()</code>.</p></dd>
 frequencies given random mating. See <code><a href='rmlike.html'>rmlike</a>()</code>.</p></dd>
 <dt><code>"nodr"</code></dt><dd><p>Testing equilibrium given no double reduction.
 See <code><a href='hwenodr.html'>hwenodr</a>()</code>.</p></dd>
+<dt><code>"boot"</code></dt><dd><p>Bootstrap approach to test for equilibrium.
+See <code><a href='hweboot.html'>hweboot</a>()</code>.</p></dd>
 
 </dl></td>
     </tr>
@@ -166,6 +177,11 @@ Only applicable if <code>type = "mle"</code> or <code>type = "ustat"</code>.</p>
       <td><p>A non-negative numeric. The threshold for aggregating
 genotypes. Only applicable if <code>type = "mle"</code>,
 <code>type = "ustat"</code>, or <code>type = "rm"</code>.</p></td>
+    </tr>
+    <tr>
+      <th>nboot</th>
+      <td><p>The number of bootstrap iterations to use if
+<code>type = "boot"</code>.</p></td>
     </tr>
     </table>
 

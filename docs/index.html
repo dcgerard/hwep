@@ -66,6 +66,9 @@
     </li>
   </ul>
 </li>
+<li>
+  <a href="news/index.html">Changelog</a>
+</li>
       </ul>
 <ul class="nav navbar-nav navbar-right"></ul>
 </div>
@@ -87,11 +90,12 @@
 <p>Inference concerning equilibrium and random mating in autopolyploids. Methods are available to test for equilibrium and random mating at any even ploidy level (&gt;2) in the presence of double reduction. For autopolyploid populations in equilibrium, methods are available to estimate the degree of double reduction. We also provide functions to calculate genotype frequencies at equilibrium, or after one or several rounds of random mating, given rates of double reduction.</p>
 <p>The main functions for inference are:</p>
 <ul>
-<li><p><code><a href="reference/hwefit.html">hwefit()</a></code>: Fit either <code><a href="reference/hwelike.html">hwelike()</a></code>,<code><a href="reference/rmlike.html">rmlike()</a></code>, <code><a href="reference/hweustat.html">hweustat()</a></code>, or <code><a href="reference/hwenodr.html">hwenodr()</a></code> across many loci. Parallelization is supported through the <a href="https://cran.r-project.org/package=future">future</a> package.</p></li>
+<li><p><code><a href="reference/hwefit.html">hwefit()</a></code>: Fit either <code><a href="reference/hwelike.html">hwelike()</a></code>,<code><a href="reference/rmlike.html">rmlike()</a></code>, <code><a href="reference/hweustat.html">hweustat()</a></code>, <code><a href="reference/hwenodr.html">hwenodr()</a></code>, or <code><a href="reference/hweboot.html">hweboot()</a></code> across many loci. Parallelization is supported through the <a href="https://cran.r-project.org/package=future">future</a> package.</p></li>
 <li><p><code><a href="reference/hwelike.html">hwelike()</a></code>: Likelihood inference for equilibrium. This function estimates the rate of double reduction given equilibrium, and tests for at most small deviations from equilibrium.</p></li>
 <li><p><code><a href="reference/rmlike.html">rmlike()</a></code>: Likelihood inference for random mating in polyploids. This function tests for random mating and estimates gametic frequencies given random mating. This function does not assume a model for meiosis.</p></li>
 <li><p><code><a href="reference/hweustat.html">hweustat()</a></code>: U-statistic approach for equilibrium and double reduction. This function tests for equilibrium given double reduction rates and estimates these rates given equilibrium.</p></li>
 <li><p><code><a href="reference/hwenodr.html">hwenodr()</a></code>: Implements a likelihood ratio test that tests for Hardy-Weinberg equilibrium in autopolyploids given no double reduction.</p></li>
+<li><p><code><a href="reference/hweboot.html">hweboot()</a></code>: Implements a bootstrap approach to test for equilibrium which is more appropriate for small samples and uncertain genotypes.</p></li>
 </ul>
 <p>Functions are provided for calculating genotype frequencies for individuals and gametes:</p>
 <ul>
@@ -167,7 +171,7 @@
   <div class="dev-status">
 <h2>Dev status</h2>
 <ul class="list-unstyled">
-<li><a href="https://lifecycle.r-lib.org/articles/stages.html"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" alt="Lifecycle: experimental"></a></li>
+<li><a href="https://lifecycle.r-lib.org/articles/stages.html#stable"><img src="https://img.shields.io/badge/lifecycle-stable-brightgreen.svg" alt="Lifecycle: stable"></a></li>
 <li><a href="https://www.gnu.org/licenses/gpl-3.0"><img src="https://img.shields.io/badge/License-GPL%20v3-blue.svg" alt="License: GPL v3"></a></li>
 <li><a href="https://CRAN.R-project.org/package=hwep"><img src="https://www.r-pkg.org/badges/version/hwep" alt="CRAN status"></a></li>
 <li><a href="https://github.com/dcgerard/hwep/actions"><img src="https://github.com/dcgerard/hwep/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a></li>
