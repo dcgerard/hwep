@@ -93,6 +93,7 @@ hweboot <- function(n, nboot = 2000, more = FALSE) {
   alphahat <- oout$par
   fq <- freqnext(freq = qhat, alpha = oout$par, check = FALSE)
   u_stat <- (qhat - fq) * sqrt(nind)
+  test_stat <- sum(u_stat ^ 2)
 
   ## Run bootstrap ----
   alpha_boot <- matrix(NA_real_, nrow = nboot, ncol = ibdr)
@@ -126,11 +127,9 @@ hweboot <- function(n, nboot = 2000, more = FALSE) {
   }
 
   ## Calculate test_boot
-  omega <- ginv(stats::cov(u_boot))$mat
   u_mean <- colMeans(u_boot)
-  diffmat <- t(t(u_boot) - u_stat)
-  test_boot <- apply(X = diffmat, MARGIN = 1, FUN = function(x) t(x) %*% omega %*% x)
-  test_stat <- c(t(u_stat) %*% omega %*% u_stat)
+  diffmat <- t(t(u_boot) - u_mean)
+  test_boot <- apply(X = diffmat, MARGIN = 1, FUN = function(x) sum(x ^ 2))
 
   ## p-values
   p_hwe <- mean(test_boot > test_stat)
@@ -148,7 +147,6 @@ hweboot <- function(n, nboot = 2000, more = FALSE) {
     retlist$u_boot <- u_boot
     retlist$test_boot <- test_boot
     retlist$u_mean <- u_mean
-    retlist$omega <- omega
   }
 
   return(retlist)
