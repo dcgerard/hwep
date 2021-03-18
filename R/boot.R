@@ -75,9 +75,11 @@ hweboot <- function(n, nboot = 2000, more = FALSE) {
   if (type == "geno") {
     nvec <- n
   } else if (type == "genolike") {
-    ## posterior mode
-    nvec <- as.vector(table(c(apply(X = n, MARGIN = 1, FUN = which.max) - 1, 0:ploidy)) - 1)
-    stopifnot(sum(nvec) == nind)
+    ## use posterior modes
+    ## nvec <- as.vector(table(c(apply(X = n, MARGIN = 1, FUN = which.max) - 1, 0:ploidy)) - 1)
+    ## use mean counts
+    nvec <- colSums(n)
+    stopifnot(abs(sum(nvec) - nind) < 10^-4)
   }
   qhat <- nvec / nind
 
