@@ -470,9 +470,9 @@ zsegarray <- function(alpha, ploidy) {
     }
   }
 
-  dimnames(segarray) <- list(offspring = 0:ploidy,
-                             parent1 = 0:ploidy,
-                             parent2 = 0:ploidy)
+  dimnames(segarray) <- list(parent1 = 0:ploidy,
+                             parent2 = 0:ploidy,
+                             offspring = 0:ploidy)
 
   return(segarray)
 }

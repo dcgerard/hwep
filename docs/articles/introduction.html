@@ -158,55 +158,55 @@
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">sega</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/zsegarray.html">zsegarray</a></span><span class="op">(</span>alpha <span class="op">=</span> <span class="fl">0.1</span>, ploidy <span class="op">=</span> <span class="fl">4</span><span class="op">)</span>
 <span class="va">sega</span>
-<span class="co">#&gt; , , parent2 = 0</span>
+<span class="co">#&gt; , , offspring = 0</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt;          parent1</span>
-<span class="co">#&gt; offspring     0             1             2            3            4</span>
-<span class="co">#&gt;         0 1.000  5.250000e-01  2.000000e-01 2.500000e-02 4.440892e-17</span>
-<span class="co">#&gt;         1 0.525  2.756250e-01  1.050000e-01 1.312500e-02 6.661338e-17</span>
-<span class="co">#&gt;         2 0.200  1.050000e-01  4.000000e-02 5.000000e-03 3.330669e-17</span>
-<span class="co">#&gt;         3 0.025  1.312500e-02  5.000000e-03 6.250000e-04 2.220446e-17</span>
-<span class="co">#&gt;         4 0.000 -2.220446e-17 -1.665335e-17 4.440892e-17 4.440892e-17</span>
+<span class="co">#&gt;        parent2</span>
+<span class="co">#&gt; parent1     0             1             2            3            4</span>
+<span class="co">#&gt;       0 1.000  5.250000e-01  2.000000e-01 2.500000e-02 4.440892e-17</span>
+<span class="co">#&gt;       1 0.525  2.756250e-01  1.050000e-01 1.312500e-02 6.661338e-17</span>
+<span class="co">#&gt;       2 0.200  1.050000e-01  4.000000e-02 5.000000e-03 3.330669e-17</span>
+<span class="co">#&gt;       3 0.025  1.312500e-02  5.000000e-03 6.250000e-04 2.220446e-17</span>
+<span class="co">#&gt;       4 0.000 -2.220446e-17 -1.665335e-17 4.440892e-17 4.440892e-17</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; , , parent2 = 1</span>
+<span class="co">#&gt; , , offspring = 1</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt;          parent1</span>
-<span class="co">#&gt; offspring             0             1     2      3             4</span>
-<span class="co">#&gt;         0  6.661338e-17  4.500000e-01 0.600 0.4500  0.000000e+00</span>
-<span class="co">#&gt;         1  4.500000e-01  4.725000e-01 0.405 0.2475  1.942890e-17</span>
-<span class="co">#&gt;         2  6.000000e-01  4.050000e-01 0.240 0.1050  0.000000e+00</span>
-<span class="co">#&gt;         3  4.500000e-01  2.475000e-01 0.105 0.0225 -4.440892e-17</span>
-<span class="co">#&gt;         4 -4.440892e-17 -1.110223e-17 0.000 0.0000  0.000000e+00</span>
+<span class="co">#&gt;        parent2</span>
+<span class="co">#&gt; parent1             0             1     2      3             4</span>
+<span class="co">#&gt;       0  6.661338e-17  4.500000e-01 0.600 0.4500  0.000000e+00</span>
+<span class="co">#&gt;       1  4.500000e-01  4.725000e-01 0.405 0.2475  1.942890e-17</span>
+<span class="co">#&gt;       2  6.000000e-01  4.050000e-01 0.240 0.1050  0.000000e+00</span>
+<span class="co">#&gt;       3  4.500000e-01  2.475000e-01 0.105 0.0225 -4.440892e-17</span>
+<span class="co">#&gt;       4 -4.440892e-17 -1.110223e-17 0.000 0.0000  0.000000e+00</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; , , parent2 = 2</span>
+<span class="co">#&gt; , , offspring = 2</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt;          parent1</span>
-<span class="co">#&gt; offspring            0       1    2       3     4</span>
-<span class="co">#&gt;         0 6.661338e-17 0.02500 0.20 0.52500 1.000</span>
-<span class="co">#&gt;         1 2.500000e-02 0.22875 0.38 0.47875 0.525</span>
-<span class="co">#&gt;         2 2.000000e-01 0.38000 0.44 0.38000 0.200</span>
-<span class="co">#&gt;         3 5.250000e-01 0.47875 0.38 0.22875 0.025</span>
-<span class="co">#&gt;         4 1.000000e+00 0.52500 0.20 0.02500 0.000</span>
+<span class="co">#&gt;        parent2</span>
+<span class="co">#&gt; parent1            0       1    2       3     4</span>
+<span class="co">#&gt;       0 6.661338e-17 0.02500 0.20 0.52500 1.000</span>
+<span class="co">#&gt;       1 2.500000e-02 0.22875 0.38 0.47875 0.525</span>
+<span class="co">#&gt;       2 2.000000e-01 0.38000 0.44 0.38000 0.200</span>
+<span class="co">#&gt;       3 5.250000e-01 0.47875 0.38 0.22875 0.025</span>
+<span class="co">#&gt;       4 1.000000e+00 0.52500 0.20 0.02500 0.000</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; , , parent2 = 3</span>
+<span class="co">#&gt; , , offspring = 3</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt;          parent1</span>
-<span class="co">#&gt; offspring            0            1             2      3    4</span>
-<span class="co">#&gt;         0 6.661338e-17 2.220446e-17 -2.220446e-17 0.0000 0.00</span>
-<span class="co">#&gt;         1 1.110223e-16 2.250000e-02  1.050000e-01 0.2475 0.45</span>
-<span class="co">#&gt;         2 6.661338e-17 1.050000e-01  2.400000e-01 0.4050 0.60</span>
-<span class="co">#&gt;         3 8.881784e-17 2.475000e-01  4.050000e-01 0.4725 0.45</span>
-<span class="co">#&gt;         4 8.881784e-17 4.500000e-01  6.000000e-01 0.4500 0.00</span>
+<span class="co">#&gt;        parent2</span>
+<span class="co">#&gt; parent1            0            1             2      3    4</span>
+<span class="co">#&gt;       0 6.661338e-17 2.220446e-17 -2.220446e-17 0.0000 0.00</span>
+<span class="co">#&gt;       1 1.110223e-16 2.250000e-02  1.050000e-01 0.2475 0.45</span>
+<span class="co">#&gt;       2 6.661338e-17 1.050000e-01  2.400000e-01 0.4050 0.60</span>
+<span class="co">#&gt;       3 8.881784e-17 2.475000e-01  4.050000e-01 0.4725 0.45</span>
+<span class="co">#&gt;       4 8.881784e-17 4.500000e-01  6.000000e-01 0.4500 0.00</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; , , parent2 = 4</span>
+<span class="co">#&gt; , , offspring = 4</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt;          parent1</span>
-<span class="co">#&gt; offspring            0            1     2            3     4</span>
-<span class="co">#&gt;         0 6.661338e-17 4.440892e-17 0.000 4.440892e-17 0.000</span>
-<span class="co">#&gt;         1 0.000000e+00 6.250000e-04 0.005 1.312500e-02 0.025</span>
-<span class="co">#&gt;         2 4.440892e-17 5.000000e-03 0.040 1.050000e-01 0.200</span>
-<span class="co">#&gt;         3 4.440892e-17 1.312500e-02 0.105 2.756250e-01 0.525</span>
-<span class="co">#&gt;         4 4.440892e-17 2.500000e-02 0.200 5.250000e-01 1.000</span></code></pre></div>
+<span class="co">#&gt;        parent2</span>
+<span class="co">#&gt; parent1            0            1     2            3     4</span>
+<span class="co">#&gt;       0 6.661338e-17 4.440892e-17 0.000 4.440892e-17 0.000</span>
+<span class="co">#&gt;       1 0.000000e+00 6.250000e-04 0.005 1.312500e-02 0.025</span>
+<span class="co">#&gt;       2 4.440892e-17 5.000000e-03 0.040 1.050000e-01 0.200</span>
+<span class="co">#&gt;       3 4.440892e-17 1.312500e-02 0.105 2.756250e-01 0.525</span>
+<span class="co">#&gt;       4 4.440892e-17 2.500000e-02 0.200 5.250000e-01 1.000</span></code></pre></div>
 <p>Thus, the probability of an offspring dosage of 3 when parental dosages are 2 and 4, is</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">sega</span><span class="op">[</span><span class="fl">4</span>, <span class="fl">3</span>, <span class="fl">5</span><span class="op">]</span>
