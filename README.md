@@ -21,7 +21,8 @@ even ploidy level (&gt;2) in the presence of double reduction. For
 autopolyploid populations in equilibrium, methods are available to
 estimate the degree of double reduction. We also provide functions to
 calculate genotype frequencies at equilibrium, or after one or several
-rounds of random mating, given rates of double reduction.
+rounds of random mating, given rates of double reduction. For details of
+these methods, see Gerard (2021).
 
 The main functions for inference are:
 
@@ -91,7 +92,8 @@ devtools::install_github("dcgerard/hwep")
 To cite hwep in publications use:
 
 > Gerard D (2021). “Double reduction estimation and equilibrium tests in
-> natural autopolyploid populations.” *Unpublished Manuscript*.
+> natural autopolyploid populations.” *bioRxiv*.
+> [doi:10.1101/2021.09.24.461731](https://doi.org/10.1101/2021.09.24.461731).
 
 A BibTeX entry for LaTeX users is
 
@@ -99,8 +101,9 @@ A BibTeX entry for LaTeX users is
 @Article{,
   title = {Double reduction estimation and equilibrium tests in natural autopolyploid populations},
   author = {David Gerard},
-  journal = {Unpublished Manuscript},
+  journal = {bioRxiv},
   year = {2021},
+  doi = {10.1101/2021.09.24.461731}
 }
 ```
 

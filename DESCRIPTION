@@ -15,12 +15,13 @@ Description: Inference concerning equilibrium and random mating in
     We also provide functions to calculate genotype frequencies at
     equilibrium, or after one or several rounds of random mating, 
     given rates of double reduction. The main function is
-    `hwefit()`.
+    `hwefit()`. For details of these methods, see 
+    Gerard (2021) <doi:10.1101/2021.09.24.461731>.
 License: GPL (>= 3)
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
 Suggests: 
     testthat (>= 3.0.0),
     covr,

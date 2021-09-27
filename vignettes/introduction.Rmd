@@ -166,7 +166,7 @@ The other values of "type" run different procedures:
 
 - Fisher, R. A., & Mather, K. (1943). The inheritance of style length in *Lythrum salicaria*. *Annals of Eugenics*, 12(1), 1-23. [doi:10.1111/j.1469-1809.1943.tb02307.x](https://doi.org/10.1111/j.1469-1809.1943.tb02307.x)
 
-- Gerard, D. (2021). Double reduction estimation and equilibrium tests in natural autopolyploid populations. *Unpublished manuscript*.
+- Gerard, D. (2021). Double reduction estimation and equilibrium tests in natural autopolyploid populations.  *bioRxiv*. [doi:10.1101/2021.09.24.461731](https://doi.org/10.1101/2021.09.24.461731).
 
 - Huang, K., Wang, T., Dunn, D. W., Zhang, P., Cao, X., Liu, R., & Li, B. (2019). Genotypic frequencies at equilibrium for polysomic inheritance under double-reduction. *G3: Genes | Genomes | Genetics*, 9(5), 1693-1706. [doi:10.1534/g3.119.400132](http://doi.org/10.1534/g3.119.400132)
 
