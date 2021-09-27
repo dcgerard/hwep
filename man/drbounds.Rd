@@ -15,7 +15,8 @@ the upper bound on the probability of \code{i} pairs of
 identical-by-double-reduction alleles being in an individual.
 }
 \description{
-These are according to the complete equation segregation model. See
+Calculates the upper bounds of the double reduction parameters
+according to the complete equation segregation model. See
 Huang et. al. (2019) for details.
 }
 \examples{

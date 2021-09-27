@@ -5,7 +5,8 @@
 
 #' Test for HWE in autopolyploids under the assumption of no double reduction
 #'
-#' We run a likelihood ratio test against the null of no HWE.
+#' We run a likelihood ratio test against the null of no HWE, assuming that
+#' there is no double reduction.
 #'
 #' @param nvec A vector containing the observed genotype counts,
 #'     where \code{nvec[[i]]} is the number of individuals with genotype

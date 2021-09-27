@@ -217,7 +217,7 @@
 <div id="equilibrium-genotype-frequencies" class="section level1">
 <h1 class="hasAnchor">
 <a href="#equilibrium-genotype-frequencies" class="anchor"></a>Equilibrium genotype frequencies</h1>
-<p>Equilibrium frequencies can be generated with <code><a href="../reference/hwefreq.html">hwefreq()</a></code> for arbitrary ploidy levels.</p>
+<p>Equilibrium frequencies can be generated with <code><a href="../reference/hwefreq.html">hwefreq()</a></code> for arbitrary (even) ploidy levels.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">hout</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/hwefreq.html">hwefreq</a></span><span class="op">(</span>r <span class="op">=</span> <span class="fl">0.1</span>, alpha <span class="op">=</span> <span class="fl">0.1</span>, ploidy <span class="op">=</span> <span class="fl">6</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="va">hout</span>, digits <span class="op">=</span> <span class="fl">5</span><span class="op">)</span>
@@ -284,7 +284,7 @@
 <p>The other values of “type” run different procedures:</p>
 <ul>
 <li>
-<code>"mle"</code>: Runs likelihood procedures to test for equilibrium and estimate double reduction. Only available for ploidies less than or equal to 10. This generally behaves similarly to the <span class="math inline">\(U\)</span>-statistic approach. This is implemented by the <code><a href="../reference/hwelike.html">hwelike()</a></code> function.</li>
+<code>"mle"</code>: Runs likelihood procedures to test for equilibrium and estimate double reduction. Only available for (even) ploidies less than or equal to 10. This generally behaves similarly to the <span class="math inline">\(U\)</span>-statistic approach. This is implemented by the <code><a href="../reference/hwelike.html">hwelike()</a></code> function.</li>
 <li>
 <code>"rm"</code>: Runs likelihood procedures to test for random mating. This is implemented by the <code><a href="../reference/rmlike.html">rmlike()</a></code> function.</li>
 <li>

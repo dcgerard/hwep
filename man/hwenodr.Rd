@@ -24,7 +24,8 @@ equilibrium given no double reduction.}
 }
 }
 \description{
-We run a likelihood ratio test against the null of no HWE.
+We run a likelihood ratio test against the null of no HWE, assuming that
+there is no double reduction.
 }
 \examples{
 set.seed(10)

@@ -156,7 +156,7 @@ rmem <- function(nvec, tol = 10^-3, maxit = 100, addval = 1 / 100) {
 #'
 #' @return A list with the following elements:
 #' \describe{
-#'   \item{\code{p}}{The estimated gamete genotype frequencies. \code{p[[i}
+#'   \item{\code{p}}{The estimated gamete genotype frequencies. \code{p[[i]]}
 #'       is the estimated frequency for gamete genotype \code{i-1}.}
 #'   \item{\code{chisq_rm}}{The likelihood ratio test statistic for testing
 #'       against the null of random mating.}

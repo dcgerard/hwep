@@ -71,7 +71,7 @@ freqnext2 <- function(freq, alpha, segarray = NULL) {
 #'     to \code{TRUE}.
 #'
 #' @return If \code{more = FALSE}, then returns a vector of length
-#'     \code{lenght(freq)} that contains the updated genotype frequencies
+#'     \code{length(freq)} that contains the updated genotype frequencies
 #'     after one generation of random mating. If \code{more = TRUE}, then
 #'     returns a list with these genotype frequencies (\code{q}) as well as the
 #'     parental gamete frequencies (\code{p}).

@@ -4,7 +4,8 @@
 
 #' Upper bounds on rates of double reduction
 #'
-#' These are according to the complete equation segregation model. See
+#' Calculates the upper bounds of the double reduction parameters
+#' according to the complete equation segregation model. See
 #' Huang et. al. (2019) for details.
 #'
 #' @param ploidy The ploidy of the species. Should be even and at least 4.

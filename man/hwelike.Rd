@@ -35,7 +35,8 @@ against the null of equilibrium.}
 \description{
 Genotype frequencies from Huang et al (2019) are used to implement a
 likelihood procedure to estimate double reduction rates and to test
-for equilibrium while accounting for double reduction.
+for equilibrium while accounting for double reduction. This approach
+is only implemented for ploidies 4, 6, 8, and 10.
 }
 \examples{
 thout <- hwefreq(alpha = 0.1, r = 0.3, ploidy = 6)

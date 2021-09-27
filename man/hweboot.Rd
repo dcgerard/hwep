@@ -17,7 +17,7 @@ is the posterior probability that individual i has ploidy j-1.}
 
 \item{nboot}{The number of bootstrap samples to run.}
 
-\item{more}{A logical. Should we return the boostrap replicates
+\item{more}{A logical. Should we return the bootstrap replicates
 (\code{FALSE}) or just the p-value, with 95\% confidence interval
 of the p-value (\code{TRUE}).}
 }
@@ -27,7 +27,7 @@ A list with some or all of the following elements
 \item{\code{p_hwe}}{The bootstrap p-value against the null of equilibrium.}
 \item{\code{p_ci}}{The 95\% confidence interval of p_hwe.}
 \item{\code{alpha_boot}}{The bootstrap samples of the double reduction
-parmeter.}
+parameter.}
 \item{\code{u_boot}}{The bootstrap samples of the U-statistic.}
 }
 }

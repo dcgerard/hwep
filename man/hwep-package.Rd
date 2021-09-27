@@ -13,6 +13,12 @@ autopolyploid populations in equilibrium, methods are available to
 estimate the degree of double reduction. We also provide functions
 to calculate genotype frequencies at equilibrium, or after one or
 several rounds of random mating, given rates of double reduction.
+This material is based upon work supported by the
+National Science Foundation under Grant No. 2132247. The opinions,
+findings, and conclusions or recommendations expressed are those of
+the author and do not necessarily reflect the views of the National
+Science Foundation. For details of these methods, see
+Gerard (2021) \doi{10.1101/2021.09.24.461731}.
 }
 \section{Main Functions}{
 

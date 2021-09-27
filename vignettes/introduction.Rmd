@@ -85,7 +85,7 @@ Thus, the probability of an offspring dosage of 3 when parental dosages are 2 an
 
 # Equilibrium genotype frequencies
 
-Equilibrium frequencies can be generated with `hwefreq()` for arbitrary ploidy levels. 
+Equilibrium frequencies can be generated with `hwefreq()` for arbitrary (even) ploidy levels. 
 
 ```{r}
 hout <- hwefreq(r = 0.1, alpha = 0.1, ploidy = 6)
@@ -158,7 +158,7 @@ plan("sequential")
 
 The other values of "type" run different procedures:
 
-- `"mle"`: Runs likelihood procedures to test for equilibrium and estimate double reduction. Only available for ploidies less than or equal to 10. This generally behaves similarly to the $U$-statistic approach. This is implemented by the `hwelike()` function.
+- `"mle"`: Runs likelihood procedures to test for equilibrium and estimate double reduction. Only available for (even) ploidies less than or equal to 10. This generally behaves similarly to the $U$-statistic approach. This is implemented by the `hwelike()` function.
 - `"rm"`: Runs likelihood procedures to test for random mating. This is implemented by the `rmlike()` function.
 - `"nodr"`: Runs likelihood procedures to test for equilibrium assuming no double reduction. This is implemented by the `hwenodr()` function.
 
