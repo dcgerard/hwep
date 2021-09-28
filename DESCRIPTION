@@ -19,7 +19,7 @@ Description: Inference concerning equilibrium and random mating in
     double reduction. We also provide functions to calculate genotype 
     frequencies at equilibrium, or after one or several rounds of 
     random mating, given rates of double reduction. The main function is
-    `hwefit()`. This material is based upon work supported by the
+    hwefit(). This material is based upon work supported by the
     National Science Foundation under Grant No. 2132247. The opinions,
     findings, and conclusions or recommendations expressed are those of
     the author and do not necessarily reflect the views of the National
