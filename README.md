@@ -76,10 +76,12 @@ segregation model are provided by `drbounds()`.
 
 ## Installation
 
-<!-- You can install the released version of hwep from [CRAN](https://CRAN.R-project.org) with: -->
-<!-- ```{r, eval = FALSE} -->
-<!-- install.packages("hwep") -->
-<!-- ``` -->
+You can install the released version of hwep from
+[CRAN](https://cran.r-project.org/package=hwep) with:
+
+``` r
+install.packages("hwep")
+```
 
 You can install the development version from
 [GitHub](https://github.com/dcgerard/hwep) with:

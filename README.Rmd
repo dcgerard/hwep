@@ -68,11 +68,11 @@ The bounds on the double reduction rate under the complete equational segregatio
 
 ## Installation
 
-<!-- You can install the released version of hwep from [CRAN](https://CRAN.R-project.org) with: -->
+You can install the released version of hwep from [CRAN](https://cran.r-project.org/package=hwep) with:
 
-<!-- ```{r, eval = FALSE} -->
-<!-- install.packages("hwep") -->
-<!-- ``` -->
+```{r, eval = FALSE}
+install.packages("hwep")
+```
 
 You can install the development version from [GitHub](https://github.com/dcgerard/hwep) with:
 
