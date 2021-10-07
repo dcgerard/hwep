@@ -66,6 +66,7 @@
 #' @importFrom doRNG %dorng%
 #' @import doFuture
 #' @importFrom foreach foreach
+#' @importFrom future plan
 #'
 #' @docType package
 #' @name hwep-package

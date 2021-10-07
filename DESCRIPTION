@@ -27,6 +27,7 @@ Description: Inference concerning equilibrium and random mating in
     Gerard (2021) <doi:10.1101/2021.09.24.461731>.
 License: GPL (>= 3)
 BugReports: https://github.com/dcgerard/hwep/issues
+URL: https://dcgerard.github.io/hwep/
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
