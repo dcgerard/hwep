@@ -20,7 +20,6 @@ the confidence envelope using the method of Fox (2016), pp 37--41.
 set.seed(1)
 pvals <- runif(100)
 qqpvalue(pvals, method = "base")
-qqpvalue(pvals, method = "ggplot2")
 
 }
 \references{

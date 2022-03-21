@@ -23,7 +23,6 @@
 #' set.seed(1)
 #' pvals <- runif(100)
 #' qqpvalue(pvals, method = "base")
-#' qqpvalue(pvals, method = "ggplot2")
 #'
 #' @export
 qqpvalue <- function(pvals,
