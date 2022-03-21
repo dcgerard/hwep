@@ -82,7 +82,7 @@
 hwefit <- function(nmat,
                    type = c("ustat", "mle", "rm", "nodr", "boot"),
                    effdf = TRUE,
-                   thresh = 1,
+                   thresh = 3,
                    nboot = 2000) {
   ## Check parameters ----
   stopifnot(is.matrix(nmat))

@@ -5,7 +5,7 @@
 \title{U-process minimizer approach to equilibrium testing and double reduction
 estimation}
 \usage{
-hweustat(nvec, thresh = 1, effdf = TRUE)
+hweustat(nvec, thresh = 3, effdf = TRUE)
 }
 \arguments{
 \item{nvec}{A vector containing the observed genotype counts,
@@ -44,7 +44,7 @@ estimate the covariance of estimators, then use this to obtain
 our final estimate of the double reduction parameter.
 }
 \examples{
-set.seed(99)
+set.seed(100)
 ploidy <- 6
 size <- 100
 r <- 0.5

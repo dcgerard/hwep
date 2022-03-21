@@ -139,3 +139,45 @@ real_to_simplex <- function(y) {
 
   return(x)
 }
+
+
+
+#' Choose which levels to aggregate
+#'
+#' @param x A non-negative numeric vector.
+#' @param thresh A non-negative double. We aggregate when x < thresh
+#'
+#' @return A logical vector. It will place a \code{FALSE} wherever we will
+#'     aggregate those cells. It aggregates small cells until all cells have
+#'     at least the threshhold.
+#'
+#' @author David Gerard
+#'
+#' @noRd
+choose_agg <- function(x, thresh = 0) {
+  stopifnot(thresh >= 0, length(thresh) == 1)
+  stopifnot(x >= 0)
+
+  if (thresh == 0) {
+    return(rep(TRUE, length.out = length(x)))
+  }
+
+  which_keep <- x >= thresh
+  if (all(which_keep)) {
+    return(rep(TRUE, length.out = length(x)))
+  }
+
+  aggvec <- c(x[which_keep], sum(x[!which_keep]))
+  while(any(aggvec < thresh)) {
+    which_keep[which_keep][which.min(x[which_keep])] <- FALSE
+    aggvec <- c(x[which_keep], sum(x[!which_keep]))
+  }
+
+  return(which_keep)
+}
+
+
+
+
+
+

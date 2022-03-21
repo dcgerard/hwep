@@ -10,7 +10,7 @@
 #'     \code{floor(ploidy/4)}. These should sum to less than 1, since
 #'     \code{1-sum(alpha)} is the assumed probability of no double
 #'     reduction.
-#' @param which_keep A lotical vector of length \code{ploidy + 1}. All of the
+#' @param which_keep A logical vector of length \code{ploidy + 1}. All of the
 #'     \code{FALSE}'s will be combined with each other. They form the last
 #'     group.
 #' @param omega A \code{sum(which_keep)+1} by \code{sum(which_keep)+1}
@@ -62,10 +62,10 @@ uobj <- function(nvec, alpha, omega = NULL, which_keep = NULL) {
 
 #' Generalized inverse of a symmetric p.d. matrix
 #'
-#' This is the Moore-penrose inverse of a \emph{symmetric positive definite}
+#' This is the Moore-Penrose inverse of a \emph{symmetric positive semi-definite}
 #' matrix.
 #'
-#' @param omega A matrix to invert. Must be symmetric and positive definite.
+#' @param omega A matrix to invert. Must be symmetric and positive semi-definite.
 #' @param tol The tolerance on the eigenvalues to discard.
 #'
 #' @author David Gerard
@@ -180,7 +180,7 @@ ucov <- function(nvec, alpha) {
 #' @author David Gerard
 #'
 #' @examples
-#' set.seed(99)
+#' set.seed(100)
 #' ploidy <- 6
 #' size <- 100
 #' r <- 0.5
@@ -191,7 +191,7 @@ ucov <- function(nvec, alpha) {
 #'
 #' @export
 hweustat <- function(nvec,
-                     thresh = 1,
+                     thresh = 3,
                      effdf = TRUE) {
   ploidy <- length(nvec) - 1
   stopifnot(ploidy %% 2 == 0, ploidy >= 4)
@@ -201,13 +201,10 @@ hweustat <- function(nvec,
   minval <- sqrt(.Machine$double.eps)
 
   ## Choose which groups to aggregate ----
-  which_keep <- nvec >= thresh
-  if (sum(!which_keep) >= 1) {
-    which_keep[which_keep][which.min(nvec[which_keep])] <- FALSE
-  }
+  which_keep <- choose_agg(x = nvec, thresh = thresh)
 
   ## Return early if too few groups ----
-  if (sum(which_keep) - ibdr <= 0) {
+  if (sum(which_keep) - ibdr + 1 <= 0) {
     return(
       list(
         alpha = rep(NA_real_, ibdr),
@@ -269,12 +266,7 @@ hweustat <- function(nvec,
 
   ## Calculate degrees of freedom ----
   if (effdf) {
-    dfadd <- sum((abs(alpha - minval) < minval) | (abs(alpha - upper_alpha) < minval))
-    ecounts <- freqnext(freq = nvec / sum(nvec), alpha = alpha) * sum(nvec)
-    if (any(!which_keep)) {
-      ecounts <- c(ecounts[which_keep], sum(ecounts[!which_keep]))
-    }
-    dfadd <- dfadd - sum(ecounts < 0.1)
+    dfadd <- sum((abs(alpha - minval) < 10 * minval) | (abs(alpha - upper_alpha) < 10 * minval))
   } else {
     dfadd <- 0
   }

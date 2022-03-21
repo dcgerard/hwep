@@ -280,7 +280,7 @@ like_obj2 <- function(alpha, r, nvec, which_keep = NULL) {
 #' hwelike(nvec = nvec)
 #'
 hwelike <- function(nvec,
-                    thresh = 0,
+                    thresh = 3,
                     effdf = FALSE) {
   ploidy <- length(nvec) - 1
   stopifnot(ploidy %% 2 == 0, ploidy >= 4, ploidy <= 10)
@@ -291,10 +291,8 @@ hwelike <- function(nvec,
   omethod <- ifelse(ibdr == 1, "Brent", "L-BFGS-B")
 
   ## Choose which groups to aggregate ----
-  which_keep <- nvec >= thresh
-  if (sum(!which_keep) >= 1) {
-    which_keep[which_keep][which.min(nvec[which_keep])] <- FALSE
-  }
+  which_keep <- choose_agg(x = nvec, thresh = thresh)
+
   numkeep <- sum(which_keep)
   if (numkeep >= ploidy) {
     ## aggregating one group = no aggregation at all.
@@ -380,6 +378,3 @@ hwelike <- function(nvec,
 
   return(retlist)
 }
-
-
-
