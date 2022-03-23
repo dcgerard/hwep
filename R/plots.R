@@ -1,8 +1,97 @@
+#' Critical values for the KS test
+#'
+#' Critical values taken from Birnbaum (1952). Spline interpolation chosen
+#' for uncalculated sample sizes up to n = 100. Use 1.36/sqrt(n) for sample
+#' sizes greater than 100. See, e.g. Aldor-Noiman et al (2013).
+#'
+#' @param n Sample size.
+#'
+#' @references
+#' \itemize{
+#'   \item{Aldor-Noiman, S., Brown, L. D., Buja, A., Rolke, W., & Stine, R. A. (2013). The power to see: A new graphical test of normality. The American Statistician, 67(4), 249-260.}
+#'   \item{Birnbaum, Z. W. (1952). Numerical tabulation of the distribution of Kolmogorov's statistic for finite sample size. Journal of the American Statistical Association, 47(259), 425-441.}
+#' }
+#'
+#' @noRd
+#'
+#' @examples
+#' ks_crit(10)
+#' ks_crit(1000)
+#'
+ks_crit <- function(n) {
+  crit <- data.frame(val = c(0.8419,
+                     0.7076,
+                     0.6239,
+                     0.5633,
+                     0.4087,
+                     0.3375,
+                     0.2939,
+                     0.2639,
+                     0.2417,
+                     0.2101,
+                     0.1884,
+                     0.1723,
+                     0.1597,
+                     0.1496,
+                     0.1412,
+                     0.1340),
+             n = c(2,
+                   3,
+                   4,
+                   5,
+                   10,
+                   15,
+                   20,
+                   25,
+                   30,
+                   40,
+                   50,
+                   60,
+                   70,
+                   80,
+                   90,
+                   100)
+  )
+
+  if (n <= 100) {
+    ss <- spline(x = crit$n, y = crit$val)
+    ss <- stats::splinefun(x = crit$n, y = crit$val)
+    cval <- ss(n)
+  } else {
+    cval <- 1.36 / sqrt(n)
+  }
+  return(cval)
+}
+
+
+#' Get bands for qqplot
+#'
+#'
+#'
+#' @param n sample size
+#' @param nsamp Number of simulation reps
+#'
+#' @noRd
+ts_bands <- function(n, nsamp = 10000, alpha = 0.05) {
+  alpha <- seq_len(n)
+  beta <- n + 1 - seq_len(n)
+
+  simmat <- matrix(stats::runif(n * nsamp), ncol = nsamp)
+  simmat <- apply(simmat, 2, sort)
+  amat <- apply(simmat, 2, function(x) qbeta(p = x, shape1 = alpha, shape2 = beta))
+  cvec <- apply(amat, 2, function(x) 2 * min(c(x, 1 - x)))
+  gamma <- quantile(cvec, probs = alpha)
+  upper <- stats::qbeta(p = 1 - gamma / 2, shape1 = alpha, shape2 = beta)
+  lower <- stats::qbeta(p = gamma / 2, shape1 = alpha, shape2 = beta)
+
+}
+
 #' QQ-plot for p-values
 #'
-#' This will create a QQ-plot for p-values, comparing them to a unifrom
+#' This will create a QQ-plot for p-values, comparing them to a uniform
 #' distribution. We make our plot on the -log10 scale. We calculate
-#' the confidence envelope using the method of Fox (2016), pp 37--41.
+#' the confidence bands by the Tail Sensative statistic of
+#' Aldor-Noiman et al (2013).
 #'
 #' @param pvals A vector of p-values.
 #' @param method Should we use base plotting or ggplot2 (if installed)?
@@ -11,7 +100,7 @@
 #'
 #' @references
 #' \itemize{
-#'   \item{Fox, J. (2016) \emph{Applied Regression Analysis and Generalized Linear Models}, Third Edition. Sage.}
+#'   \item{Aldor-Noiman, S., Brown, L. D., Buja, A., Rolke, W., & Stine, R. A. (2013). The power to see: A new graphical test of normality. The American Statistician, 67(4), 249-260.}
 #' }
 #'
 #' @seealso
@@ -54,10 +143,9 @@ qqpvalue <- function(pvals,
                       )
 
     pl <- ggplot2::ggplot(data.frame(theo = theo,
-                                     pvals = pvals),
-                          mapping = ggplot2::aes(x = theo, y = pvals)) +
+                                     pvals = pvals)) +
       ggplot2::coord_trans(x = nlog10, y = nlog10) +
-      ggplot2::geom_point() +
+      ggplot2::geom_point(mapping = ggplot2::aes(x = theo, y = pvals)) +
       ggplot2::geom_abline() +
       ggplot2::scale_x_continuous(name = "Theoretical Quantiles",
                                   breaks = breakvec,
