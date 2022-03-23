@@ -12,9 +12,10 @@ qqpvalue(pvals, method = c("ggplot2", "base"))
 \item{method}{Should we use base plotting or ggplot2 (if installed)?}
 }
 \description{
-This will create a QQ-plot for p-values, comparing them to a unifrom
+This will create a QQ-plot for p-values, comparing them to a uniform
 distribution. We make our plot on the -log10 scale. We calculate
-the confidence envelope using the method of Fox (2016), pp 37--41.
+the confidence bands by inverting the KS test. See, e.g.
+Aldor-Noiman et al (2013).
 }
 \examples{
 set.seed(1)
@@ -24,7 +25,7 @@ qqpvalue(pvals, method = "base")
 }
 \references{
 \itemize{
-\item{Fox, J. (2016) \emph{Applied Regression Analysis and Generalized Linear Models}, Third Edition. Sage.}
+\item{Aldor-Noiman, S., Brown, L. D., Buja, A., Rolke, W., & Stine, R. A. (2013). The power to see: A new graphical test of normality. The American Statistician, 67(4), 249-260.}
 }
 }
 \seealso{

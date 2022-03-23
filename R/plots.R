@@ -1,8 +1,69 @@
+#' Critical values for the KS test
+#'
+#' Critical values taken from Birnbaum (1952). Spline interpolation chosen
+#' for uncalculated sample sizes up to n = 100. Use 1.36/sqrt(n) for sample
+#' sizes greater than 100. See, e.g. Aldor-Noiman et al (2013).
+#'
+#' @param n Sample size.
+#'
+#' @references
+#' \itemize{
+#'   \item{Aldor-Noiman, S., Brown, L. D., Buja, A., Rolke, W., & Stine, R. A. (2013). The power to see: A new graphical test of normality. The American Statistician, 67(4), 249-260.}
+#'   \item{Birnbaum, Z. W. (1952). Numerical tabulation of the distribution of Kolmogorov's statistic for finite sample size. Journal of the American Statistical Association, 47(259), 425-441.}
+#' }
+#'
+#' @noRd
+ks_crit <- function(n) {
+  crit <- data.frame(val = c(0.8419,
+                     0.7076,
+                     0.6239,
+                     0.5633,
+                     0.4087,
+                     0.3375,
+                     0.2939,
+                     0.2639,
+                     0.2417,
+                     0.2101,
+                     0.1884,
+                     0.1723,
+                     0.1597,
+                     0.1496,
+                     0.1412,
+                     0.1340),
+             n = c(2,
+                   3,
+                   4,
+                   5,
+                   10,
+                   15,
+                   20,
+                   25,
+                   30,
+                   40,
+                   50,
+                   60,
+                   70,
+                   80,
+                   90,
+                   100)
+  )
+
+  if (n <= 100) {
+    ss <- spline(x = crit$n, y = crit$val)
+    ss <- stats::splinefun(x = crit$n, y = crit$val)
+    cval <- ss(n)
+  } else {
+    cval <- 1.36 / sqrt(n)
+  }
+  return(cval)
+}
+
 #' QQ-plot for p-values
 #'
-#' This will create a QQ-plot for p-values, comparing them to a unifrom
+#' This will create a QQ-plot for p-values, comparing them to a uniform
 #' distribution. We make our plot on the -log10 scale. We calculate
-#' the confidence envelope using the method of Fox (2016), pp 37--41.
+#' the confidence bands by inverting the KS test. See, e.g.
+#' Aldor-Noiman et al (2013).
 #'
 #' @param pvals A vector of p-values.
 #' @param method Should we use base plotting or ggplot2 (if installed)?
@@ -11,7 +72,7 @@
 #'
 #' @references
 #' \itemize{
-#'   \item{Fox, J. (2016) \emph{Applied Regression Analysis and Generalized Linear Models}, Third Edition. Sage.}
+#'   \item{Aldor-Noiman, S., Brown, L. D., Buja, A., Rolke, W., & Stine, R. A. (2013). The power to see: A new graphical test of normality. The American Statistician, 67(4), 249-260.}
 #' }
 #'
 #' @seealso
