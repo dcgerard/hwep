@@ -22,7 +22,7 @@
 #' @examples
 #' set.seed(1)
 #' pvals <- runif(100)
-#' qqpvalue(pvals, method = "base")
+#' qqpvalue(pvals)
 #'
 #' @export
 qqpvalue <- function(pvals,
@@ -31,7 +31,7 @@ qqpvalue <- function(pvals,
   if (method == "ggplot2" &
       (!requireNamespace(package = "ggplot2", quietly = TRUE) |
        !requireNamespace(package = "scales", quietly = TRUE))) {
-    warning("ggplot2 or scales not installed, using base")
+    message("ggplot2 or scales not installed, using base")
     method <- "base"
   }
 
