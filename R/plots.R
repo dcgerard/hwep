@@ -13,6 +13,11 @@
 #' }
 #'
 #' @noRd
+#'
+#' @examples
+#' ks_crit(10)
+#' ks_crit(1000)
+#'
 ks_crit <- function(n) {
   crit <- data.frame(val = c(0.8419,
                      0.7076,
@@ -115,10 +120,9 @@ qqpvalue <- function(pvals,
                       )
 
     pl <- ggplot2::ggplot(data.frame(theo = theo,
-                                     pvals = pvals),
-                          mapping = ggplot2::aes(x = theo, y = pvals)) +
+                                     pvals = pvals)) +
       ggplot2::coord_trans(x = nlog10, y = nlog10) +
-      ggplot2::geom_point() +
+      ggplot2::geom_point(mapping = ggplot2::aes(x = theo, y = pvals)) +
       ggplot2::geom_abline() +
       ggplot2::scale_x_continuous(name = "Theoretical Quantiles",
                                   breaks = breakvec,
