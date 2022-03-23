@@ -63,11 +63,34 @@ ks_crit <- function(n) {
   return(cval)
 }
 
+
+#' Get bands for qqplot
+#'
+#'
+#'
+#' @param n sample size
+#' @param nsamp Number of simulation reps
+#'
+#' @noRd
+ts_bands <- function(n, nsamp = 10000, alpha = 0.05) {
+  alpha <- seq_len(n)
+  beta <- n + 1 - seq_len(n)
+
+  simmat <- matrix(stats::runif(n * nsamp), ncol = nsamp)
+  simmat <- apply(simmat, 2, sort)
+  amat <- apply(simmat, 2, function(x) qbeta(p = x, shape1 = alpha, shape2 = beta))
+  cvec <- apply(amat, 2, function(x) 2 * min(c(x, 1 - x)))
+  gamma <- quantile(cvec, probs = alpha)
+  upper <- stats::qbeta(p = 1 - gamma / 2, shape1 = alpha, shape2 = beta)
+  lower <- stats::qbeta(p = gamma / 2, shape1 = alpha, shape2 = beta)
+
+}
+
 #' QQ-plot for p-values
 #'
 #' This will create a QQ-plot for p-values, comparing them to a uniform
 #' distribution. We make our plot on the -log10 scale. We calculate
-#' the confidence bands by inverting the KS test. See, e.g.
+#' the confidence bands by the Tail Sensative statistic of
 #' Aldor-Noiman et al (2013).
 #'
 #' @param pvals A vector of p-values.
