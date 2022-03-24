@@ -4,12 +4,24 @@
 \alias{qqpvalue}
 \title{QQ-plot for p-values}
 \usage{
-qqpvalue(pvals, method = c("ggplot2", "base"))
+qqpvalue(
+  pvals,
+  method = c("ggplot2", "base"),
+  band_type = c("ts", "pointwise"),
+  conf_level = 0.95
+)
 }
 \arguments{
 \item{pvals}{A vector of p-values.}
 
 \item{method}{Should we use base plotting or ggplot2 (if installed)?}
+
+\item{band_type}{Should we use the method of Aldor-Noiman et al (2013) or
+pointwise based on beta? Pointwise is not recommended since there is
+strong dependence between order statistics and if one is beyond
+the pointwise bands, then likely lots are also beyond them.}
+
+\item{conf_level}{Confidence level for the bands.}
 }
 \description{
 This will create a QQ-plot for p-values, comparing them to a uniform
@@ -20,7 +32,7 @@ Aldor-Noiman et al (2013).
 \examples{
 set.seed(1)
 pvals <- runif(100)
-qqpvalue(pvals)
+qqpvalue(pvals, band_type = "pointwise", method = "base")
 
 }
 \references{

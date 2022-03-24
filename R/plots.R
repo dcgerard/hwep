@@ -104,6 +104,11 @@ ts_bands <- function(n, nsamp = 1000, a = 0.05) {
 #'
 #' @param pvals A vector of p-values.
 #' @param method Should we use base plotting or ggplot2 (if installed)?
+#' @param band_type Should we use the method of Aldor-Noiman et al (2013) or
+#'     pointwise based on beta? Pointwise is not recommended since there is
+#'     strong dependence between order statistics and if one is beyond
+#'     the pointwise bands, then likely lots are also beyond them.
+#' @param conf_level Confidence level for the bands.
 #'
 #' @author David Gerard
 #'
@@ -120,12 +125,16 @@ ts_bands <- function(n, nsamp = 1000, a = 0.05) {
 #' @examples
 #' set.seed(1)
 #' pvals <- runif(100)
-#' qqpvalue(pvals)
+#' qqpvalue(pvals, band_type = "pointwise", method = "base")
 #'
 #' @export
 qqpvalue <- function(pvals,
-                     method = c("ggplot2", "base")) {
+                     method = c("ggplot2", "base"),
+                     band_type = c("ts", "pointwise"),
+                     conf_level = 0.95) {
   method <- match.arg(method)
+  band_type <- match.arg(band_type)
+  stopifnot(conf_level >= 0, conf_level <= 1)
   if (method == "ggplot2" &
       (!requireNamespace(package = "ggplot2", quietly = TRUE) |
        !requireNamespace(package = "scales", quietly = TRUE))) {
@@ -139,9 +148,18 @@ qqpvalue <- function(pvals,
   pvals_nl10 <- -log10(pvals)
   theo_nl10 <- -log10(theo)
 
-  bounds <- ts_bands(n = length(pvals))
-  lower <- bounds$lower
-  upper <- bounds$upper
+
+  if (band_type == "ts") {
+    bounds <- ts_bands(n = length(pvals), a = 1 - conf_level)
+    lower <- bounds$lower
+    upper <- bounds$upper
+  } else if (band_type == "pointwise") {
+    shape1 <- seq_len(length(pvals))
+    shape2 <- length(pvals) + 1 - seq_len(length(pvals))
+    lower <- stats::qbeta(p = (1 - conf_level)/2, shape1 = shape1, shape2 = shape2)
+    upper <- stats::qbeta(p = 1 - (1 - conf_level)/2, shape1 = shape1, shape2 = shape2)
+    bounds <- list(lower = lower, upper = upper)
+  }
 
   breakvec <- 10^-(0:ceiling(max(c(pvals_nl10, theo_nl10, -log10(bounds$lower)))))
   lim <- c(min(c(pvals, theo, bounds$lower)), max(c(pvals, theo, bounds$upper)))
