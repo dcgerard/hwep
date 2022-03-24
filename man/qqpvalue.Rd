@@ -14,13 +14,13 @@ qqpvalue(pvals, method = c("ggplot2", "base"))
 \description{
 This will create a QQ-plot for p-values, comparing them to a uniform
 distribution. We make our plot on the -log10 scale. We calculate
-the confidence bands by inverting the KS test. See, e.g.
+the confidence bands by the Tail Sensative statistic of
 Aldor-Noiman et al (2013).
 }
 \examples{
 set.seed(1)
 pvals <- runif(100)
-qqpvalue(pvals, method = "base")
+qqpvalue(pvals)
 
 }
 \references{
