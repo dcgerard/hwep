@@ -1,12 +1,21 @@
-#' Get bands for QQ-plot
+#' Get simultaneous confidence bands for a uniform QQ-plot
 #'
-#' Procedure is described in Aldor-Noiman et al (2013). But note that they
-#' have a mistake in their paper. Step (e) of their algorithm on page 254
-#' should be the CDF of the Beta distribution, not the quantile function.
+#' This will provide 100(1-a)% simultaneous confidence bands for a
+#' sample of size \code{n}. It does this by the "tail-sensative" approach
+#' of Aldor-Noiman et al (2013), which uses simulated uniform vectors. The
+#' number of simulations is controlled by \code{nsamp}.
 #'
-#' @param n sample size
-#' @param nsamp Number of simulation reps
+#' The procedure used is described in Aldor-Noiman et al (2013). But note
+#' that they have a mistake in their paper. Step (e) of their algorithm on
+#' page 254 should be the CDF of the Beta distribution, not the quantile
+#' function.
+#'
+#' @param n Sample size.
+#' @param nsamp Number of simulation repetitions.
 #' @param a The significance level.
+#'
+#' @return A list of length 3. The \code{$lower} and \code{$upper} confidence
+#' limits at uniform quantiles \code{$q}.
 #'
 #' @references
 #' \itemize{
@@ -15,11 +24,24 @@
 #'
 #' @author David Gerard
 #'
-#' @noRd
+#' @export
+#'
+#' @examples
+#' ts <- ts_bands(100)
+#'
+#' graphics::plot(x = ts$q,
+#'                y = ts$upper,
+#'                type = "l",
+#'                xlim = c(0, 1),
+#'                ylim = c(0, 1),
+#'                xlab = "Theoretical Quantiles",
+#'                ylab = "Empirical Quantiles")
+#' graphics::lines(x = ts$q, y = ts$lower)
+#' graphics::lines(x = ts$q, y = ts$q, lty = 2)
+#'
 ts_bands <- function(n, nsamp = 1000, a = 0.05) {
   alpha <- seq_len(n)
   beta <- n + 1 - seq_len(n)
-
   simmat <- matrix(stats::runif(n * nsamp), ncol = nsamp)
   simmat <- apply(simmat, 2, sort)
   amat <- apply(simmat, 2, function(x) stats::pbeta(q = x, shape1 = alpha, shape2 = beta))
@@ -27,7 +49,7 @@ ts_bands <- function(n, nsamp = 1000, a = 0.05) {
   gamma <- stats::quantile(cvec, probs = a)
   upper <- stats::qbeta(p = 1 - gamma / 2, shape1 = alpha, shape2 = beta)
   lower <- stats::qbeta(p = gamma / 2, shape1 = alpha, shape2 = beta)
-  return(list(lower = lower, upper = upper))
+  return(list(q = stats::ppoints(n), lower = lower, upper = upper))
 }
 
 #' QQ-plot for p-values
