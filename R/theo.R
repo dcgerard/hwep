@@ -353,11 +353,6 @@ hwelike <- function(nvec,
   TOL <- sqrt(.Machine$double.eps)
   if (effdf) {
     dfadd <- sum((abs(alphahat - minval) < TOL) | (abs(alphahat - upper_alpha) < TOL))
-    ecounts <- theofreq(alpha = alphahat, r = rhat, ploidy = ploidy)$q * sum(nvec)
-    if (any(!which_keep)) {
-      ecounts <- c(ecounts[which_keep], sum(ecounts[!which_keep]))
-    }
-    dfadd <- dfadd - sum(ecounts < 0.1)
   } else {
     dfadd <- 0
   }

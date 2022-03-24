@@ -162,15 +162,31 @@ choose_agg <- function(x, thresh = 0) {
     return(rep(TRUE, length.out = length(x)))
   }
 
+  # all ok
   which_keep <- x >= thresh
   if (all(which_keep)) {
     return(rep(TRUE, length.out = length(x)))
   }
 
+  if (all(!which_keep)) {
+    ibdr <- floor((length(x) - 1) / 4)
+    which_keep <- rep(FALSE, length.out = length(x))
+    which_keep[order(-x)][1:(ibdr + 1)] <- TRUE
+    return(which_keep)
+  }
+
+  # keep aggregating until done
   aggvec <- c(x[which_keep], sum(x[!which_keep]))
   while(any(aggvec < thresh)) {
     which_keep[which_keep][which.min(x[which_keep])] <- FALSE
     aggvec <- c(x[which_keep], sum(x[!which_keep]))
+  }
+
+  # aggregate as much as we can
+  ibdr <- floor((length(x) - 1) / 4)
+  if (sum(which_keep) < ibdr + 1) {
+    which_keep <- rep(FALSE, length.out = length(x))
+    which_keep[order(-x)][1:(ibdr + 1)] <- TRUE
   }
 
   return(which_keep)

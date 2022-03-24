@@ -26,7 +26,7 @@ the pointwise bands, then likely lots are also beyond them.}
 \description{
 This will create a QQ-plot for p-values, comparing them to a uniform
 distribution. We make our plot on the -log10 scale. We calculate
-the confidence bands by the Tail Sensative statistic of
+simultaneous confidence bands by the Tail Sensative approach of
 Aldor-Noiman et al (2013).
 }
 \examples{
