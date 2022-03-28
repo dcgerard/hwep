@@ -418,6 +418,10 @@ zygdist <- function(alpha, G1, G2, ploidy) {
   ## Convolve to get zygote probabilities ----
   zygdist <- stats::convolve(p1gamprob, rev(p2gamprob), type = "open")
 
+  ## fix stuff like -10^-17
+  zygdist[zygdist < 0] <- 0
+  zygdist <- zygdist / sum(zygdist)
+
   return(zygdist)
 }
 
