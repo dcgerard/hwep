@@ -45,7 +45,7 @@ f1dr <- function(nvec, G1, G2) {
 
   upper <- drbounds(ploidy = ploidy)
   ibdr <- length(upper)
-  lower <- rep(0, length.out = ibdr)
+  lower <- rep(sqrt(.Machine$double.eps), length.out = ibdr)
   alpha_init <- rep(0, length.out = ibdr)
   method <- ifelse(ibdr == 1, "Brent", "L-BFGS-B")
 
