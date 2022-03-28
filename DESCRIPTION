@@ -1,6 +1,6 @@
 Package: hwep
 Title: Hardy-Weinberg Equilibrium in Polyploids
-Version: 0.0.1
+Version: 0.0.2
 Authors@R:
     c(person(given = "David",
              family = "Gerard",
