@@ -280,7 +280,7 @@ like_obj2 <- function(alpha, r, nvec, which_keep = NULL) {
 #' hwelike(nvec = nvec)
 #'
 hwelike <- function(nvec,
-                    thresh = 3,
+                    thresh = 5,
                     effdf = FALSE) {
   ploidy <- length(nvec) - 1
   stopifnot(ploidy %% 2 == 0, ploidy >= 4, ploidy <= 10)
@@ -301,7 +301,7 @@ hwelike <- function(nvec,
   }
 
   ## Return early if too few groups ----
-  if (sum(which_keep) - ibdr - 1 <= 0) {
+  if (sum(which_keep) - ibdr <= 0) {
     return(
       list(
         alpha = rep(NA_real_, ibdr),

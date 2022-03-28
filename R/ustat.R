@@ -182,8 +182,8 @@ ucov <- function(nvec, alpha) {
 #' @examples
 #' set.seed(100)
 #' ploidy <- 6
-#' size <- 100
-#' r <- 0.5
+#' size <- 1000
+#' r <- 0.1
 #' alpha <- 0.1
 #' qvec <- hwefreq(r = r, alpha = alpha, ploidy = ploidy)
 #' nvec <- c(rmultinom(n = 1, size = size, prob = qvec))
@@ -191,7 +191,7 @@ ucov <- function(nvec, alpha) {
 #'
 #' @export
 hweustat <- function(nvec,
-                     thresh = 3,
+                     thresh = 5,
                      effdf = TRUE) {
   ploidy <- length(nvec) - 1
   stopifnot(ploidy %% 2 == 0, ploidy >= 4)
@@ -204,7 +204,7 @@ hweustat <- function(nvec,
   which_keep <- choose_agg(x = nvec, thresh = thresh)
 
   ## Return early if too few groups ----
-  if (sum(which_keep) - ibdr + 1 <= 0) {
+  if (sum(which_keep) - ibdr <= 0) {
     return(
       list(
         alpha = rep(NA_real_, ibdr),
