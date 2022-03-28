@@ -2,6 +2,7 @@
 
 export(dgamete)
 export(drbounds)
+export(f1dr)
 export(freqnext)
 export(gsegmat)
 export(gsegmat_symb)
