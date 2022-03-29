@@ -49,7 +49,7 @@ f1dr <- function(nvec, G1, G2) {
   alpha_init <- rep(0, length.out = ibdr)
   method <- ifelse(ibdr == 1, "Brent", "L-BFGS-B")
 
-  if ((G1 == 0 & G2 == 0) | (G1 == 4 & G2 == 4)) {
+  if ((G1 == 0 & G2 == 0) | (G1 == ploidy & G2 == ploidy)) {
     retlist <- list()
     retlist$alpha <- rep(NA_real_, length.out = ibdr)
     retlist$llike <- NA_real_
