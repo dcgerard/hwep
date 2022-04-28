@@ -152,7 +152,7 @@ qqpvalue <- function(pvals,
     return(invisible(pvals))
   } else {
     oldpar <- graphics::par(pch = 16,
-                            mar = c(3, 3, 2, 1),
+                            mar = c(3, 3, 0.5, 0.5),
                             mgp = c(1.8, 0.4, 0),
                             tcl = -0.25)
     on.exit(graphics::par(oldpar), add = TRUE)
@@ -162,10 +162,13 @@ qqpvalue <- function(pvals,
                    axes = FALSE,
                    xlab = "Theoretical Quantiles",
                    ylab = "Observed P-values")
+    graphics::box(lwd = 0.5)
     graphics::axis(side = 1, at = -log10(breakvec), labels = breakvec)
     graphics::axis(side = 2, at = -log10(breakvec), labels = breakvec)
+    graphics::abline(h = -log10(breakvec), lwd = 1.5, col = "#B3B3B340")
+    graphics::abline(v = -log10(breakvec), lwd = 1.5, col = "#B3B3B340")
     graphics::abline(a = 0, b = 1)
-    graphics::points(x = theo_nl10, y = pvals_nl10)
+    graphics::points(x = theo_nl10, y = pvals_nl10, cex = 0.8)
     graphics::lines(x = theo_nl10, y = -log10(lower), lty = 2)
     graphics::lines(x = theo_nl10, y = -log10(upper), lty = 2)
     return(invisible(pvals))
