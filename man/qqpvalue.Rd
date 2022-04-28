@@ -18,7 +18,7 @@ qqpvalue(
 
 \item{band_type}{Should we use the method of Aldor-Noiman et al (2013) or
 pointwise based on beta? Pointwise is not recommended since there is
-strong dependence between order statistics and if one is beyond
+strong dependence between order statistics, and if one is beyond
 the pointwise bands, then likely lots are also beyond them.}
 
 \item{conf_level}{Confidence level for the bands.}
@@ -26,13 +26,17 @@ the pointwise bands, then likely lots are also beyond them.}
 \description{
 This will create a QQ-plot for p-values, comparing them to a uniform
 distribution. We make our plot on the -log10 scale. We calculate
-simultaneous confidence bands by the Tail Sensative approach of
+simultaneous confidence bands by the Tail Sensitive approach of
 Aldor-Noiman et al (2013).
 }
 \examples{
 set.seed(1)
 pvals <- runif(100)
-qqpvalue(pvals, band_type = "pointwise", method = "base")
+qqpvalue(pvals, band_type = "ts", method = "base")
+
+\dontrun{
+qqpvalue(pvals, band_type = "ts", method = "ggplot2")
+}
 
 }
 \references{

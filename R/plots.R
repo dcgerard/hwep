@@ -56,14 +56,14 @@ ts_bands <- function(n, nsamp = 1000, a = 0.05) {
 #'
 #' This will create a QQ-plot for p-values, comparing them to a uniform
 #' distribution. We make our plot on the -log10 scale. We calculate
-#' simultaneous confidence bands by the Tail Sensative approach of
+#' simultaneous confidence bands by the Tail Sensitive approach of
 #' Aldor-Noiman et al (2013).
 #'
 #' @param pvals A vector of p-values.
 #' @param method Should we use base plotting or ggplot2 (if installed)?
 #' @param band_type Should we use the method of Aldor-Noiman et al (2013) or
 #'     pointwise based on beta? Pointwise is not recommended since there is
-#'     strong dependence between order statistics and if one is beyond
+#'     strong dependence between order statistics, and if one is beyond
 #'     the pointwise bands, then likely lots are also beyond them.
 #' @param conf_level Confidence level for the bands.
 #'
@@ -82,7 +82,11 @@ ts_bands <- function(n, nsamp = 1000, a = 0.05) {
 #' @examples
 #' set.seed(1)
 #' pvals <- runif(100)
-#' qqpvalue(pvals, band_type = "pointwise", method = "base")
+#' qqpvalue(pvals, band_type = "ts", method = "base")
+#'
+#' \dontrun{
+#' qqpvalue(pvals, band_type = "ts", method = "ggplot2")
+#' }
 #'
 #' @export
 qqpvalue <- function(pvals,
@@ -93,9 +97,8 @@ qqpvalue <- function(pvals,
   band_type <- match.arg(band_type)
   stopifnot(conf_level >= 0, conf_level <= 1)
   if (method == "ggplot2" &
-      (!requireNamespace(package = "ggplot2", quietly = TRUE) |
-       !requireNamespace(package = "scales", quietly = TRUE))) {
-    message("ggplot2 or scales not installed, using base")
+      !requireNamespace(package = "ggplot2", quietly = TRUE)) {
+    message("ggplot2 not installed, using base")
     method <- "base"
   }
 
@@ -118,33 +121,32 @@ qqpvalue <- function(pvals,
     bounds <- list(lower = lower, upper = upper)
   }
 
-  breakvec <- 10^-(0:ceiling(max(c(pvals_nl10, theo_nl10, -log10(bounds$lower)))))
+  maxlab <- ceiling(max(c(pvals_nl10, theo_nl10, -log10(bounds$lower))))
+  breakvec <- 10^-(0:maxlab)
   lim <- c(min(c(pvals, theo, bounds$lower)), max(c(pvals, theo, bounds$upper)))
 
-  if(requireNamespace(package = "ggplot2", quietly = TRUE) &
-     requireNamespace(package = "scales", quietly = TRUE) &
-     method == "ggplot2") {
-    nlog10 <- scales::trans_new(name = "nlog10",
-                      transform = function(x) -log10(x),
-                      inverse = function(x) 10 ^ -x,
-                      domain = c(0, 1)
-                      )
+  max_limval <- max(c(pvals_nl10, theo_nl10))
 
-    pl <- ggplot2::ggplot(data.frame(theo = theo,
-                                     pvals = pvals,
-                                     lower = bounds$lower,
-                                     upper = bounds$upper)) +
-      ggplot2::coord_trans(x = nlog10, y = nlog10) +
+  if(requireNamespace(package = "ggplot2", quietly = TRUE) &
+     method == "ggplot2") {
+    pl <- ggplot2::ggplot(data.frame(theo = theo_nl10,
+                                     pvals = pvals_nl10,
+                                     lower = -log10(lower),
+                                     upper = -log10(upper))) +
       ggplot2::geom_point(mapping = ggplot2::aes(x = theo, y = pvals)) +
       ggplot2::geom_abline() +
-      ggplot2::geom_line(mapping = ggplot2::aes(x = theo, y = lower)) +
-      ggplot2::geom_line(mapping = ggplot2::aes(x = theo, y = upper)) +
+      ggplot2::geom_line(mapping = ggplot2::aes(x = theo, y = lower), lty = 2) +
+      ggplot2::geom_line(mapping = ggplot2::aes(x = theo, y = upper), lty = 2) +
       ggplot2::scale_x_continuous(name = "Theoretical Quantiles",
-                                  breaks = breakvec,
-                                  limits = lim) +
+                                  breaks = 0:maxlab,
+                                  labels = breakvec,
+                                  minor_breaks = NULL) +
       ggplot2::scale_y_continuous(name = "Observed P-values",
-                                  breaks = breakvec,
-                                  limits = lim) +
+                                  breaks = 0:maxlab,
+                                  labels = breakvec,
+                                  minor_breaks = NULL) +
+      ggplot2::coord_cartesian(xlim = c(0, max_limval),
+                               ylim = c(0, max_limval)) +
       ggplot2::theme_bw()
     print(pl)
     return(invisible(pvals))
@@ -155,8 +157,8 @@ qqpvalue <- function(pvals,
                             tcl = -0.25)
     on.exit(graphics::par(oldpar), add = TRUE)
     graphics::plot(c(),
-                   xlim = rev(-log10(lim)),
-                   ylim = rev(-log10(lim)),
+                   xlim = c(0, max_limval),
+                   ylim = c(0, max_limval),
                    axes = FALSE,
                    xlab = "Theoretical Quantiles",
                    ylab = "Observed P-values")
@@ -164,8 +166,8 @@ qqpvalue <- function(pvals,
     graphics::axis(side = 2, at = -log10(breakvec), labels = breakvec)
     graphics::abline(a = 0, b = 1)
     graphics::points(x = theo_nl10, y = pvals_nl10)
-    graphics::lines(x = theo_nl10, y = -log10(lower))
-    graphics::lines(x = theo_nl10, y = -log10(upper))
+    graphics::lines(x = theo_nl10, y = -log10(lower), lty = 2)
+    graphics::lines(x = theo_nl10, y = -log10(upper), lty = 2)
     return(invisible(pvals))
   }
 }
