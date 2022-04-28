@@ -60,21 +60,21 @@
 #'
 #' ## Run the analysis in parallel on the local computer with two workers
 #' future::plan(future::multisession, workers = 2)
-#' hout <- hwefit(nmat = nmat,
-#'                type = "ustat")
+#' hout <- hwefit(nmat = nmat, type = "ustat")
 #'
 #' ## Shut down parallel workers
 #' future::plan("sequential")
 #'
 #' ## Show that p-values are uniform
-#' obs <- sort(hout$p_hwe)
-#' plot(x = ppoints(n = length(obs)),
-#'      y = obs,
-#'      xlab = "theoretical",
-#'      ylab = "observed",
-#'      main = "qqplot")
-#' abline(0, 1, col = 2, lty = 2)
-#' mean(hout$p_hwe < 0.05, na.rm = TRUE)
+#'
+#' ## QQ-plot on -log10 scale
+#' qqpvalue(pvals = hout$p_hwe, method = "base")
+#'
+#' ## Kolmogorov-Smirnov Test
+#' stats::ks.test(hout$p_hwe, "qunif")
+#'
+#' ## Can control for Type I error
+#' mean(hout$p_hwe < 0.05)
 #'
 #' ## Consistent estimate for alpha
 #' alpha
