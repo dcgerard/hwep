@@ -37,6 +37,7 @@
 #'     \code{type = "ustat"}, or \code{type = "rm"}.
 #' @param nboot The number of bootstrap iterations to use if
 #'     \code{type = "boot"}.
+#' @param verbose Should we print more (\code{TRUE}) or less (\code{FALSE})?
 #'
 #' @return A data frame. The columns of which can are described in
 #'     \code{\link{hwelike}()}, \code{\link{hweustat}()},
@@ -83,7 +84,8 @@ hwefit <- function(nmat,
                    type = c("ustat", "mle", "rm", "nodr", "boot"),
                    effdf = TRUE,
                    thresh = 3,
-                   nboot = 2000) {
+                   nboot = 2000,
+                   verbose = TRUE) {
   ## Check parameters ----
   stopifnot(is.matrix(nmat))
   ploidy <- ncol(nmat) - 1
@@ -95,6 +97,11 @@ hwefit <- function(nmat,
 
   if (type == "mle") {
     stopifnot(ploidy <= 10)
+  }
+
+  if (verbose) {
+    message(paste0("Using ", future::nbrOfWorkers(), " worker(s)",
+                   " to run hwefit() on ", nrow(nmat), " loci..."))
   }
 
   ## Register doFutures() ----
@@ -127,6 +134,14 @@ hwefit <- function(nmat,
   ## for consistency with higher ploidy levels ----
   if (ploidy %in% c(4, 6)) {
     colnames(outdf)[colnames(outdf) == "alpha"] <- "alpha1"
+  }
+
+  if (verbose) {
+    message("Done!\n")
+    if (future::nbrOfWorkers() > 1) {
+      message(paste0("Don't forget to shut down your workers with:\n",
+                     "  future::plan(future::sequential)"))
+    }
   }
 
   return(as.data.frame(outdf))

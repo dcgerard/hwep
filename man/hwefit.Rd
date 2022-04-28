@@ -9,7 +9,8 @@ hwefit(
   type = c("ustat", "mle", "rm", "nodr", "boot"),
   effdf = TRUE,
   thresh = 3,
-  nboot = 2000
+  nboot = 2000,
+  verbose = TRUE
 )
 }
 \arguments{
@@ -43,6 +44,8 @@ genotypes. Only applicable if \code{type = "mle"},
 
 \item{nboot}{The number of bootstrap iterations to use if
 \code{type = "boot"}.}
+
+\item{verbose}{Should we print more (\code{TRUE}) or less (\code{FALSE})?}
 }
 \value{
 A data frame. The columns of which can are described in
