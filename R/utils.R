@@ -146,6 +146,7 @@ real_to_simplex <- function(y) {
 #'
 #' @param x A non-negative numeric vector.
 #' @param thresh A non-negative double. We aggregate when x < thresh
+#' @param like Need a little adjustment for likelihood approach
 #'
 #' @return A logical vector. It will place a \code{FALSE} wherever we will
 #'     aggregate those cells. It aggregates small cells until all cells have
@@ -154,7 +155,7 @@ real_to_simplex <- function(y) {
 #' @author David Gerard
 #'
 #' @noRd
-choose_agg <- function(x, thresh = 0) {
+choose_agg <- function(x, thresh = 0, like = FALSE) {
   stopifnot(thresh >= 0, length(thresh) == 1)
   stopifnot(x >= 0)
 
@@ -168,10 +169,15 @@ choose_agg <- function(x, thresh = 0) {
     return(rep(TRUE, length.out = length(x)))
   }
 
-  if (all(!which_keep)) {
+  if (all(!which_keep) & !like) {
     ibdr <- floor((length(x) - 1) / 4)
     which_keep <- rep(FALSE, length.out = length(x))
     which_keep[order(-x)][1:(ibdr + 1)] <- TRUE
+    return(which_keep)
+  } else if (all(!which_keep) & like) {
+    ibdr <- floor((length(x) - 1) / 4)
+    which_keep <- rep(FALSE, length.out = length(x))
+    which_keep[order(-x)][1:(ibdr + 2)] <- TRUE
     return(which_keep)
   }
 
@@ -184,9 +190,12 @@ choose_agg <- function(x, thresh = 0) {
 
   # aggregate as much as we can
   ibdr <- floor((length(x) - 1) / 4)
-  if (sum(which_keep) < ibdr + 1) {
+  if (sum(which_keep) < ibdr + 1 & !like) {
     which_keep <- rep(FALSE, length.out = length(x))
     which_keep[order(-x)][1:(ibdr + 1)] <- TRUE
+  } else if (sum(which_keep) <= ibdr + 1 & like) {
+    which_keep <- rep(FALSE, length.out = length(x))
+    which_keep[order(-x)][1:(ibdr + 2)] <- TRUE
   }
 
   return(which_keep)

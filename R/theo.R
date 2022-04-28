@@ -291,7 +291,7 @@ hwelike <- function(nvec,
   omethod <- ifelse(ibdr == 1, "Brent", "L-BFGS-B")
 
   ## Choose which groups to aggregate ----
-  which_keep <- choose_agg(x = nvec, thresh = thresh)
+  which_keep <- choose_agg(x = nvec, thresh = thresh, like = TRUE)
 
   numkeep <- sum(which_keep)
   if (numkeep >= ploidy) {
@@ -347,7 +347,7 @@ hwelike <- function(nvec,
   if (all(which_keep)) {
     df_hwe <- ploidy - ibdr - 1
   } else {
-    df_hwe <- sum(which_keep) - ibdr - 1 ## unconstrained as sum(which_keep) + 1, alpha is ibdr, r is 1.
+    df_hwe <- sum(which_keep) - ibdr - 1 ## unconstrained as sum(which_keep), alpha is ibdr, r is 1.
   }
 
   TOL <- sqrt(.Machine$double.eps)
