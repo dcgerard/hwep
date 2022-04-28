@@ -4,13 +4,11 @@ on:
   push:
     branches:
       - main
-      - master
-      - multigen
+      - revisions
   pull_request:
     branches:
       - main
-      - master
-      - multigen
+      - revisions
 
 name: R-CMD-check
 
