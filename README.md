@@ -19,12 +19,12 @@ stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://
 
 Inference concerning equilibrium and random mating in autopolyploids.
 Methods are available to test for equilibrium and random mating at any
-even ploidy level (&gt;2) in the presence of double reduction at
-biallelic loci. For autopolyploid populations in equilibrium, methods
-are available to estimate the degree of double reduction. We also
-provide functions to calculate genotype frequencies at equilibrium, or
-after one or several rounds of random mating, given rates of double
-reduction. For details of these methods, see Gerard (2021).
+even ploidy level (>2) in the presence of double reduction at biallelic
+loci. For autopolyploid populations in equilibrium, methods are
+available to estimate the degree of double reduction. We also provide
+functions to calculate genotype frequencies at equilibrium, or after one
+or several rounds of random mating, given rates of double reduction. For
+details of these methods, see Gerard (2021).
 
 The main functions for inference are:
 
@@ -73,6 +73,10 @@ individuals and gametes:
 
 The bounds on the double reduction rate under the complete equational
 segregation model are provided by `drbounds()`.
+
+Functions for evaluating the uniformity of
+![p](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;p "p")-values
+are provided in `ts_bands()` and `qqpvalue()`.
 
 ## Installation
 

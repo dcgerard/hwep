@@ -1,7 +1,7 @@
 #' Get simultaneous confidence bands for a uniform QQ-plot
 #'
 #' This will provide 100(1-a)% simultaneous confidence bands for a
-#' sample of size \code{n}. It does this by the "tail-sensative" approach
+#' sample of size \code{n}. It does this by the "tail-sensitive" approach
 #' of Aldor-Noiman et al (2013), which uses simulated uniform vectors. The
 #' number of simulations is controlled by \code{nsamp}.
 #'

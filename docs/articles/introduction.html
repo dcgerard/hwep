@@ -249,12 +249,12 @@
 <span class="va">nmat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Multinom.html" class="external-link">rmultinom</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">1000</span>, size <span class="op">=</span> <span class="fl">100</span>, prob <span class="op">=</span> <span class="va">geno_freq</span><span class="op">)</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">nmat</span><span class="op">)</span>
 <span class="co">#&gt;      [,1] [,2] [,3] [,4] [,5] [,6] [,7]</span>
-<span class="co">#&gt; [1,]    2   11   17   25   33   10    2</span>
-<span class="co">#&gt; [2,]    0   10   25   27   24   14    0</span>
-<span class="co">#&gt; [3,]    6    6   26   24   22   15    1</span>
-<span class="co">#&gt; [4,]    0   15   24   28   23    7    3</span>
-<span class="co">#&gt; [5,]    3   11   24   32   20   10    0</span>
-<span class="co">#&gt; [6,]    1   11   24   29   20   11    4</span></code></pre></div>
+<span class="co">#&gt; [1,]    0   10   28   22   23   12    5</span>
+<span class="co">#&gt; [2,]    1    7   25   35   15   15    2</span>
+<span class="co">#&gt; [3,]    2   10   23   26   22   14    3</span>
+<span class="co">#&gt; [4,]    3   12   18   26   19   15    7</span>
+<span class="co">#&gt; [5,]    2    8   26   27   25   10    2</span>
+<span class="co">#&gt; [6,]    0   11   19   31   26   10    3</span></code></pre></div>
 <p><code><a href="../reference/hwefit.html">hwefit()</a></code> expects a matrix of genotype counts, where the rows index the loci and the columns index the genotype. So <code>nmat[i, j]</code> is the count of the number of individuals that have dosage <code>j-1</code> at locus <code>i</code>.</p>
 <p>You control the type of test via the <code>type</code> argument. Using <code>type = "ustat"</code> will use the <span class="math inline">\(U\)</span>-statistic approach to test for equilibrium, as implemented in <code><a href="../reference/hweustat.html">hweustat()</a></code>.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
@@ -267,7 +267,7 @@
 <p>On average, we obtain good estimates of the double reduction rate</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">uout</span><span class="op">$</span><span class="va">alpha1</span><span class="op">)</span>
-<span class="co">#&gt; [1] 0.1077187</span></code></pre></div>
+<span class="co">#&gt; [1] 0.1109858</span></code></pre></div>
 <p>But the sampling properties of this estimator are highly variable, even for such a large sample size:</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/hist.html" class="external-link">hist</a></span><span class="op">(</span><span class="va">uout</span><span class="op">$</span><span class="va">alpha1</span><span class="op">)</span></code></pre></div>
@@ -285,8 +285,12 @@
        main <span class="op">=</span> <span class="st">"QQ-plot"</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/abline.html" class="external-link">abline</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, lty <span class="op">=</span> <span class="fl">2</span>, col <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></code></pre></div>
 <p><img src="introduction_files/figure-html/unnamed-chunk-17-2.png" width="700"></p>
-<p>Make sure to shut down your workers after you are done:</p>
+<p>You can view this QQ-plot on the <span class="math inline">\(-log_{10}\)</span>-scale using <code><a href="../reference/qqpvalue.html">qqpvalue()</a></code>. This plot will also show the simultaneous confidence bands for the QQ-plot from Aldor-Noiman et al. (2013), which can also be calculated using <code><a href="../reference/ts_bands.html">ts_bands()</a></code>.</p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/qqpvalue.html">qqpvalue</a></span><span class="op">(</span>pvals <span class="op">=</span> <span class="va">uout</span><span class="op">$</span><span class="va">p_hwe</span>, method <span class="op">=</span> <span class="st">"base"</span><span class="op">)</span></code></pre></div>
+<p><img src="introduction_files/figure-html/unnamed-chunk-18-1.png" width="700"></p>
+<p>Make sure to shut down your workers after you are done:</p>
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan</a></span><span class="op">(</span><span class="st">"sequential"</span><span class="op">)</span></code></pre></div>
 <p>The other values of “type” run different procedures:</p>
 <ul>
@@ -302,6 +306,7 @@
 <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
 <ul>
+<li><p>Aldor-Noiman, S., Brown, L. D., Buja, A., Rolke, W., &amp; Stine, R. A. (2013). The power to see: A new graphical test of normality. The American Statistician, 67(4), 249-260. <a href="https://doi.org/10.1080/00031305.2013.847865" class="external-link">doi:10.1080/00031305.2013.847865</a></p></li>
 <li><p>Fisher, R. A., &amp; Mather, K. (1943). The inheritance of style length in <em>Lythrum salicaria</em>. <em>Annals of Eugenics</em>, 12(1), 1-23. <a href="https://doi.org/10.1111/j.1469-1809.1943.tb02307.x" class="external-link">doi:10.1111/j.1469-1809.1943.tb02307.x</a></p></li>
 <li><p>Gerard, D. (2021). Double reduction estimation and equilibrium tests in natural autopolyploid populations. <em>bioRxiv</em>. <a href="https://doi.org/10.1101/2021.09.24.461731" class="external-link">doi:10.1101/2021.09.24.461731</a>.</p></li>
 <li><p>Huang, K., Wang, T., Dunn, D. W., Zhang, P., Cao, X., Liu, R., &amp; Li, B. (2019). Genotypic frequencies at equilibrium for polysomic inheritance under double-reduction. <em>G3: Genes | Genomes | Genetics</em>, 9(5), 1693-1706. <a href="https://doi.org/10.1534/g3.119.400132" class="external-link">doi:10.1534/g3.119.400132</a></p></li>

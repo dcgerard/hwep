@@ -66,6 +66,8 @@ Functions are provided for calculating genotype frequencies for individuals and 
 
 The bounds on the double reduction rate under the complete equational segregation model are provided by `drbounds()`.
 
+Functions for evaluating the uniformity of $p$-values are provided in `ts_bands()` and `qqpvalue()`.
+
 ## Installation
 
 You can install the released version of hwep from [CRAN](https://cran.r-project.org/package=hwep) with:
