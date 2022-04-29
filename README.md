@@ -74,9 +74,8 @@ individuals and gametes:
 The bounds on the double reduction rate under the complete equational
 segregation model are provided by `drbounds()`.
 
-Functions for evaluating the uniformity of
-![p](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;p "p")-values
-are provided in `ts_bands()` and `qqpvalue()`.
+Functions for evaluating the uniformity of p-values are provided in
+`ts_bands()` and `qqpvalue()`.
 
 ## Installation
 
