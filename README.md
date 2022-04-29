@@ -12,7 +12,7 @@ v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org
 [![CRAN
 status](https://www.r-pkg.org/badges/version/hwep)](https://CRAN.R-project.org/package=hwep)
 [![R-CMD-check](https://github.com/dcgerard/hwep/workflows/R-CMD-check/badge.svg)](https://github.com/dcgerard/hwep/actions)
-[![codecov](https://codecov.io/gh/dcgerard/hwep/branch/main/graph/badge.svg?token=X6QJRSQBXQ)](https://codecov.io/gh/dcgerard/hwep)
+[![codecov](https://codecov.io/gh/dcgerard/hwep/branch/main/graph/badge.svg?token=X6QJRSQBXQ)](https://app.codecov.io/gh/dcgerard/hwep)
 [![Lifecycle:
 stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
 <!-- badges: end -->
