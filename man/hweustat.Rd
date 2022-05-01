@@ -5,7 +5,7 @@
 \title{U-process minimizer approach to equilibrium testing and double reduction
 estimation}
 \usage{
-hweustat(nvec, thresh = 5, effdf = TRUE)
+hweustat(nvec, thresh = NULL, effdf = TRUE)
 }
 \arguments{
 \item{nvec}{A vector containing the observed genotype counts,
@@ -14,7 +14,8 @@ where \code{nvec[[i]]} is the number of individuals with genotype
 
 \item{thresh}{The threshold for ignoring the genotype. We keep
 genotypes such that \code{nvec >= thresh}.
-Setting this to \code{0} uses all genotypes.}
+Setting this to \code{0} uses all genotypes. Setting this to
+\code{NULL} uses a heuristic that works well in practice.}
 
 \item{effdf}{A logical. Should we use the ad-hoc
 "effective degrees of freedom" (\code{TRUE}) or not (\code{FALSE})?}
@@ -44,7 +45,7 @@ estimate the covariance of estimators, then use this to obtain
 our final estimate of the double reduction parameter.
 }
 \examples{
-set.seed(100)
+set.seed(1)
 ploidy <- 6
 size <- 1000
 r <- 0.1

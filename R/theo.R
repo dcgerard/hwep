@@ -252,6 +252,9 @@ like_obj2 <- function(alpha, r, nvec, which_keep = NULL) {
 #' is only implemented for ploidies 4, 6, 8, and 10.
 #'
 #' @inheritParams hweustat
+#' @param thresh The threshold for ignoring the genotype. We keep
+#'     genotypes such that \code{nvec >= thresh}.
+#'     Setting this to \code{0} uses all genotypes.
 #'
 #' @author David Gerard
 #'

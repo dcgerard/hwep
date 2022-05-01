@@ -162,7 +162,8 @@ ucov <- function(nvec, alpha) {
 #'     \code{i-1}. This should be of length \code{ploidy+1}.
 #' @param thresh The threshold for ignoring the genotype. We keep
 #'     genotypes such that \code{nvec >= thresh}.
-#'     Setting this to \code{0} uses all genotypes.
+#'     Setting this to \code{0} uses all genotypes. Setting this to
+#'     \code{NULL} uses a heuristic that works well in practice.
 #' @param effdf A logical. Should we use the ad-hoc
 #'     "effective degrees of freedom" (\code{TRUE}) or not (\code{FALSE})?
 #'
@@ -180,7 +181,7 @@ ucov <- function(nvec, alpha) {
 #' @author David Gerard
 #'
 #' @examples
-#' set.seed(100)
+#' set.seed(1)
 #' ploidy <- 6
 #' size <- 1000
 #' r <- 0.1
@@ -191,8 +192,19 @@ ucov <- function(nvec, alpha) {
 #'
 #' @export
 hweustat <- function(nvec,
-                     thresh = 5,
+                     thresh = NULL,
                      effdf = TRUE) {
+  if (is.null(thresh)) { ## heuristic works well in practice
+    posst <- sum(nvec) * 0.01
+    if (posst <= 5) {
+      thresh <- 5
+    } else if (posst >= 10) {
+      thresh <- 10
+    } else {
+      thresh <- round(posst)
+    }
+  }
+
   ploidy <- length(nvec) - 1
   stopifnot(ploidy %% 2 == 0, ploidy >= 4)
   ibdr <- floor(ploidy / 4)
