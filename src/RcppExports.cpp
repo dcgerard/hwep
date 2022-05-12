@@ -23,8 +23,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // gibbs_known
-Rcpp::List gibbs_known(Rcpp::NumericVector x, Rcpp::NumericVector alpha, int B, int T, bool more);
-RcppExport SEXP _hwep_gibbs_known(SEXP xSEXP, SEXP alphaSEXP, SEXP BSEXP, SEXP TSEXP, SEXP moreSEXP) {
+Rcpp::List gibbs_known(Rcpp::NumericVector x, Rcpp::NumericVector alpha, int B, int T, bool more, bool lg);
+RcppExport SEXP _hwep_gibbs_known(SEXP xSEXP, SEXP alphaSEXP, SEXP BSEXP, SEXP TSEXP, SEXP moreSEXP, SEXP lgSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -33,7 +33,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< int >::type B(BSEXP);
     Rcpp::traits::input_parameter< int >::type T(TSEXP);
     Rcpp::traits::input_parameter< bool >::type more(moreSEXP);
-    rcpp_result_gen = Rcpp::wrap(gibbs_known(x, alpha, B, T, more));
+    Rcpp::traits::input_parameter< bool >::type lg(lgSEXP);
+    rcpp_result_gen = Rcpp::wrap(gibbs_known(x, alpha, B, T, more, lg));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -45,6 +46,19 @@ BEGIN_RCPP
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< NumericVector >::type alpha(alphaSEXP);
     rcpp_result_gen = Rcpp::wrap(rdirichlet1(alpha));
+    return rcpp_result_gen;
+END_RCPP
+}
+// ddirichlet
+double ddirichlet(NumericVector x, NumericVector alpha, bool lg);
+RcppExport SEXP _hwep_ddirichlet(SEXP xSEXP, SEXP alphaSEXP, SEXP lgSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type x(xSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type alpha(alphaSEXP);
+    Rcpp::traits::input_parameter< bool >::type lg(lgSEXP);
+    rcpp_result_gen = Rcpp::wrap(ddirichlet(x, alpha, lg));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -99,8 +113,9 @@ END_RCPP
 
 static const R_CallMethodDef CallEntries[] = {
     {"_hwep_samp_gametes", (DL_FUNC) &_hwep_samp_gametes, 2},
-    {"_hwep_gibbs_known", (DL_FUNC) &_hwep_gibbs_known, 5},
+    {"_hwep_gibbs_known", (DL_FUNC) &_hwep_gibbs_known, 6},
     {"_hwep_rdirichlet1", (DL_FUNC) &_hwep_rdirichlet1, 1},
+    {"_hwep_ddirichlet", (DL_FUNC) &_hwep_ddirichlet, 3},
     {"_hwep_dmultinom_cpp", (DL_FUNC) &_hwep_dmultinom_cpp, 3},
     {"_hwep_log_sum_exp_2_cpp", (DL_FUNC) &_hwep_log_sum_exp_2_cpp, 2},
     {"_hwep_log_sum_exp_cpp", (DL_FUNC) &_hwep_log_sum_exp_cpp, 1},

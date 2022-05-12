@@ -25,12 +25,19 @@ samp_gametes <- function(x, p) {
 #' @param T The number of burn-in iterations.
 #' @param more A logical. Should we also return posterior draws (\code{TRUE})
 #'     or not (\code{FALSE}).
+#' @param lg Should we return the log marginal likelihood (true) or not
+#'     (false).
+#'
+#' @return A list with some or all of the following elements
+#' \itemize{
+#'   \item{\code{mx}: The estimate of the marginal likelihood}
+#' }
 #'
 #' @author David Gerard
 #'
 #' @noRd
-gibbs_known <- function(x, alpha, B, T, more) {
-    .Call(`_hwep_gibbs_known`, x, alpha, B, T, more)
+gibbs_known <- function(x, alpha, B = 10000L, T = 100L, more = FALSE, lg = FALSE) {
+    .Call(`_hwep_gibbs_known`, x, alpha, B, T, more, lg)
 }
 
 #' Random sample from Dirichlet distribution with n = 1.
@@ -42,6 +49,19 @@ gibbs_known <- function(x, alpha, B, T, more) {
 #' @noRd
 rdirichlet1 <- function(alpha) {
     .Call(`_hwep_rdirichlet1`, alpha)
+}
+
+#' Dirichlet probability density function.
+#'
+#' @param x The observed vector of proportions. Should sum to 1.
+#' @param alpha The concentation parameters, should all be greater than 0.
+#' @param lg A logical. Should we return the log pdf or not?
+#'
+#' @author David Gerard
+#'
+#' @noRd
+ddirichlet <- function(x, alpha, lg = FALSE) {
+    .Call(`_hwep_ddirichlet`, x, alpha, lg)
 }
 
 #' Multinomial probability mass function

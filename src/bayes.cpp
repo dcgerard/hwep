@@ -8,6 +8,7 @@ double log_sum_exp_cpp(const NumericVector& x);
 
 // Functions from dist.cpp --------
 NumericVector rdirichlet1(NumericVector alpha);
+double ddirichlet(NumericVector x, NumericVector alpha, bool lg);
 double dmultinom_cpp(NumericVector x, NumericVector p, bool lg);
 
 //' Sample gamete counts from full conditional.
@@ -92,6 +93,13 @@ IntegerVector samp_gametes(const NumericVector& x,
 //' @param T The number of burn-in iterations.
 //' @param more A logical. Should we also return posterior draws (\code{TRUE})
 //'     or not (\code{FALSE}).
+//' @param lg Should we return the log marginal likelihood (true) or not
+//'     (false).
+//'
+//' @return A list with some or all of the following elements
+//' \itemize{
+//'   \item{\code{mx}: The estimate of the marginal likelihood}
+//' }
 //'
 //' @author David Gerard
 //'
@@ -99,15 +107,44 @@ IntegerVector samp_gametes(const NumericVector& x,
 // [[Rcpp::export]]
 Rcpp::List gibbs_known(Rcpp::NumericVector x,
                        Rcpp::NumericVector alpha,
-                       int B,
-                       int T,
-                       bool more) {
+                       int B = 10000,
+                       int T = 100,
+                       bool more = false,
+                       bool lg = false) {
   int ploidy = x.length() - 1;
   if (alpha.length() != (ploidy / 2 + 1)) {
     Rcpp::stop("alpha should be the same length as ploidy / 2 + 1");
   }
 
+  NumericVector y(alpha.length());
+  NumericVector p = rdirichlet1(alpha);
+  NumericVector p_tilde = p;
+  NumericVector q = conv_cpp(p_tilde, p_tilde);
+  double logpost = dmultinom_cpp(x, q, true) +  ddirichlet(p_tilde, alpha, true);
+  double logpihat = -log((double)B);
+
+  for (int i = 0; i < T + B; i++) {
+    y = as<NumericVector>(samp_gametes(x, p));
+    p = rdirichlet1(y + alpha);
+    if (i < T) {
+      q = conv_cpp(p, p);
+      double lp2 = dmultinom_cpp(x, q, true) +  ddirichlet(p, alpha, true);
+      if (lp2 > logpost) {
+        p_tilde = p;
+        logpost = lp2;
+      }
+    } else {
+      double ptilde_post = ddirichlet(p_tilde, y + alpha, true);
+      logpihat = log_sum_exp_2_cpp(logpihat, ptilde_post);
+    }
+  }
+
   Rcpp::List retlist;
+  if (lg) {
+    retlist["mx"] = logpost - logpihat;
+  } else {
+    retlist["mx"] = exp(logpost - logpihat);
+  }
 
   return retlist;
 }

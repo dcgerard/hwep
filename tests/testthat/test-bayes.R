@@ -58,3 +58,37 @@ test_that("dmultinom_cpp is correct", {
   )
 
 })
+
+test_that("dirichlet pdf is correct", {
+  # set.seed(1)
+  # p <- runif(10)
+  # p <- p / sum(p)
+  # alpha <- abs(rnorm(10)) / 10
+  # expect_equal(
+  #   ddirichlet(x = p, alpha = alpha, lg = FALSE),
+  #   gtools::ddirichlet(x = p, alpha = alpha)
+  # )
+
+  p <- c(0.6, 0.4)
+  alpha <- c(2, 4)
+  expect_equal(
+    ddirichlet(x = p, alpha = alpha, lg = TRUE),
+    stats::dbeta(x = p[[1]], shape1 = alpha[[1]], shape2 = alpha[[2]], log = TRUE)
+  )
+
+  expect_error(ddirichlet(p, alpha = c(-1, 10)))
+  expect_error(ddirichlet(c(1, 2), alpha = c(1, 10)))
+  expect_error(ddirichlet(c(0.4, 0.6), alpha = c(1)))
+})
+
+
+test_that("marginal likelihood is reasonable", {
+  gibbs_known(x = c(1, 2, 5, 1, 1), alpha = c(1, 1, 1), lg = TRUE)
+
+  ## median of 50 ms.
+  # bdf <- bench::mark(
+  #   gibbs_known(x = c(1, 2, 5, 1, 2), alpha = c(1, 1, 1), lg = TRUE)
+  # )
+  # bdf$median
+})
+

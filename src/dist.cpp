@@ -19,6 +19,38 @@ NumericVector rdirichlet1(NumericVector alpha) {
   return x;
 }
 
+//' Dirichlet probability density function.
+//'
+//' @param x The observed vector of proportions. Should sum to 1.
+//' @param alpha The concentation parameters, should all be greater than 0.
+//' @param lg A logical. Should we return the log pdf or not?
+//'
+//' @author David Gerard
+//'
+//' @noRd
+// [[Rcpp::export]]
+double ddirichlet(NumericVector x, NumericVector alpha, bool lg = false) {
+  if (Rcpp::is_false(Rcpp::all(alpha > 0.0))) {
+    Rcpp::stop("alpha vector should be all positive");
+  }
+  if (std::abs(Rcpp::sum(x) - 1.0) > (100 * DBL_EPSILON)) {
+    Rcpp::stop("x should sum to 1");
+  }
+  if (x.length() != alpha.length()) {
+    Rcpp::stop("x and alpha should have same length");
+  }
+
+  double ll = std::lgamma(Rcpp::sum(alpha)) -
+    Rcpp::sum(Rcpp::lgamma(alpha)) +
+    Rcpp::sum((alpha - 1.0) * Rcpp::log(x));
+
+  if (!lg) {
+    ll = std::exp(ll);
+  }
+
+  return ll;
+}
+
 //' Multinomial probability mass function
 //'
 //' @param x The counts.
