@@ -4,11 +4,11 @@ on:
   push:
     branches:
       - main
-      - revisions
+      - bayes
   pull_request:
     branches:
       - main
-      - revisions
+      - bayes
 
 name: R-CMD-check
 
