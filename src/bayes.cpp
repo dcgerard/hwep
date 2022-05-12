@@ -1,6 +1,15 @@
 #include <Rcpp.h>
 using namespace Rcpp;
 
+// Functions from utils.cpp -------
+NumericVector conv_cpp(NumericVector x, NumericVector y);
+double log_sum_exp_2_cpp(double x, double y);
+double log_sum_exp_cpp(const NumericVector& x);
+
+// Functions from dist.cpp --------
+NumericVector rdirichlet1(NumericVector alpha);
+double dmultinom_cpp(NumericVector x, NumericVector p, bool lg);
+
 //' Sample gamete counts from full conditional.
 //'
 //' @param x A vector of genotype counts. x[i] is the number of individuals

@@ -35,7 +35,7 @@ log_sum_exp <- function(x, na.rm = FALSE) {
   stopifnot(is.logical(na.rm))
   stopifnot(length(na.rm) == 1)
 
-  x_max <- max(x, na.rm = na.rm)
+  x_max <- max(x, na.rm = TRUE)
   if (x_max == -Inf) {
     return (-Inf)
   } else {
