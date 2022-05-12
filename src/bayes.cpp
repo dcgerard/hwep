@@ -121,7 +121,7 @@ Rcpp::List gibbs_known(Rcpp::NumericVector x,
   NumericVector p_tilde = p;
   NumericVector q = conv_cpp(p_tilde, p_tilde);
   double logpost = dmultinom_cpp(x, q, true) +  ddirichlet(p_tilde, alpha, true);
-  double logpihat = -log((double)B);
+  double logpihat = R_NegInf;
 
   for (int i = 0; i < T + B; i++) {
     y = as<NumericVector>(samp_gametes(x, p));
@@ -138,6 +138,7 @@ Rcpp::List gibbs_known(Rcpp::NumericVector x,
       logpihat = log_sum_exp_2_cpp(logpihat, ptilde_post);
     }
   }
+  logpihat = logpihat - log((double)B);
 
   Rcpp::List retlist;
   if (lg) {

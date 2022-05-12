@@ -82,8 +82,26 @@ test_that("dirichlet pdf is correct", {
 })
 
 
-test_that("marginal likelihood is reasonable", {
-  gibbs_known(x = c(1, 2, 5, 1, 1), alpha = c(1, 1, 1), lg = TRUE)
+test_that("marginal likelihood is 1 with no data", {
+  expect_equal(
+    gibbs_known(x = rep(0, 3), alpha = rep(1, 2), lg = TRUE)$mx,
+    0
+  )
+
+  expect_equal(
+    gibbs_known(x = rep(0, 5), alpha = rep(1, 3), lg = TRUE)$mx,
+    0
+  )
+
+  expect_equal(
+    gibbs_known(x = rep(0, 7), alpha = rep(1, 4), lg = TRUE)$mx,
+    0
+  )
+
+  expect_equal(
+    gibbs_known(x = rep(0, 9), alpha = rep(1, 5), lg = TRUE)$mx,
+    0
+  )
 
   ## median of 50 ms.
   # bdf <- bench::mark(
