@@ -72,5 +72,8 @@
 #' @name hwep-package
 #' @aliases hwep
 #'
+#' @useDynLib hwep, .registration = TRUE
+#' @importFrom Rcpp sourceCpp
+#'
 #' @author David Gerard
 NULL

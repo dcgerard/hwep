@@ -45,5 +45,8 @@ Imports:
     iterators,
     pracma,
     tensr,
-    doRNG
+    doRNG,
+    Rcpp
 VignetteBuilder: knitr
+LinkingTo: 
+    Rcpp
