@@ -10,6 +10,33 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
+// samp_gametes
+IntegerVector samp_gametes(const NumericVector& x, const NumericVector& p);
+RcppExport SEXP _hwep_samp_gametes(SEXP xSEXP, SEXP pSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const NumericVector& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type p(pSEXP);
+    rcpp_result_gen = Rcpp::wrap(samp_gametes(x, p));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gibbs_known
+Rcpp::List gibbs_known(Rcpp::NumericVector x, Rcpp::NumericVector alpha, int B, int T, bool more);
+RcppExport SEXP _hwep_gibbs_known(SEXP xSEXP, SEXP alphaSEXP, SEXP BSEXP, SEXP TSEXP, SEXP moreSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type x(xSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type alpha(alphaSEXP);
+    Rcpp::traits::input_parameter< int >::type B(BSEXP);
+    Rcpp::traits::input_parameter< int >::type T(TSEXP);
+    Rcpp::traits::input_parameter< bool >::type more(moreSEXP);
+    rcpp_result_gen = Rcpp::wrap(gibbs_known(x, alpha, B, T, more));
+    return rcpp_result_gen;
+END_RCPP
+}
 // rdirichlet1
 NumericVector rdirichlet1(NumericVector alpha);
 RcppExport SEXP _hwep_rdirichlet1(SEXP alphaSEXP) {
@@ -21,22 +48,63 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// samp_gametes
-IntegerVector samp_gametes(NumericVector x, NumericVector p);
-RcppExport SEXP _hwep_samp_gametes(SEXP xSEXP, SEXP pSEXP) {
+// dmultinom_cpp
+double dmultinom_cpp(NumericVector x, NumericVector p, bool lg);
+RcppExport SEXP _hwep_dmultinom_cpp(SEXP xSEXP, SEXP pSEXP, SEXP lgSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< NumericVector >::type x(xSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type p(pSEXP);
-    rcpp_result_gen = Rcpp::wrap(samp_gametes(x, p));
+    Rcpp::traits::input_parameter< bool >::type lg(lgSEXP);
+    rcpp_result_gen = Rcpp::wrap(dmultinom_cpp(x, p, lg));
+    return rcpp_result_gen;
+END_RCPP
+}
+// log_sum_exp_2_cpp
+double log_sum_exp_2_cpp(double x, double y);
+RcppExport SEXP _hwep_log_sum_exp_2_cpp(SEXP xSEXP, SEXP ySEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< double >::type x(xSEXP);
+    Rcpp::traits::input_parameter< double >::type y(ySEXP);
+    rcpp_result_gen = Rcpp::wrap(log_sum_exp_2_cpp(x, y));
+    return rcpp_result_gen;
+END_RCPP
+}
+// log_sum_exp_cpp
+double log_sum_exp_cpp(const NumericVector& x);
+RcppExport SEXP _hwep_log_sum_exp_cpp(SEXP xSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const NumericVector& >::type x(xSEXP);
+    rcpp_result_gen = Rcpp::wrap(log_sum_exp_cpp(x));
+    return rcpp_result_gen;
+END_RCPP
+}
+// conv_cpp
+NumericVector conv_cpp(NumericVector x, NumericVector y);
+RcppExport SEXP _hwep_conv_cpp(SEXP xSEXP, SEXP ySEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type x(xSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    rcpp_result_gen = Rcpp::wrap(conv_cpp(x, y));
     return rcpp_result_gen;
 END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_hwep_rdirichlet1", (DL_FUNC) &_hwep_rdirichlet1, 1},
     {"_hwep_samp_gametes", (DL_FUNC) &_hwep_samp_gametes, 2},
+    {"_hwep_gibbs_known", (DL_FUNC) &_hwep_gibbs_known, 5},
+    {"_hwep_rdirichlet1", (DL_FUNC) &_hwep_rdirichlet1, 1},
+    {"_hwep_dmultinom_cpp", (DL_FUNC) &_hwep_dmultinom_cpp, 3},
+    {"_hwep_log_sum_exp_2_cpp", (DL_FUNC) &_hwep_log_sum_exp_2_cpp, 2},
+    {"_hwep_log_sum_exp_cpp", (DL_FUNC) &_hwep_log_sum_exp_cpp, 1},
+    {"_hwep_conv_cpp", (DL_FUNC) &_hwep_conv_cpp, 2},
     {NULL, NULL, 0}
 };
 

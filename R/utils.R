@@ -36,7 +36,11 @@ log_sum_exp <- function(x, na.rm = FALSE) {
   stopifnot(length(na.rm) == 1)
 
   x_max <- max(x, na.rm = na.rm)
-  return(log(sum(exp(x - x_max), na.rm = na.rm)) + x_max)
+  if (x_max == -Inf) {
+    return (-Inf)
+  } else {
+    return(log(sum(exp(x - x_max), na.rm = na.rm)) + x_max)
+  }
 }
 
 logit <- function(x) {

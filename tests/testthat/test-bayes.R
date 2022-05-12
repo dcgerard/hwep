@@ -30,3 +30,31 @@ test_that("samp_gametes is correct", {
   #   samp_gametes(x = x, p = p)
   # )
 })
+
+test_that("dmultinom_cpp is correct", {
+  expect_equal(
+    dmultinom_cpp(x = c(0, 1, 30, 11), p = c(0.1, 0.5, 0.1, 0.3), lg = TRUE),
+    dmultinom(x = c(0, 1, 30, 11), prob = c(0.1, 0.5, 0.1, 0.3), log = TRUE)
+  )
+
+  expect_equal(
+    dmultinom_cpp(x = c(0, 0, 0, 0), p = c(0, 0.6, 0.1, 0.3), lg = TRUE),
+    dmultinom(x = c(0, 0, 0, 0), prob = c(0, 0.6, 0.1, 0.3), log = TRUE)
+  )
+
+  expect_equal(
+    dmultinom_cpp(x = c(0, 1, 0, 0), p = c(0, 0.6, 0.1, 0.3), lg = TRUE),
+    dmultinom(x = c(0, 1, 0, 0), prob = c(0, 0.6, 0.1, 0.3), log = TRUE)
+  )
+
+  expect_equal(
+    dmultinom_cpp(x = c(1, 0, 0, 0), p = c(0, 0.6, 0.1, 0.3), lg = TRUE),
+    dmultinom(x = c(1, 0, 0, 0), prob = c(0, 0.6, 0.1, 0.3), log = TRUE)
+  )
+
+  expect_equal(
+    dmultinom_cpp(x = c(1, 1, 0, 0), p = c(0, 0.6, 0.1, 0.3), lg = TRUE),
+    dmultinom(x = c(1, 1, 0, 0), prob = c(0, 0.6, 0.1, 0.3), log = TRUE)
+  )
+
+})

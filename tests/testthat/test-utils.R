@@ -9,6 +9,9 @@ test_that("log_sum_exp() works", {
   expect_equal(NA_real_, log_sum_exp(x))
 
   expect_equal(log(sum(exp(x), na.rm = TRUE)), log_sum_exp(x, na.rm = TRUE))
+
+  expect_equal(log_sum_exp(c(-Inf, -Inf, -Inf)), -Inf)
+
 })
 
 test_that("logit/expit are inverses", {

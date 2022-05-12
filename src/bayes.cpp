@@ -1,26 +1,6 @@
 #include <Rcpp.h>
 using namespace Rcpp;
 
-
-//' Random sample from Dirichlet distribution with n = 1.
-//'
-//' @param alpha The
-//'
-//' @author David Gerard
-//'
-//' @noRd
-// [[Rcpp::export]]
-NumericVector rdirichlet1(NumericVector alpha) {
-  int n = alpha.length();
-  NumericVector x(n);
-  for (int i = 0; i < n; i++) {
-    x(i) = R::rgamma(alpha(i), 1.0);
-  }
-  x = x / Rcpp::sum(x);
-  return x;
-}
-
-
 //' Sample gamete counts from full conditional.
 //'
 //' @param x A vector of genotype counts. x[i] is the number of individuals
@@ -32,10 +12,14 @@ NumericVector rdirichlet1(NumericVector alpha) {
 //'
 //' @noRd
 // [[Rcpp::export]]
-IntegerVector samp_gametes(NumericVector x, NumericVector p) {
+IntegerVector samp_gametes(const NumericVector& x,
+                           const NumericVector& p) {
   int ploidy = x.length() - 1;
-  if (p.length() != ploidy / 2 + 1) {
-    Rcpp::stop("p should be the same length as ploidy / 2");
+  if (p.length() != (ploidy / 2 + 1)) {
+    Rcpp::stop("p should be the same length as ploidy / 2 + 1");
+  }
+  if (std::abs(Rcpp::sum(p) - 1.0) > (DBL_EPSILON * 100)) {
+    Rcpp::stop("p should sum to 1");
   }
 
   IntegerMatrix A(ploidy / 2 + 1, ploidy / 2 + 1);
@@ -87,3 +71,40 @@ IntegerVector samp_gametes(NumericVector x, NumericVector p) {
 
   return y;
 }
+
+
+//' Gibbs sampler under random mating with known genotypes.
+//'
+//' @param x The vector of genotype counts. x(i) is the number of
+//'     individuals that have genotype i.
+//' @param alpha Vector of hyperparameters for the gamete frequencies.
+//'     Should be length (x.length() - 1) / 2 + 1.
+//' @param B The number of sampling iterations.
+//' @param T The number of burn-in iterations.
+//' @param more A logical. Should we also return posterior draws (\code{TRUE})
+//'     or not (\code{FALSE}).
+//'
+//' @author David Gerard
+//'
+//' @noRd
+// [[Rcpp::export]]
+Rcpp::List gibbs_known(Rcpp::NumericVector x,
+                       Rcpp::NumericVector alpha,
+                       int B,
+                       int T,
+                       bool more) {
+  int ploidy = x.length() - 1;
+  if (alpha.length() != (ploidy / 2 + 1)) {
+    Rcpp::stop("alpha should be the same length as ploidy / 2 + 1");
+  }
+
+  Rcpp::List retlist;
+
+  return retlist;
+}
+
+
+
+
+
+
