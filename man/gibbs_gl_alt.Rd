@@ -35,6 +35,19 @@ A list with some or all of the following elements
 Gibbs sampler under the alternative of non-random mating using genotype
 log-likelihoods.
 }
+\examples{
+set.seed(1)
+ploidy <- 8
+
+## Simulate under the alternative
+q <- stats::runif(ploidy + 1)
+q <- q / sum(q)
+nvec <- c(stats::rmultinom(n = 1, size = 100, prob = q))
+gl <- simgl(nvec)
+
+gibbs_gl_alt(gl = gl, beta = rep(1, ploidy + 1), lg = TRUE)
+
+}
 \author{
 David Gerard
 }

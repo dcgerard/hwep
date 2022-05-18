@@ -84,13 +84,17 @@ plq <- function(gl, beta, lg = FALSE) {
 #' @author David Gerard
 #'
 #' @examples
-#' gl <- matrix(-abs(rnorm(20)), ncol = 5)
-#' alpha <- rep(1, 3)
-#' B <- 1
-#' T <- 1
-#' more <- FALSE
-#' lg <- TRUE
-#' gibbs_gl(gl = gl, alpha = alpha, B = B, T = T, more = more, lg = lg)
+#' set.seed(1)
+#' ploidy <- 8
+#'
+#' ## Simulate under the null
+#' p <- stats::runif(ploidy / 2 + 1)
+#' p <- p / sum(p)
+#' q <- stats::convolve(p, rev(p), type = "open")
+#' nvec <- c(stats::rmultinom(n = 1, size = 100, prob = q))
+#' gl <- simgl(nvec)
+#'
+#' gibbs_gl(gl = gl, alpha = rep(1, ploidy / 2 + 1), lg = TRUE)
 #'
 #' @export
 gibbs_gl <- function(gl, alpha, B = 10000L, T = 100L, more = FALSE, lg = FALSE) {
@@ -109,6 +113,18 @@ gibbs_gl <- function(gl, alpha, B = 10000L, T = 100L, more = FALSE, lg = FALSE) 
 #' }
 #'
 #' @author David Gerard
+#'
+#' @examples
+#' set.seed(1)
+#' ploidy <- 8
+#'
+#' ## Simulate under the alternative
+#' q <- stats::runif(ploidy + 1)
+#' q <- q / sum(q)
+#' nvec <- c(stats::rmultinom(n = 1, size = 100, prob = q))
+#' gl <- simgl(nvec)
+#'
+#' gibbs_gl_alt(gl = gl, beta = rep(1, ploidy + 1), lg = TRUE)
 #'
 #' @export
 gibbs_gl_alt <- function(gl, beta, B = 10000L, T = 100L, more = FALSE, lg = FALSE) {

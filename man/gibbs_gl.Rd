@@ -35,13 +35,17 @@ A list with some or all of the following elements
 Gibbs sampler under random mating using genotype log-likelihoods.
 }
 \examples{
-gl <- matrix(-abs(rnorm(20)), ncol = 5)
-alpha <- rep(1, 3)
-B <- 1
-T <- 1
-more <- FALSE
-lg <- TRUE
-gibbs_gl(gl = gl, alpha = alpha, B = B, T = T, more = more, lg = lg)
+set.seed(1)
+ploidy <- 8
+
+## Simulate under the null
+p <- stats::runif(ploidy / 2 + 1)
+p <- p / sum(p)
+q <- stats::convolve(p, rev(p), type = "open")
+nvec <- c(stats::rmultinom(n = 1, size = 100, prob = q))
+gl <- simgl(nvec)
+
+gibbs_gl(gl = gl, alpha = rep(1, ploidy / 2 + 1), lg = TRUE)
 
 }
 \author{
