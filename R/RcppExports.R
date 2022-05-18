@@ -35,9 +35,81 @@ samp_gametes <- function(x, p) {
 #'
 #' @author David Gerard
 #'
-#' @noRd
 gibbs_known <- function(x, alpha, B = 10000L, T = 100L, more = FALSE, lg = FALSE) {
     .Call(`_hwep_gibbs_known`, x, alpha, B, T, more, lg)
+}
+
+#' Calculate marginal likelihood under alternative using genotype likelihoods.
+#'
+#' Calculates
+#' \deqn{
+#' \log \prod_i \sum_k l_{ik}q_{ik}
+#' }
+#' where q = beta / sum(beta). It can return the exponentiated version of this.
+#'
+#' @param gl genotype log-liklihoods. Rows index individuals, columns
+#'     index genotypes.
+#' @param beta The concentration parameters.
+#' @param lg Should we return the log (true) or the not (false)?
+#'
+#' @author David Gerard
+#'
+#' @noRd
+#'
+plq <- function(gl, beta, lg = FALSE) {
+    .Call(`_hwep_plq`, gl, beta, lg)
+}
+
+#' Gibbs sampler under random mating using genotype log-likelihoods.
+#'
+#' @param gl The matrix of genotype log-likelihoods. The columns index the
+#'     dosages and the rows index the individuals. \code{gl[i,j]} is the
+#'     genotype log-likelihood for individual i at dosage j. It is assumed
+#'     that natural log is used.
+#' @param alpha Vector of hyperparameters for the gamete frequencies.
+#'     Should be length (x.length() - 1) / 2 + 1.
+#' @param B The number of sampling iterations.
+#' @param T The number of burn-in iterations.
+#' @param more A logical. Should we also return posterior draws (\code{TRUE})
+#'     or not (\code{FALSE}).
+#' @param lg Should we return the log marginal likelihood (true) or not
+#'     (false).
+#'
+#' @return A list with some or all of the following elements
+#' \itemize{
+#'   \item{\code{mx}: The estimate of the marginal likelihood}
+#' }
+#'
+#' @author David Gerard
+#'
+#' @examples
+#' gl <- matrix(-abs(rnorm(20)), ncol = 5)
+#' alpha <- rep(1, 3)
+#' B <- 1
+#' T <- 1
+#' more <- FALSE
+#' lg <- TRUE
+#' gibbs_gl(gl = gl, alpha = alpha, B = B, T = T, more = more, lg = lg)
+#'
+gibbs_gl <- function(gl, alpha, B = 10000L, T = 100L, more = FALSE, lg = FALSE) {
+    .Call(`_hwep_gibbs_gl`, gl, alpha, B, T, more, lg)
+}
+
+#' Gibbs sampler under the alternative of non-random mating using genotype
+#' log-likelihoods.
+#'
+#' @inheritParams gibbs_gl
+#' @param beta The concentration hyperparameter for the genotype frequencies.
+#'
+#' @return A list with some or all of the following elements
+#' \itemize{
+#'   \item{\code{mx}: The estimate of the marginal likelihood}
+#' }
+#'
+#' @author David Gerard
+#'
+gibbs_gl_alt <- function(gl, beta, B = 10000L, T = 100L, more = FALSE, lg = FALSE) {
+    .Call(`_hwep_gibbs_gl_alt`, gl, beta, B, T, more, lg)
 }
 
 #' Random sample from Dirichlet distribution with n = 1.

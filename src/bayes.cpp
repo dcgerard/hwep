@@ -103,7 +103,6 @@ IntegerVector samp_gametes(const NumericVector& x,
 //'
 //' @author David Gerard
 //'
-//' @noRd
 // [[Rcpp::export]]
 Rcpp::List gibbs_known(Rcpp::NumericVector x,
                        Rcpp::NumericVector alpha,
@@ -124,8 +123,13 @@ Rcpp::List gibbs_known(Rcpp::NumericVector x,
   double logpihat = R_NegInf;
 
   for (int i = 0; i < T + B; i++) {
+    // sample y
     y = as<NumericVector>(samp_gametes(x, p));
+
+    // sample p
     p = rdirichlet1(y + alpha);
+
+    // Check if we are in burnin
     if (i < T) {
       q = conv_cpp(p, p);
       double lp2 = dmultinom_cpp(x, q, true) +  ddirichlet(p, alpha, true);
@@ -138,7 +142,7 @@ Rcpp::List gibbs_known(Rcpp::NumericVector x,
       logpihat = log_sum_exp_2_cpp(logpihat, ptilde_post);
     }
   }
-  logpihat = logpihat - log((double)B);
+  logpihat -= log((double)B);
 
   Rcpp::List retlist;
   if (lg) {
@@ -151,7 +155,222 @@ Rcpp::List gibbs_known(Rcpp::NumericVector x,
 }
 
 
+//' Calculate marginal likelihood under alternative using genotype likelihoods.
+//'
+//' Calculates
+//' \deqn{
+//' \log \prod_i \sum_k l_{ik}q_{ik}
+//' }
+//' where q = beta / sum(beta). It can return the exponentiated version of this.
+//'
+//' @param gl genotype log-liklihoods. Rows index individuals, columns
+//'     index genotypes.
+//' @param beta The concentration parameters.
+//' @param lg Should we return the log (true) or the not (false)?
+//'
+//' @author David Gerard
+//'
+//' @noRd
+//'
+// [[Rcpp::export]]
+double plq(NumericMatrix& gl, NumericVector beta, bool lg = false) {
+  NumericVector lq = Rcpp::log(beta / Rcpp::sum(beta));
+  if (gl.ncol() != beta.length()) {
+    Rcpp::stop("Number of columns of gl should equal length of beta");
+  }
+  double lval = 0.0;
+
+  for (int i = 0; i < gl.nrow(); i++) {
+    NumericMatrix::Row lvec = gl(i, _);
+    lval += log_sum_exp_cpp(lvec + lq);
+  }
+
+  if (!lg) {
+    lval = std::exp(lval);
+  }
+
+  return lval;
+}
 
 
+//' Gibbs sampler under random mating using genotype log-likelihoods.
+//'
+//' @param gl The matrix of genotype log-likelihoods. The columns index the
+//'     dosages and the rows index the individuals. \code{gl[i,j]} is the
+//'     genotype log-likelihood for individual i at dosage j. It is assumed
+//'     that natural log is used.
+//' @param alpha Vector of hyperparameters for the gamete frequencies.
+//'     Should be length (x.length() - 1) / 2 + 1.
+//' @param B The number of sampling iterations.
+//' @param T The number of burn-in iterations.
+//' @param more A logical. Should we also return posterior draws (\code{TRUE})
+//'     or not (\code{FALSE}).
+//' @param lg Should we return the log marginal likelihood (true) or not
+//'     (false).
+//'
+//' @return A list with some or all of the following elements
+//' \itemize{
+//'   \item{\code{mx}: The estimate of the marginal likelihood}
+//' }
+//'
+//' @author David Gerard
+//'
+//' @examples
+//' gl <- matrix(-abs(rnorm(20)), ncol = 5)
+//' alpha <- rep(1, 3)
+//' B <- 1
+//' T <- 1
+//' more <- FALSE
+//' lg <- TRUE
+//' gibbs_gl(gl = gl, alpha = alpha, B = B, T = T, more = more, lg = lg)
+//'
+// [[Rcpp::export]]
+Rcpp::List gibbs_gl(Rcpp::NumericMatrix& gl,
+                    Rcpp::NumericVector alpha,
+                    int B = 10000,
+                    int T = 100,
+                    bool more = false,
+                    bool lg = false) {
+  int ploidy = gl.ncol() - 1;
+  int n = gl.nrow();
+  if (alpha.length() != (ploidy / 2 + 1)) {
+    Rcpp::stop("alpha should be the same length as ploidy / 2 + 1");
+  }
 
+  IntegerVector ivec = Rcpp::seq(0, ploidy); // possible dosages
+  NumericVector y(alpha.length()); // latent gamete counts
+  NumericVector x(ploidy + 1); // latent genotype counts
+  IntegerVector z(n); // latent genotypes
+  NumericVector p = rdirichlet1(alpha); // gamete frequencies
+  NumericVector q = conv_cpp(p, p);
+  NumericVector p_tilde = p;
+  NumericVector q_tilde = conv_cpp(p_tilde, p_tilde);
+  double logpost = ddirichlet(p, alpha, true) + plq(gl, q, true);
+  double logpihat = R_NegInf; // estimate of posterior
+
+  for (int i = 0; i < T + B; i++) {
+    // sample z
+    for (int j = 0; j < n; j++) {
+      NumericVector probs = gl(j, _);
+      probs = probs + Rcpp::log(q);
+      probs = Rcpp::exp(probs - log_sum_exp_cpp(probs));
+      z(j) = Rcpp::sample(ivec, 1, false, probs)(0);
+    }
+
+    // calculate x
+    x.fill(0.0);
+    for (int j = 0; j < n; j++) {
+      x(z(j)) = x(z(j)) + 1.0;
+    }
+
+    // sample y
+    y = as<NumericVector>(samp_gametes(x, p));
+
+    // sample p
+    p = rdirichlet1(y + alpha);
+
+    // calculate q
+    q = conv_cpp(p, p);
+
+    // Check if we are in the burnin
+    if (i < T) {
+      double lp2 = ddirichlet(p, alpha, true) + plq(gl, q, true);
+      if (lp2 > logpost) {
+        logpost = lp2;
+        p_tilde = p;
+        q_tilde = q;
+      }
+    } else {
+      double ptilde_post = ddirichlet(p_tilde, y + alpha, true);
+      logpihat = log_sum_exp_2_cpp(logpihat, ptilde_post);
+    }
+  }
+  logpihat -= std::log((double)B);
+
+  Rcpp::List retlist;
+  if (lg) {
+    retlist["mx"] = logpost - logpihat;
+  } else {
+    retlist["mx"] = exp(logpost - logpihat);
+  }
+
+  return retlist;
+}
+
+
+//' Gibbs sampler under the alternative of non-random mating using genotype
+//' log-likelihoods.
+//'
+//' @inheritParams gibbs_gl
+//' @param beta The concentration hyperparameter for the genotype frequencies.
+//'
+//' @return A list with some or all of the following elements
+//' \itemize{
+//'   \item{\code{mx}: The estimate of the marginal likelihood}
+//' }
+//'
+//' @author David Gerard
+//'
+// [[Rcpp::export]]
+Rcpp::List gibbs_gl_alt(Rcpp::NumericMatrix& gl,
+                        Rcpp::NumericVector beta,
+                        int B = 10000,
+                        int T = 100,
+                        bool more = false,
+                        bool lg = false) {
+  int ploidy = gl.ncol() - 1;
+  int n = gl.nrow();
+  if (beta.length() != (ploidy + 1)) {
+    Rcpp::stop("beta should be the same length as ploidy + 1");
+  }
+
+  IntegerVector ivec = Rcpp::seq(0, ploidy); // possible dosages
+  NumericVector x(ploidy + 1); // latent genotype counts
+  IntegerVector z(n); // latent genotypes
+  NumericVector q = rdirichlet1(beta); // genotype frequencies
+  NumericVector q_tilde = q;
+  double logpost = ddirichlet(q, beta, true) + plq(gl, q, true);
+  double logpihat = R_NegInf; // estimate of posterior
+
+  for (int i = 0; i < T + B; i++) {
+    // sample z
+    for (int j = 0; j < n; j++) {
+      NumericVector probs = gl(j, _);
+      probs = probs + Rcpp::log(q);
+      probs = Rcpp::exp(probs - log_sum_exp_cpp(probs));
+      z(j) = Rcpp::sample(ivec, 1, false, probs)(0);
+    }
+
+    // calculate x
+    x.fill(0.0);
+    for (int j = 0; j < n; j++) {
+      x(z(j)) = x(z(j)) + 1.0;
+    }
+
+    // Sample q
+    q = rdirichlet1(x + beta);
+
+    // Check if we are in the burnin
+    if (i < T) {
+      double lp2 = ddirichlet(q, beta, true) + plq(gl, q, true);
+      if (lp2 > logpost) {
+        logpost = lp2;
+        q_tilde = q;
+      }
+    } else {
+      double qtilde_post = ddirichlet(q_tilde, x + beta, true);
+      logpihat = log_sum_exp_2_cpp(logpihat, qtilde_post);
+    }
+  }
+  logpihat -= std::log((double)B);
+
+  Rcpp::List retlist;
+  if (lg) {
+    retlist["mx"] = logpost - logpihat;
+  } else {
+    retlist["mx"] = exp(logpost - logpihat);
+  }
+
+  return retlist;
+}
 

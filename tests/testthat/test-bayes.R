@@ -110,3 +110,20 @@ test_that("marginal likelihood is 1 with no data", {
   # bdf$median
 })
 
+
+test_that("plq and gl_alt_marg are the same", {
+  gl <- matrix(-abs(rnorm(110)), nrow = 10)
+  beta <- 1:11
+
+  expect_equal(
+    plq(gl = gl, beta = beta, lg = TRUE),
+    gl_alt_marg(gl = gl, beta = beta, lg = TRUE)
+  )
+
+  ## plq() is about 10 times faster
+  # temp <- bench::mark(
+  #   plq(gl = gl, beta = beta, lg = TRUE),
+  #   gl_alt_marg(gl = gl, beta = beta, lg = TRUE)
+  # )
+
+})

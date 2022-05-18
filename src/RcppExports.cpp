@@ -38,6 +38,51 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// plq
+double plq(NumericMatrix& gl, NumericVector beta, bool lg);
+RcppExport SEXP _hwep_plq(SEXP glSEXP, SEXP betaSEXP, SEXP lgSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericMatrix& >::type gl(glSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type beta(betaSEXP);
+    Rcpp::traits::input_parameter< bool >::type lg(lgSEXP);
+    rcpp_result_gen = Rcpp::wrap(plq(gl, beta, lg));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gibbs_gl
+Rcpp::List gibbs_gl(Rcpp::NumericMatrix& gl, Rcpp::NumericVector alpha, int B, int T, bool more, bool lg);
+RcppExport SEXP _hwep_gibbs_gl(SEXP glSEXP, SEXP alphaSEXP, SEXP BSEXP, SEXP TSEXP, SEXP moreSEXP, SEXP lgSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Rcpp::NumericMatrix& >::type gl(glSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type alpha(alphaSEXP);
+    Rcpp::traits::input_parameter< int >::type B(BSEXP);
+    Rcpp::traits::input_parameter< int >::type T(TSEXP);
+    Rcpp::traits::input_parameter< bool >::type more(moreSEXP);
+    Rcpp::traits::input_parameter< bool >::type lg(lgSEXP);
+    rcpp_result_gen = Rcpp::wrap(gibbs_gl(gl, alpha, B, T, more, lg));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gibbs_gl_alt
+Rcpp::List gibbs_gl_alt(Rcpp::NumericMatrix& gl, Rcpp::NumericVector beta, int B, int T, bool more, bool lg);
+RcppExport SEXP _hwep_gibbs_gl_alt(SEXP glSEXP, SEXP betaSEXP, SEXP BSEXP, SEXP TSEXP, SEXP moreSEXP, SEXP lgSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Rcpp::NumericMatrix& >::type gl(glSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type beta(betaSEXP);
+    Rcpp::traits::input_parameter< int >::type B(BSEXP);
+    Rcpp::traits::input_parameter< int >::type T(TSEXP);
+    Rcpp::traits::input_parameter< bool >::type more(moreSEXP);
+    Rcpp::traits::input_parameter< bool >::type lg(lgSEXP);
+    rcpp_result_gen = Rcpp::wrap(gibbs_gl_alt(gl, beta, B, T, more, lg));
+    return rcpp_result_gen;
+END_RCPP
+}
 // rdirichlet1
 NumericVector rdirichlet1(NumericVector alpha);
 RcppExport SEXP _hwep_rdirichlet1(SEXP alphaSEXP) {
@@ -114,6 +159,9 @@ END_RCPP
 static const R_CallMethodDef CallEntries[] = {
     {"_hwep_samp_gametes", (DL_FUNC) &_hwep_samp_gametes, 2},
     {"_hwep_gibbs_known", (DL_FUNC) &_hwep_gibbs_known, 6},
+    {"_hwep_plq", (DL_FUNC) &_hwep_plq, 3},
+    {"_hwep_gibbs_gl", (DL_FUNC) &_hwep_gibbs_gl, 6},
+    {"_hwep_gibbs_gl_alt", (DL_FUNC) &_hwep_gibbs_gl_alt, 6},
     {"_hwep_rdirichlet1", (DL_FUNC) &_hwep_rdirichlet1, 1},
     {"_hwep_ddirichlet", (DL_FUNC) &_hwep_ddirichlet, 3},
     {"_hwep_dmultinom_cpp", (DL_FUNC) &_hwep_dmultinom_cpp, 3},
