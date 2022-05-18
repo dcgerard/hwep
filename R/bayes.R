@@ -116,7 +116,7 @@ rmbayes <- function(nvec,
     beta <- clist$beta
   } else {
     stopifnot(length(alpha) == ploidy / 2 + 1)
-    stopifnot(length(betea) == ploidy + 1)
+    stopifnot(length(beta) == ploidy + 1)
     stopifnot(alpha > 0)
     stopifnot(beta > 0)
   }
@@ -225,7 +225,7 @@ rmbayesgl <- function(gl,
     beta <- clist$beta
   } else {
     stopifnot(length(alpha) == ploidy / 2 + 1)
-    stopifnot(length(betea) == ploidy + 1)
+    stopifnot(length(beta) == ploidy + 1)
     stopifnot(alpha > 0)
     stopifnot(beta > 0)
   }

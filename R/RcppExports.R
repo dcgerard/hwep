@@ -35,6 +35,7 @@ samp_gametes <- function(x, p) {
 #'
 #' @author David Gerard
 #'
+#' @export
 gibbs_known <- function(x, alpha, B = 10000L, T = 100L, more = FALSE, lg = FALSE) {
     .Call(`_hwep_gibbs_known`, x, alpha, B, T, more, lg)
 }
@@ -91,6 +92,7 @@ plq <- function(gl, beta, lg = FALSE) {
 #' lg <- TRUE
 #' gibbs_gl(gl = gl, alpha = alpha, B = B, T = T, more = more, lg = lg)
 #'
+#' @export
 gibbs_gl <- function(gl, alpha, B = 10000L, T = 100L, more = FALSE, lg = FALSE) {
     .Call(`_hwep_gibbs_gl`, gl, alpha, B, T, more, lg)
 }
@@ -108,6 +110,7 @@ gibbs_gl <- function(gl, alpha, B = 10000L, T = 100L, more = FALSE, lg = FALSE) 
 #'
 #' @author David Gerard
 #'
+#' @export
 gibbs_gl_alt <- function(gl, beta, B = 10000L, T = 100L, more = FALSE, lg = FALSE) {
     .Call(`_hwep_gibbs_gl_alt`, gl, beta, B, T, more, lg)
 }

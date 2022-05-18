@@ -103,6 +103,7 @@ IntegerVector samp_gametes(const NumericVector& x,
 //'
 //' @author David Gerard
 //'
+//' @export
 // [[Rcpp::export]]
 Rcpp::List gibbs_known(Rcpp::NumericVector x,
                        Rcpp::NumericVector alpha,
@@ -224,6 +225,7 @@ double plq(NumericMatrix& gl, NumericVector beta, bool lg = false) {
 //' lg <- TRUE
 //' gibbs_gl(gl = gl, alpha = alpha, B = B, T = T, more = more, lg = lg)
 //'
+//' @export
 // [[Rcpp::export]]
 Rcpp::List gibbs_gl(Rcpp::NumericMatrix& gl,
                     Rcpp::NumericVector alpha,
@@ -311,6 +313,7 @@ Rcpp::List gibbs_gl(Rcpp::NumericMatrix& gl,
 //'
 //' @author David Gerard
 //'
+//' @export
 // [[Rcpp::export]]
 Rcpp::List gibbs_gl_alt(Rcpp::NumericMatrix& gl,
                         Rcpp::NumericVector beta,
