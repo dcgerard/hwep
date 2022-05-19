@@ -31,6 +31,9 @@ samp_gametes <- function(x, p) {
 #' @return A list with some or all of the following elements
 #' \itemize{
 #'   \item{\code{mx}: The estimate of the marginal likelihood}
+#'   \item{\code{p_tilde}: The value of p used to evaluate the posterior density}.
+#'   \item{\code{p}: The samples of the gamete frequencies}
+#'   \item{\code{post}: The samples of the full conditionals of p_tilde.}
 #' }
 #'
 #' @author David Gerard

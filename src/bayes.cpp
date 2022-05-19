@@ -99,6 +99,9 @@ IntegerVector samp_gametes(const NumericVector& x,
 //' @return A list with some or all of the following elements
 //' \itemize{
 //'   \item{\code{mx}: The estimate of the marginal likelihood}
+//'   \item{\code{p_tilde}: The value of p used to evaluate the posterior density}.
+//'   \item{\code{p}: The samples of the gamete frequencies}
+//'   \item{\code{post}: The samples of the full conditionals of p_tilde.}
 //' }
 //'
 //' @author David Gerard
@@ -123,6 +126,16 @@ Rcpp::List gibbs_known(Rcpp::NumericVector x,
   double logpost = dmultinom_cpp(x, q, true) +  ddirichlet(p_tilde, alpha, true);
   double logpihat = R_NegInf;
 
+  // build more output ----
+  int nsamp;
+  if (more) {
+    nsamp = B;
+  } else {
+    nsamp = 0;
+  }
+  NumericMatrix pmat(nsamp, ploidy / 2 + 1);
+  NumericVector postvec(nsamp);
+
   for (int i = 0; i < T + B; i++) {
     // sample y
     y = as<NumericVector>(samp_gametes(x, p));
@@ -141,6 +154,14 @@ Rcpp::List gibbs_known(Rcpp::NumericVector x,
     } else {
       double ptilde_post = ddirichlet(p_tilde, y + alpha, true);
       logpihat = log_sum_exp_2_cpp(logpihat, ptilde_post);
+
+      // include if more
+      if (more) {
+        NumericMatrix::Row crow = pmat(i - T, _);
+        crow = p;
+        postvec(i - T) = ptilde_post;
+      }
+
     }
   }
   logpihat -= log((double)B);
@@ -152,9 +173,15 @@ Rcpp::List gibbs_known(Rcpp::NumericVector x,
     retlist["mx"] = exp(logpost - logpihat);
   }
 
+  // include if more
+  if (more) {
+    retlist["p_tilde"] = p_tilde;
+    retlist["p"] = pmat;
+    retlist["post"] = postvec;
+  }
+
   return retlist;
 }
-
 
 //' Calculate marginal likelihood under alternative using genotype likelihoods.
 //'

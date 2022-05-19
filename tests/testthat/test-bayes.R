@@ -127,3 +127,27 @@ test_that("plq and gl_alt_marg are the same", {
   # )
 
 })
+
+
+test_that("gibbs sampler for known genotypes give good estimates", {
+  set.seed(1)
+  ploidy <- 8
+
+  ## Simulate under the null
+  p <- stats::runif(ploidy / 2 + 1)
+  p <- p / sum(p)
+  q <- stats::convolve(p, rev(p), type = "open")
+
+  ## See BF increase
+  nvec <- c(stats::rmultinom(n = 1, size = 100000, prob = q))
+
+  gout <- gibbs_known(x = nvec, alpha = rep(1, ploidy / 2 + 1), more = TRUE, lg = TRUE)
+
+  ## plot(cumsum(gout$post) / seq_along(gout$post), type = "l")
+  # plot(gout$p[, 1], type = "l")
+  # plot(gout$p[, 2], type = "l")
+  # plot(gout$p[, 3], type = "l")
+
+  expect_equal(colMeans(gout$p), p, tolerance = 0.01)
+})
+
