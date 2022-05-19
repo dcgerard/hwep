@@ -64,6 +64,19 @@ plq <- function(gl, beta, lg = FALSE) {
     .Call(`_hwep_plq`, gl, beta, lg)
 }
 
+#' Sample genotypes from posteriors using genotype likelihoods and genotype priors
+#'
+#' @param gl The matrix of genotype log-likelihoods. Rows index individuals
+#'     and columns index genotypes.
+#' @param q The vector of genotype priors (not log-priors).
+#'
+#' @author David Gerard
+#'
+#' @noRd
+sample_z <- function(gl, q) {
+    .Call(`_hwep_sample_z`, gl, q)
+}
+
 #' Gibbs sampler under random mating using genotype log-likelihoods.
 #'
 #' @param gl The matrix of genotype log-likelihoods. The columns index the

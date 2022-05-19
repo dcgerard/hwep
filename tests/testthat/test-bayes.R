@@ -161,7 +161,7 @@ test_that("gibbs sampler using genotype log-likelihoods give good estimates", {
   q <- stats::convolve(p, rev(p), type = "open")
 
   ## See BF increase
-  nvec <- c(stats::rmultinom(n = 1, size = 100, prob = q))
+  nvec <- c(stats::rmultinom(n = 1, size = 10, prob = q))
   gl <- simgl(nvec = nvec, sig = 0.01)
 
   gout <- gibbs_gl(gl = gl, alpha = rep(1, ploidy / 2 + 1), more = TRUE, lg = TRUE)
@@ -186,4 +186,79 @@ test_that("gibbs sampler using genotype log-likelihoods give good estimates", {
 
   # colMeans(gout$p)
   # p
+})
+
+
+test_that("alt gibbs sampler using genotype log-likelihoods give good estimates", {
+  skip("alt not ready for primetime")
+  set.seed(1)
+  ploidy <- 8
+
+  ## Simulate under the null
+  q <- stats::runif(ploidy + 1)
+  q <- q / sum(q)
+
+  ## See BF increase
+  nvec <- c(stats::rmultinom(n = 1, size = 10000, prob = q))
+  gl <- simgl(nvec = nvec, sig = 0.2)
+
+  gout <- gibbs_gl_alt(gl = gl, beta = rep(1, ploidy + 1), more = TRUE, lg = TRUE)
+
+  i <- 1000
+  gout$x[i, ] / sum(gout$x[i, ])
+  round(gout$q[i, ], digits = 3)
+
+  gout$mx
+  plot(cumsum(gout$post) / seq_along(gout$post), type = "l")
+  plot(gout$q[, 1], type = "l")
+  plot(gout$q[, 2], type = "l")
+  plot(gout$q[, 3], type = "l")
+  plot(gout$q[, 4], type = "l")
+  plot(gout$q[, 5], type = "l")
+
+  table(round(colMeans(gout$z)))
+  table(apply(gl, 1, which.max) - 1)
+  nvec
+
+  plot(apply(gl, 1, which.max) - 1, colMeans(gout$z))
+  abline(0, 1)
+
+  expect_equal(apply(gl, 1, which.max) - 1, colMeans(gout$z))
+
+  plot(colMeans(gout$q), q)
+  abline(0, 1)
+})
+
+
+test_that("sample_z() works", {
+  set.seed(1)
+  ploidy <- 8
+
+  ## Simulate under the null
+  q <- stats::runif(ploidy + 1)
+  q <- q / sum(q)
+
+  ## See BF increase
+  nvec <- c(stats::rmultinom(n = 1, size = 10, prob = q))
+  gl <- simgl(nvec = nvec, sig = 0.2)
+
+  sample_z(gl = gl, q = q)
+
+  zmat <- t(replicate(n = 100000, expr = {
+    sample_z(gl = gl, q = q)
+  }))
+
+  probmat <- gl + rep(log(q), each = nrow(gl))
+  probmat <- exp(probmat - apply(probmat, 1, log_sum_exp))
+  rowSums(probmat)
+
+  expect_equal(colMeans(zmat == 0), probmat[, 1], tolerance = 0.05)
+  expect_equal(colMeans(zmat == 1), probmat[, 2], tolerance = 0.05)
+  expect_equal(colMeans(zmat == 2), probmat[, 3], tolerance = 0.05)
+  expect_equal(colMeans(zmat == 3), probmat[, 4], tolerance = 0.05)
+  expect_equal(colMeans(zmat == 4), probmat[, 5], tolerance = 0.05)
+  expect_equal(colMeans(zmat == 5), probmat[, 6], tolerance = 0.05)
+  expect_equal(colMeans(zmat == 6), probmat[, 7], tolerance = 0.05)
+  expect_equal(colMeans(zmat == 7), probmat[, 8], tolerance = 0.05)
+  expect_equal(colMeans(zmat == 8), probmat[, 9], tolerance = 0.05)
 })

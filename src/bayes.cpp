@@ -221,6 +221,31 @@ double plq(NumericMatrix& gl, NumericVector beta, bool lg = false) {
 }
 
 
+//' Sample genotypes from posteriors using genotype likelihoods and genotype priors
+//'
+//' @param gl The matrix of genotype log-likelihoods. Rows index individuals
+//'     and columns index genotypes.
+//' @param q The vector of genotype priors (not log-priors).
+//'
+//' @author David Gerard
+//'
+//' @noRd
+// [[Rcpp::export]]
+NumericVector sample_z(NumericMatrix& gl, NumericVector& q) {
+  int n = gl.nrow();
+  int ploidy = gl.ncol() - 1;
+  IntegerVector ivec = Rcpp::seq(0, ploidy);
+  NumericVector z(n);
+  NumericVector probs(ploidy + 1);
+  for (int j = 0; j < n; j++) {
+    probs = gl(j, _);
+    probs = probs + Rcpp::log(q);
+    probs = Rcpp::exp(probs - log_sum_exp_cpp(probs));
+    z(j) = Rcpp::sample(ivec, 1, false, probs)(0);
+  }
+  return z;
+}
+
 //' Gibbs sampler under random mating using genotype log-likelihoods.
 //'
 //' @param gl The matrix of genotype log-likelihoods. The columns index the
@@ -274,7 +299,6 @@ Rcpp::List gibbs_gl(Rcpp::NumericMatrix& gl,
     Rcpp::stop("alpha should be the same length as ploidy / 2 + 1");
   }
 
-  IntegerVector ivec = Rcpp::seq(0, ploidy); // possible dosages
   NumericVector y(alpha.length()); // latent gamete counts
   NumericVector x(ploidy + 1); // latent genotype counts
   IntegerVector z(n); // latent genotypes
@@ -298,12 +322,7 @@ Rcpp::List gibbs_gl(Rcpp::NumericMatrix& gl,
 
   for (int i = 0; i < T + B; i++) {
     // sample z
-    for (int j = 0; j < n; j++) {
-      NumericVector probs = gl(j, _);
-      probs = probs + Rcpp::log(q);
-      probs = Rcpp::exp(probs - log_sum_exp_cpp(probs));
-      z(j) = Rcpp::sample(ivec, 1, false, probs)(0);
-    }
+    z = sample_z(gl, q);
 
     // calculate x
     x.fill(0.0);
@@ -404,7 +423,6 @@ Rcpp::List gibbs_gl_alt(Rcpp::NumericMatrix& gl,
     Rcpp::stop("beta should be the same length as ploidy + 1");
   }
 
-  IntegerVector ivec = Rcpp::seq(0, ploidy); // possible dosages
   NumericVector x(ploidy + 1); // latent genotype counts
   IntegerVector z(n); // latent genotypes
   NumericVector q = rdirichlet1(beta); // genotype frequencies
@@ -412,14 +430,21 @@ Rcpp::List gibbs_gl_alt(Rcpp::NumericMatrix& gl,
   double logpost = ddirichlet(q, beta, true) + plq(gl, q, true);
   double logpihat = R_NegInf; // estimate of posterior
 
+  // build more output ----
+  int nsamp;
+  if (more) {
+    nsamp = B;
+  } else {
+    nsamp = 0;
+  }
+  NumericMatrix qmat(nsamp, ploidy + 1);
+  NumericMatrix zmat(nsamp, n);
+  NumericVector postvec(nsamp);
+  NumericMatrix xmat(nsamp, ploidy + 1);
+
   for (int i = 0; i < T + B; i++) {
     // sample z
-    for (int j = 0; j < n; j++) {
-      NumericVector probs = gl(j, _);
-      probs = probs + Rcpp::log(q);
-      probs = Rcpp::exp(probs - log_sum_exp_cpp(probs));
-      z(j) = Rcpp::sample(ivec, 1, false, probs)(0);
-    }
+    z = sample_z(gl, q);
 
     // calculate x
     x.fill(0.0);
@@ -440,6 +465,20 @@ Rcpp::List gibbs_gl_alt(Rcpp::NumericMatrix& gl,
     } else {
       double qtilde_post = ddirichlet(q_tilde, x + beta, true);
       logpihat = log_sum_exp_2_cpp(logpihat, qtilde_post);
+
+      // include if more
+      if (more) {
+        NumericMatrix::Row crow = qmat(i - T, _);
+        crow = q;
+
+        NumericMatrix::Row czrow = zmat(i - T, _);
+        czrow = z;
+
+        NumericMatrix::Row cxrow = xmat(i - T, _);
+        cxrow = x;
+
+        postvec(i - T) = qtilde_post;
+      }
     }
   }
   logpihat -= std::log((double)B);
@@ -449,6 +488,15 @@ Rcpp::List gibbs_gl_alt(Rcpp::NumericMatrix& gl,
     retlist["mx"] = logpost - logpihat;
   } else {
     retlist["mx"] = exp(logpost - logpihat);
+  }
+
+  // include if more
+  if (more) {
+    retlist["q_tilde"] = q_tilde;
+    retlist["q"] = qmat;
+    retlist["z"] = zmat;
+    retlist["x"] = xmat;
+    retlist["post"] = postvec;
   }
 
   return retlist;
