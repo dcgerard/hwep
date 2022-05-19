@@ -151,3 +151,39 @@ test_that("gibbs sampler for known genotypes give good estimates", {
   expect_equal(colMeans(gout$p), p, tolerance = 0.01)
 })
 
+test_that("gibbs sampler using genotype log-likelihoods give good estimates", {
+  set.seed(1)
+  ploidy <- 8
+
+  ## Simulate under the null
+  p <- stats::runif(ploidy / 2 + 1)
+  p <- p / sum(p)
+  q <- stats::convolve(p, rev(p), type = "open")
+
+  ## See BF increase
+  nvec <- c(stats::rmultinom(n = 1, size = 100, prob = q))
+  gl <- simgl(nvec = nvec, sig = 0.01)
+
+  gout <- gibbs_gl(gl = gl, alpha = rep(1, ploidy / 2 + 1), more = TRUE, lg = TRUE)
+
+  # gout$mx
+  # plot(cumsum(gout$post) / seq_along(gout$post), type = "l")
+  # plot(gout$p[, 1], type = "l")
+  # plot(gout$p[, 2], type = "l")
+  # plot(gout$p[, 3], type = "l")
+  # plot(gout$p[, 4], type = "l")
+  # plot(gout$p[, 5], type = "l")
+  #
+  # table(round(colMeans(gout$z)))
+  # table(apply(gl, 1, which.max) - 1)
+  # nvec
+
+
+  # plot(apply(gl, 1, which.max) - 1, colMeans(gout$z))
+  # abline(0, 1)
+
+  expect_equal(apply(gl, 1, which.max) - 1, colMeans(gout$z))
+
+  # colMeans(gout$p)
+  # p
+})

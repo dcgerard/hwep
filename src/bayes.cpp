@@ -239,6 +239,10 @@ double plq(NumericMatrix& gl, NumericVector beta, bool lg = false) {
 //' @return A list with some or all of the following elements
 //' \itemize{
 //'   \item{\code{mx}: The estimate of the marginal likelihood}
+//'   \item{\code{p_tilde}: The value of p used to evaluate the posterior density}.
+//'   \item{\code{p}: The samples of the gamete frequencies}
+//'   \item{\code{z}: The samples of the individual genotypes}
+//'   \item{\code{post}: The samples of the full conditionals of p_tilde.}
 //' }
 //'
 //' @author David Gerard
@@ -281,6 +285,17 @@ Rcpp::List gibbs_gl(Rcpp::NumericMatrix& gl,
   double logpost = ddirichlet(p, alpha, true) + plq(gl, q, true);
   double logpihat = R_NegInf; // estimate of posterior
 
+  // build more output ----
+  int nsamp;
+  if (more) {
+    nsamp = B;
+  } else {
+    nsamp = 0;
+  }
+  NumericMatrix pmat(nsamp, ploidy / 2 + 1);
+  NumericMatrix zmat(nsamp, n);
+  NumericVector postvec(nsamp);
+
   for (int i = 0; i < T + B; i++) {
     // sample z
     for (int j = 0; j < n; j++) {
@@ -316,6 +331,17 @@ Rcpp::List gibbs_gl(Rcpp::NumericMatrix& gl,
     } else {
       double ptilde_post = ddirichlet(p_tilde, y + alpha, true);
       logpihat = log_sum_exp_2_cpp(logpihat, ptilde_post);
+
+      // include if more
+      if (more) {
+        NumericMatrix::Row crow = pmat(i - T, _);
+        crow = p;
+
+        NumericMatrix::Row czrow = zmat(i - T, _);
+        czrow = z;
+
+        postvec(i - T) = ptilde_post;
+      }
     }
   }
   logpihat -= std::log((double)B);
@@ -325,6 +351,14 @@ Rcpp::List gibbs_gl(Rcpp::NumericMatrix& gl,
     retlist["mx"] = logpost - logpihat;
   } else {
     retlist["mx"] = exp(logpost - logpihat);
+  }
+
+  // include if more
+  if (more) {
+    retlist["p_tilde"] = p_tilde;
+    retlist["p"] = pmat;
+    retlist["z"] = zmat;
+    retlist["post"] = postvec;
   }
 
   return retlist;
