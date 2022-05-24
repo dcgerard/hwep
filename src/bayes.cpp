@@ -359,6 +359,7 @@ Rcpp::List gibbs_gl(Rcpp::NumericMatrix& gl,
     Rcpp::stop("alpha should be the same length as ploidy / 2 + 1");
   }
 
+  NumericMatrix postmat(n, ploidy + 1); // posterior probability matrix for z
   NumericVector y(alpha.length()); // latent gamete counts
   NumericVector x(ploidy + 1); // latent genotype counts
   IntegerVector z(n); // latent genotypes
@@ -382,7 +383,10 @@ Rcpp::List gibbs_gl(Rcpp::NumericMatrix& gl,
 
   for (int i = 0; i < T + B; i++) {
     // sample z
-    z = sample_z(gl, q);
+    mod_postmat(postmat, gl, q); // calculate posterior probabilities
+    for (int j = 0; j < n; j++) {
+      z(j) = sample_int(postmat(j, _));
+    }
 
     // calculate x
     x.fill(0.0);
@@ -483,6 +487,7 @@ Rcpp::List gibbs_gl_alt(Rcpp::NumericMatrix& gl,
     Rcpp::stop("beta should be the same length as ploidy + 1");
   }
 
+  NumericMatrix postmat(n, ploidy + 1); // posterior probability matrix for z
   NumericVector x(ploidy + 1); // latent genotype counts
   IntegerVector z(n); // latent genotypes
   NumericVector q = rdirichlet1(beta); // genotype frequencies
@@ -504,7 +509,10 @@ Rcpp::List gibbs_gl_alt(Rcpp::NumericMatrix& gl,
 
   for (int i = 0; i < T + B; i++) {
     // sample z
-    z = sample_z(gl, q);
+    mod_postmat(postmat, gl, q); // calculate posterior probabilities
+    for (int j = 0; j < n; j++) {
+      z(j) = sample_int(postmat(j, _));
+    }
 
     // calculate x
     x.fill(0.0);
