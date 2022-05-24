@@ -262,3 +262,46 @@ test_that("sample_z() works", {
   expect_equal(colMeans(zmat == 7), probmat[, 8], tolerance = 0.05)
   expect_equal(colMeans(zmat == 8), probmat[, 9], tolerance = 0.05)
 })
+
+
+test_that("posterior matrix is filled properly", {
+  set.seed(1)
+  n <- 10
+  ploidy <- 4
+  gl <- matrix(-abs(rnorm(n * (ploidy + 1))), nrow = n)
+  q <- runif(ploidy + 1)
+  q <- q / sum(q)
+
+  postmat <- matrix(NA_real_, nrow = n, ncol = ploidy + 1)
+
+  mod_postmat(postmat = postmat, gl = gl, q = q)
+
+  p2 <- exp(gl) * rep(q, each = n)
+  p2 <- p2 / rowSums(p2)
+
+  expect_equal(postmat, p2)
+
+  # tdf <- bench::mark(
+  #   mod_postmat(postmat = postmat, gl = gl, q = q),
+  #   {
+  #   p2 <- exp(gl) * rep(q, each = n)
+  #   p2 <- p2 / rowSums(p2)
+  #   },
+  #   check = FALSE
+  # )
+  # View(tdf)
+
+})
+
+
+test_that("sample_int returns proper proportions", {
+  set.seed(1)
+  q <- runif(4)
+  q <- q / sum(q)
+
+  qhat <- table(replicate(n = 100000, expr = sample_int(probs = q)))
+  expect_true(chisq.test(x = qhat, p = q)$p.value > 0.01)
+  qhat <- prop.table(qhat)
+  expect_equal(q, qhat, tolerance = 0.01, ignore_attr = TRUE)
+})
+

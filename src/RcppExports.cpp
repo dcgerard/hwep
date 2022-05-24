@@ -51,6 +51,17 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// sample_int
+int sample_int(const NumericVector& probs);
+RcppExport SEXP _hwep_sample_int(SEXP probsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const NumericVector& >::type probs(probsSEXP);
+    rcpp_result_gen = Rcpp::wrap(sample_int(probs));
+    return rcpp_result_gen;
+END_RCPP
+}
 // sample_z
 NumericVector sample_z(NumericMatrix& gl, NumericVector& q);
 RcppExport SEXP _hwep_sample_z(SEXP glSEXP, SEXP qSEXP) {
@@ -61,6 +72,18 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< NumericVector& >::type q(qSEXP);
     rcpp_result_gen = Rcpp::wrap(sample_z(gl, q));
     return rcpp_result_gen;
+END_RCPP
+}
+// mod_postmat
+void mod_postmat(NumericMatrix& postmat, NumericMatrix& gl, NumericVector& q);
+RcppExport SEXP _hwep_mod_postmat(SEXP postmatSEXP, SEXP glSEXP, SEXP qSEXP) {
+BEGIN_RCPP
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericMatrix& >::type postmat(postmatSEXP);
+    Rcpp::traits::input_parameter< NumericMatrix& >::type gl(glSEXP);
+    Rcpp::traits::input_parameter< NumericVector& >::type q(qSEXP);
+    mod_postmat(postmat, gl, q);
+    return R_NilValue;
 END_RCPP
 }
 // gibbs_gl
@@ -172,7 +195,9 @@ static const R_CallMethodDef CallEntries[] = {
     {"_hwep_samp_gametes", (DL_FUNC) &_hwep_samp_gametes, 2},
     {"_hwep_gibbs_known", (DL_FUNC) &_hwep_gibbs_known, 6},
     {"_hwep_plq", (DL_FUNC) &_hwep_plq, 3},
+    {"_hwep_sample_int", (DL_FUNC) &_hwep_sample_int, 1},
     {"_hwep_sample_z", (DL_FUNC) &_hwep_sample_z, 2},
+    {"_hwep_mod_postmat", (DL_FUNC) &_hwep_mod_postmat, 3},
     {"_hwep_gibbs_gl", (DL_FUNC) &_hwep_gibbs_gl, 6},
     {"_hwep_gibbs_gl_alt", (DL_FUNC) &_hwep_gibbs_gl_alt, 6},
     {"_hwep_rdirichlet1", (DL_FUNC) &_hwep_rdirichlet1, 1},

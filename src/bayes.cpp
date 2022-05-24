@@ -221,6 +221,31 @@ double plq(NumericMatrix& gl, NumericVector beta, bool lg = false) {
 }
 
 
+//' Quickly sample from a vector of probabilities.
+//'
+//' Samples an integer from 0 to probs.length()-1.
+//'
+//' @param probs The vector of probabilities. Should sum to 1 but it
+//'     doesn't check if it does or not, so is very unsafe.
+//'
+//' @author David Gerard
+//'
+//' @noRd
+// [[Rcpp::export]]
+int sample_int(const NumericVector& probs) {
+  double seedval = R::runif(0.0, 1.0);
+  double sumval = 0.0;
+  int sampint;
+  for (int i = 0; i < probs.length(); i++) {
+    sumval += probs(i);
+    if (seedval < sumval) {
+      sampint = i;
+      break;
+    }
+  }
+  return sampint;
+}
+
 //' Sample genotypes from posteriors using genotype likelihoods and genotype priors
 //'
 //' @param gl The matrix of genotype log-likelihoods. Rows index individuals
@@ -244,6 +269,41 @@ NumericVector sample_z(NumericMatrix& gl, NumericVector& q) {
     z(j) = Rcpp::sample(ivec, 1, false, probs)(0);
   }
   return z;
+}
+
+//' Modify posterior matrix using genotype likelihoods and prior vector.
+//'
+//' @param postmat The posterior matrix to fill.
+//' @param gl The genotype log-likelihoods.
+//' @param q The prior genotype probabilities (not logged).
+//'
+//' @author David Gerard
+//'
+//' @noRd
+// [[Rcpp::export]]
+void mod_postmat(NumericMatrix& postmat, NumericMatrix& gl, NumericVector& q) {
+  int n = postmat.nrow();
+  int ploidy = postmat.ncol() - 1;
+  if ((postmat.nrow() != gl.nrow()) || (postmat.ncol() != gl.ncol())) {
+    Rcpp::stop("postmat and gl need to have same dimension sizes");
+  }
+  if (q.length() != ploidy + 1) {
+    Rcpp::stop("q needs to be of length ploidy + 1");
+  }
+
+  for (int i = 0; i < n; i++) {
+    for (int k = 0; k <= ploidy; k++) {
+      postmat(i, k) = gl(i, k) + std::log(q(k));
+    }
+  }
+
+  for (int i = 0; i < n; i++) {
+    double lsum = log_sum_exp_cpp(postmat(i, _));
+    for (int k = 0; k <= ploidy; k++) {
+      postmat(i, k) -= lsum;
+      postmat(i, k) = std::exp(postmat(i, k));
+    }
+  }
 }
 
 //' Gibbs sampler under random mating using genotype log-likelihoods.

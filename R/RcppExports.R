@@ -64,6 +64,20 @@ plq <- function(gl, beta, lg = FALSE) {
     .Call(`_hwep_plq`, gl, beta, lg)
 }
 
+#' Quickly sample from a vector of probabilities.
+#'
+#' Samples an integer from 0 to probs.length()-1.
+#'
+#' @param probs The vector of probabilities. Should sum to 1 but it
+#'     doesn't check if it does or not, so is very unsafe.
+#'
+#' @author David Gerard
+#'
+#' @noRd
+sample_int <- function(probs) {
+    .Call(`_hwep_sample_int`, probs)
+}
+
 #' Sample genotypes from posteriors using genotype likelihoods and genotype priors
 #'
 #' @param gl The matrix of genotype log-likelihoods. Rows index individuals
@@ -75,6 +89,19 @@ plq <- function(gl, beta, lg = FALSE) {
 #' @noRd
 sample_z <- function(gl, q) {
     .Call(`_hwep_sample_z`, gl, q)
+}
+
+#' Modify posterior matrix using genotype likelihoods and prior vector.
+#'
+#' @param postmat The posterior matrix to fill.
+#' @param gl The genotype log-likelihoods.
+#' @param q The prior genotype probabilities (not logged).
+#'
+#' @author David Gerard
+#'
+#' @noRd
+mod_postmat <- function(postmat, gl, q) {
+    invisible(.Call(`_hwep_mod_postmat`, postmat, gl, q))
 }
 
 #' Gibbs sampler under random mating using genotype log-likelihoods.
