@@ -40,9 +40,7 @@ ddirmult <- function(x, alpha, lg = FALSE) {
 #' @noRd
 conc_default <- function(ploidy) {
   alpha <- rep(1, ploidy / 2 + 1)
-  alpha <- alpha / sum(alpha)
-  beta <- stats::convolve(alpha, rev(alpha), type = "open")
-  beta <- beta / sum(beta)
+  beta <- pmin(floor(0:ploidy / 2), floor((ploidy - 0:ploidy) / 2)) + 1
   return(list(alpha = alpha, beta = beta))
 }
 
