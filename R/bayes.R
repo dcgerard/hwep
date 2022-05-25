@@ -41,6 +41,7 @@ ddirmult <- function(x, alpha, lg = FALSE) {
 conc_default <- function(ploidy) {
   alpha <- rep(1, ploidy / 2 + 1)
   beta <- pmin(floor(0:ploidy / 2), floor((ploidy - 0:ploidy) / 2)) + 1
+  beta <- beta * (ploidy + 1) / sum(beta)
   return(list(alpha = alpha, beta = beta))
 }
 
