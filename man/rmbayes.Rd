@@ -4,7 +4,14 @@
 \alias{rmbayes}
 \title{Bayes test for random mating with known genotypes}
 \usage{
-rmbayes(nvec, lg = TRUE, alpha = NULL, beta = NULL, nburn = 100, niter = 10000)
+rmbayes(
+  nvec,
+  lg = TRUE,
+  alpha = NULL,
+  beta = NULL,
+  nburn = 1000,
+  niter = 10000
+)
 }
 \arguments{
 \item{nvec}{A vector containing the observed genotype counts,

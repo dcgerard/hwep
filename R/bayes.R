@@ -99,7 +99,7 @@ rmbayes <- function(nvec,
                     lg = TRUE,
                     alpha = NULL,
                     beta = NULL,
-                    nburn = 100,
+                    nburn = 1000,
                     niter = 10000) {
   ploidy <- length(nvec) - 1
 
