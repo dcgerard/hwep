@@ -45,6 +45,67 @@ conc_default <- function(ploidy) {
   return(list(alpha = alpha, beta = beta))
 }
 
+#' Probability of pair counts given total numbers in each category.
+#'
+#' There are \code{sum(y)} total objects of \code{length(y)} categories and
+#' we randomly pair them up. The counts of pairs are in \code{A}. This
+#' function will calculate the probability of \code{A} given \code{y}
+#' as calculated by Levene (1949).
+#'
+#' @param A An upper-triangular matrix. \code{A[i,j]} is the number of pairs
+#'     of categories \code{i} and \end{j}.
+#' @param y A vector. \code{y[i]} are the number of objects in category
+#'     \code{i}.
+#' @param lg A logical. Should we return the log probability \code{TRUE} or
+#'     not (\code{FALSE})?
+#'
+#' @references
+#' \itemize{
+#'   \item{H. Levene. On a matching problem arising in genetics. The Annals of Mathematical Statistics, 20 (1):91–94, 1949. doi: 10.1214/aoms/1177730093.}
+#' }
+#'
+#' @author David Gerard
+#'
+#' @examples
+#' A <- matrix(c(1, 2, 1,
+#'               0, 3, 1,
+#'               0, 0, 4),
+#'             ncol = 3,
+#'             byrow = TRUE)
+#' y <- c(5, 9, 10)
+#'
+#' @noRd
+dpairs <- function(A, y, lg = FALSE) {
+  stopifnot(sum(y) == 2 * sum(A))
+  stopifnot(length(y) == nrow(A), length(y) == ncol(A))
+  stopifnot(A[lower.tri(A)] == 0)
+
+  ## check for compatibility
+  for (i in 1:length(y)) {
+    if (y[[i]] != sum(A[i,]) + sum(A[, i])) {
+      if (lg) {
+        return(-Inf)
+      } else {
+        return(0)
+      }
+    }
+  }
+
+  ## Use formula from Levene (1949).
+  n <- sum(y) / 2
+  retval <- lfactorial(n) +
+    sum(lfactorial(y)) -
+    lfactorial(2 * n) -
+    sum(lfactorial(A[upper.tri(A)])) +
+    sum(A[upper.tri(A)]) * log(2)
+
+  if (!lg) {
+    retval <- exp(retval)
+  }
+
+  return(retval)
+}
+
 #' Bayes test for random mating with known genotypes
 #'
 #' @param nvec A vector containing the observed genotype counts,

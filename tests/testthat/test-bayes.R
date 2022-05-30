@@ -305,3 +305,29 @@ test_that("sample_int returns proper proportions", {
   expect_equal(q, qhat, tolerance = 0.01, ignore_attr = TRUE)
 })
 
+
+test_that("dpairs from Levene (1949) is correct", {
+  A <- matrix(c(1, 0, 0,
+                0, 0, 0,
+                0, 0, 0),
+              ncol = 3,
+              byrow = TRUE)
+  y <- c(2, 0, 0)
+  expect_equal(dpairs(A, y), 1)
+
+  A <- matrix(c(0, 1, 0,
+                0, 0, 1,
+                0, 0, 0),
+              ncol = 3,
+              byrow = TRUE)
+  y <- c(1, 2, 1)
+  expect_equal(dpairs(A, y), 2/3)
+
+  A <- matrix(c(0, 0, 1,
+                0, 1, 0,
+                0, 0, 0),
+              ncol = 3,
+              byrow = TRUE)
+  y <- c(1, 2, 1)
+  expect_equal(dpairs(A, y), 1/3)
+})
