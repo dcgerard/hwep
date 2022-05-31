@@ -406,3 +406,55 @@ test_that("dirichlet-multinomial sums to 1", {
 })
 
 
+test_that("beta_from_alpha same as conc_default", {
+  expect_equal(
+    beta_from_alpha(alpha = rep(1, 3)),
+    conc_default(ploidy = 4)$beta
+  )
+
+  expect_equal(
+    beta_from_alpha(alpha = rep(1, 4)),
+    conc_default(ploidy = 6)$beta
+  )
+
+  expect_equal(
+    beta_from_alpha(alpha = rep(1, 5)),
+    conc_default(ploidy = 8)$beta
+  )
+
+  expect_equal(
+    beta_from_alpha(alpha = rep(1, 6)),
+    conc_default(ploidy = 10)$beta
+  )
+})
+
+test_that("beta_from_alpha more generally gives same BF", {
+  alpha <- c(1, 2, 4)
+  beta <- beta_from_alpha(alpha = alpha)
+
+  expect_equal(
+    rmbayes(nvec = c(1, 0, 0, 0, 0), lg = TRUE, alpha = alpha, beta = beta),
+    0
+  )
+
+  expect_equal(
+    rmbayes(nvec = c(0, 1, 0, 0, 0), lg = TRUE, alpha = alpha, beta = beta),
+    0
+  )
+
+  expect_equal(
+    rmbayes(nvec = c(0, 0, 1, 0, 0), lg = TRUE, alpha = alpha, beta = beta),
+    0
+  )
+
+  expect_equal(
+    rmbayes(nvec = c(0, 0, 0, 1, 0), lg = TRUE, alpha = alpha, beta = beta),
+    0
+  )
+
+  expect_equal(
+    rmbayes(nvec = c(0, 0, 0, 0, 1), lg = TRUE, alpha = alpha, beta = beta),
+    0
+  )
+})
+

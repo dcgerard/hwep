@@ -24,6 +24,34 @@ ddirmult <- function(x, alpha, lg = FALSE) {
   return(ll)
 }
 
+#' Default values from beta given alpha was specified.
+#'
+#' This makes the Bayes factor testing for random mating equal to 1 for
+#' samples of size 1.
+#'
+#' @author David Gerard
+#'
+#' @noRd
+beta_from_alpha <- function(alpha) {
+  ploidy <- 2 * (length(alpha) - 1)
+  beta <- rep(0, length.out = ploidy + 1)
+
+  for (i in 0:ploidy) {
+    il <- max(0, i - ploidy / 2)
+    ih <- floor(i / 2)
+    for (j in il:ih) {
+      y <- rep(0, ploidy / 2 + 1)
+      y[[j + 1]] <- 1
+      y[[i - j + 1]] <- y[[i - j + 1]] + 1
+      beta[[i + 1]] <- beta[[i + 1]] + ddirmult(x = y, alpha = alpha, lg = FALSE)
+    }
+  }
+
+  beta <- beta * (ploidy + 1)
+
+  return(beta)
+}
+
 #' Default concentration hyperparameters for the dirichlet priors
 #'
 #' This is used in \code{\link{rmbayes}()} and \code{\link{rmbayesgl}()}.
@@ -277,12 +305,14 @@ rmbayes <- function(nvec,
   ploidy <- length(nvec) - 1
 
   ## Default concentration parameters ----
-  if (xor(is.null(alpha), is.null(beta))) {
-    warning(paste0("You need to specify both alpha and beta to use custom hyperparameters.\n",
-                   "If you only specify one then default values are used."))
+  if (is.null(alpha) && !is.null(beta)) {
+    warning(paste0("You cannot specify beta and not specify alpha",
+                   "Default values are being used."))
   }
 
-  if (is.null(alpha) || is.null(beta)) {
+  if (is.null(beta) && !is.null(alpha)) {
+    beta <- beta_from_alpha(alpha = alpha)
+  } else if (is.null(alpha) || is.null(beta)) {
     clist = conc_default(ploidy = ploidy)
     alpha <- clist$alpha
     beta <- clist$beta
@@ -392,12 +422,14 @@ rmbayesgl <- function(gl,
   n <- nrow(gl)
 
   ## Default concentration parameters ----
-  if (xor(is.null(alpha), is.null(beta))) {
-    warning(paste0("You need to specify both alpha and beta to use custom hyperparameters.\n",
-                   "If you only specify one then default values are used."))
+  if (is.null(alpha) && !is.null(beta)) {
+    warning(paste0("You cannot specify beta and not specify alpha",
+                   "Default values are being used."))
   }
 
-  if (is.null(alpha) || is.null(beta)) {
+  if (is.null(beta) && !is.null(alpha)) {
+    beta <- beta_from_alpha(alpha = alpha)
+  } else if (is.null(alpha) || is.null(beta)) {
     clist = conc_default(ploidy = ploidy)
     alpha <- clist$alpha
     beta <- clist$beta
