@@ -96,7 +96,7 @@ dpairs <- function(A, y, lg = FALSE) {
   retval <- lfactorial(n) +
     sum(lfactorial(y)) -
     lfactorial(2 * n) -
-    sum(lfactorial(A[upper.tri(A)])) +
+    sum(lfactorial(A[upper.tri(A, diag = TRUE)])) +
     sum(A[upper.tri(A)]) * log(2)
 
   if (!lg) {
@@ -296,7 +296,7 @@ rmbayes <- function(nvec,
   ## Get marginal likelihoods under null and alternative
   if (ploidy == 4) {
     mnull <- tetra_rm_marg(x = nvec, alpha = alpha, lg = TRUE)
-  } else if ((ploidy == 6) && sum(nvec) <= 100) {
+  } else if ((ploidy == 6) && sum(nvec) <= 50) {
     mnull <- hexa_rm_marg(x = nvec, alpha = alpha, lg = TRUE)
   } else {
     mnull <- gibbs_known(x = nvec, alpha = alpha, more = FALSE, lg = TRUE, B = niter, T = nburn)$mx

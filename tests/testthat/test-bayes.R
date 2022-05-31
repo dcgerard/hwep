@@ -344,10 +344,51 @@ test_that("gam_from_pairs() works", {
 
 test_that("exact marginal calculation is correct", {
   x <- c(4, 3, 0, 1, 2)
-  alpha <- c(1, 1, 1)
+  alpha <- 1:3
 
-  gibbs_known(x = x, alpha = alpha, lg = TRUE)$mx
-  tetra_rm_marg(x = x, alpha = alpha, lg = TRUE)
+  expect_equal(
+    gibbs_known(x = x, alpha = alpha, lg = TRUE)$mx,
+    tetra_rm_marg(x = x, alpha = alpha, lg = TRUE)
+  )
+
+  x <- c(4, 3, 10, 1, 2)
+  alpha <- 1:3
+
+  expect_equal(
+    gibbs_known(x = x, alpha = alpha, lg = TRUE)$mx,
+    tetra_rm_marg(x = x, alpha = alpha, lg = TRUE),
+    tolerance = 0.01
+  )
+
+  # temp <- bench::mark(
+  #   gibbs_known(x = x, alpha = alpha, lg = TRUE)$mx,
+  #   tetra_rm_marg(x = x, alpha = alpha, lg = TRUE),
+  #   check = FALSE
+  # )
+
+
+   x <- c(4, 3, 0, 0, 0, 1, 2)
+  alpha <- 1:4
+
+  expect_equal(
+    gibbs_known(x = x, alpha = alpha, lg = TRUE)$mx,
+    hexa_rm_marg(x = x, alpha = alpha, lg = TRUE)
+  )
+
+  x <- c(4, 3, 13, 14, 13, 1, 2)
+  alpha <- 1:4
+
+  expect_equal(
+    gibbs_known(x = x, alpha = alpha, lg = TRUE)$mx,
+    hexa_rm_marg(x = x, alpha = alpha, lg = TRUE),
+    tolerance = 0.01
+  )
+
+  # temp <- bench::mark(
+  #   gibbs_known(x = x, alpha = alpha, lg = TRUE)$mx,
+  #   hexa_rm_marg(x = x, alpha = alpha, lg = TRUE),
+  #   check = FALSE
+  # )
 
 })
 
