@@ -53,6 +53,12 @@ The main functions for inference are:
 -   `hweboot()`: Implements a bootstrap approach to test for equilibrium
     which is more appropriate for small samples and uncertain genotypes.
 
+-   `rmbayes()`: Implements a Bayesian test for random mating in
+    autopolyploids for any ploidy level.
+
+-   `rmbayesgl()`: Bayesian test for random mating, accounting for
+    genotype uncertainty using genotype likelihoods.
+
 Functions are provided for calculating genotype frequencies for
 individuals and gametes:
 
