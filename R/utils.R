@@ -206,6 +206,44 @@ choose_agg <- function(x, thresh = 0, like = FALSE) {
 }
 
 
+#' Get every possible non-negative tuple with of a given sum.
+#'
+#' The total number of rows is \code{choose(n = k + n - 1, k = k - 1)}.
+#' This function uses recursion, so is not the most efficient.
+#'
+#' @param n Number of indistinguishable balls.
+#' @param k Number of distinguishable bins.
+#'
+#' @return A matrix, rows index different possible multinomial counts,
+#'    the columns index the bins.
+#'
+#' @author David Gerard
+#'
+#' @examples
+#' n <- 5
+#' k <- 3
+#' all_multinom(n = n, k = k)
+#' choose(n = n + k - 1, k = k - 1)
+#'
+#' @export
+all_multinom <- function(n, k) {
+  if (k == 0) {
+    return(NULL)
+  } else if (k == 1) {
+    return(n)
+  }
+
+  mat_list <- list()
+  for (i in 0:n) {
+    mat_list[[i + 1]] <- cbind(i, all_multinom(n - i, k - 1))
+  }
+
+  mat <- do.call(what = rbind, args = mat_list)
+  colnames(mat) <- NULL
+  mat
+}
+
+
 
 
 

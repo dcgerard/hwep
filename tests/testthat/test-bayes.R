@@ -331,3 +331,37 @@ test_that("dpairs from Levene (1949) is correct", {
   y <- c(1, 2, 1)
   expect_equal(dpairs(A, y), 1/3)
 })
+
+test_that("gam_from_pairs() works", {
+  A <- matrix(c(0, 0, 1,
+                0, 1, 0,
+                0, 0, 0),
+              ncol = 3,
+              byrow = TRUE)
+  y <- c(1, 2, 1)
+  expect_equal(gam_from_pairs(A), y)
+})
+
+test_that("exact marginal calculation is correct", {
+  x <- c(4, 3, 0, 1, 2)
+  alpha <- c(1, 1, 1)
+
+  gibbs_known(x = x, alpha = alpha, lg = TRUE)$mx
+  tetra_rm_marg(x = x, alpha = alpha, lg = TRUE)
+
+})
+
+
+test_that("dirichlet-multinomial sums to 1", {
+  tupmat <- all_multinom(n = 4, k = 3)
+  probvec <- rep(NA_real_, length.out = nrow(tupmat))
+  alpha <- 1:3
+
+  for (i in seq_along(probvec)) {
+    probvec[[i]] <- ddirmult(x = tupmat[i, ], alpha = alpha, lg = TRUE)
+  }
+
+  expect_equal(log_sum_exp(probvec), 0)
+})
+
+

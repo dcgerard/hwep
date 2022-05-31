@@ -106,6 +106,118 @@ dpairs <- function(A, y, lg = FALSE) {
   return(retval)
 }
 
+#' Get gamete counts from pairs of gametes matrix
+#'
+#' @param A An upper-triangular matrix. \code{A[i,j]} is the number of pairs
+#'     of categories \code{i} and \end{j}.
+#'
+#' @return A vector. Element \code{i} is the number of gametes with dosage
+#'     \code{i - 1}.
+#'
+#' @author David Gerard
+#'
+#' @noRd
+gam_from_pairs <- function(A) {
+  stopifnot(nrow(A) == ncol(A))
+  stopifnot(A[lower.tri(A)] == 0)
+
+  ngam <- nrow(A)
+
+  y <- rep(NA_real_, length.out = ngam)
+  for (i in seq_len(ngam)) {
+    y[[i]] <- sum(A[i,]) + sum(A[, i])
+  }
+
+  return(y)
+}
+
+#' Marginal likelihood for tetraploids under random mating
+#'
+#' @param x A vector of length 5, containing the number of individuals at
+#'     each dosage.
+#' @param alpha A vector of length 3, containing the concentration
+#'     hyperparameters for the gamete frequencies.
+#'
+#' @author David Gerard
+#'
+#' @noRd
+tetra_rm_marg <- function(x, alpha, lg = FALSE) {
+  stopifnot(length(x) == 5)
+  stopifnot(length(alpha) == 3)
+  stopifnot(x >= 0)
+  stopifnot(alpha > 0)
+
+  A <- matrix(0, nrow = 3, ncol = 3)
+  A[1, 1] <- x[[1]]
+  A[1, 2] <- x[[2]]
+  A[2, 3] <- x[[4]]
+  A[3, 3] <- x[[5]]
+
+  mx <- -Inf
+  for (i in 0:x[[3]]) {
+    A[2, 2] <- i
+    A[1, 3] <- x[[3]] - i
+    y <- gam_from_pairs(A)
+    cval <- dpairs(A = A, y = y, lg = TRUE) + ddirmult(x = y, alpha = alpha, lg = TRUE)
+    mx <- log_sum_exp_2_cpp(mx, cval)
+  }
+
+
+  if (!lg) {
+    mx <- exp(mx)
+  }
+
+  return(mx)
+}
+
+#' Marginal likelihood for hexaploids under random mating
+#'
+#' @param x A vector of length 7, containing the number of individuals at
+#'     each dosage.
+#' @param alpha A vector of length 4, containing the concentration
+#'     hyperparameters for the gamete frequencies.
+#'
+#' @author David Gerard
+#'
+#' @noRd
+hexa_rm_marg <- function(x, alpha, lg = FALSE) {
+  stopifnot(length(x) == 7)
+  stopifnot(length(alpha) == 4)
+  stopifnot(x >= 0)
+  stopifnot(alpha > 0)
+
+  A <- matrix(0, nrow = 4, ncol = 4)
+  A[1, 1] <- x[[1]]
+  A[1, 2] <- x[[2]]
+  A[3, 4] <- x[[6]]
+  A[4, 4] <- x[[7]]
+
+
+  mx <- -Inf
+  for (i in 0:x[[3]]) {
+    A[2, 2] <- i
+    A[1, 3] <- x[[3]] - i
+    for (j in 0:x[[4]]) {
+      A[2, 3] <- j
+      A[1, 4] <- x[[4]] - j
+      for(k in 0:x[[5]]) {
+        A[3, 3] <- k
+        A[2, 4] <- x[[5]] - k
+        y <- gam_from_pairs(A)
+        cval <- dpairs(A = A, y = y, lg = TRUE) + ddirmult(x = y, alpha = alpha, lg = TRUE)
+        mx <- log_sum_exp_2_cpp(mx, cval)
+      }
+    }
+  }
+
+
+  if (!lg) {
+    mx <- exp(mx)
+  }
+
+  return(mx)
+}
+
 #' Bayes test for random mating with known genotypes
 #'
 #' @param nvec A vector containing the observed genotype counts,
@@ -182,7 +294,13 @@ rmbayes <- function(nvec,
   }
 
   ## Get marginal likelihoods under null and alternative
-  mnull <- gibbs_known(x = nvec, alpha = alpha, more = FALSE, lg = TRUE, B = niter, T = nburn)$mx
+  if (ploidy == 4) {
+    mnull <- tetra_rm_marg(x = nvec, alpha = alpha, lg = TRUE)
+  } else if ((ploidy == 6) && sum(nvec) <= 100) {
+    mnull <- hexa_rm_marg(x = nvec, alpha = alpha, lg = TRUE)
+  } else {
+    mnull <- gibbs_known(x = nvec, alpha = alpha, more = FALSE, lg = TRUE, B = niter, T = nburn)$mx
+  }
   malt <- ddirmult(x = nvec, alpha = beta, lg = TRUE)
 
   ## Bayes factor ----
