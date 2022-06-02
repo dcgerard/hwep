@@ -421,6 +421,10 @@ rmbayesgl <- function(gl,
   ploidy <- ncol(gl) - 1
   n <- nrow(gl)
 
+  ## Remove rows with missing data ----
+  which_row_na <- apply(is.na(gl), 1, any)
+  gl <- gl[!which_row_na, , drop = FALSE]
+
   ## Default concentration parameters ----
   if (is.null(alpha) && !is.null(beta)) {
     warning(paste0("You cannot specify beta and not specify alpha",

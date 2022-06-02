@@ -235,7 +235,7 @@ double plq(NumericMatrix& gl, NumericVector beta, bool lg = false) {
 int sample_int(const NumericVector& probs) {
   double seedval = R::runif(0.0, 1.0);
   double sumval = 0.0;
-  int sampint;
+  int sampint = probs.length() - 1;
   for (int i = 0; i < probs.length(); i++) {
     sumval += probs(i);
     if (seedval < sumval) {

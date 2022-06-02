@@ -458,3 +458,8 @@ test_that("beta_from_alpha more generally gives same BF", {
   )
 })
 
+test_that("rmbayesgl() works without errors", {
+  load("./glshir.RData")
+  beta <- conc_default(ploidy = 6)$beta
+  expect_true(!is.na(rmbayesgl(gl = glshir, nburn = 2, niter = 5)))
+})
