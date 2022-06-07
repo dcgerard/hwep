@@ -300,7 +300,7 @@ rmbayes <- function(nvec,
                     lg = TRUE,
                     alpha = NULL,
                     beta = NULL,
-                    nburn = 1000,
+                    nburn = 10000,
                     niter = 10000) {
   ploidy <- length(nvec) - 1
 
@@ -417,7 +417,7 @@ rmbayesgl <- function(gl,
                       lg = TRUE,
                       alpha = NULL,
                       beta = NULL,
-                      nburn = 1000,
+                      nburn = 10000,
                       niter = 10000) {
   ploidy <- ncol(gl) - 1
   n <- nrow(gl)

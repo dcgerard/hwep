@@ -9,7 +9,7 @@ rmbayes(
   lg = TRUE,
   alpha = NULL,
   beta = NULL,
-  nburn = 1000,
+  nburn = 10000,
   niter = 10000
 )
 }
