@@ -46,7 +46,8 @@ Imports:
     pracma,
     tensr,
     doRNG,
-    Rcpp
+    Rcpp,
+    updog
 VignetteBuilder: knitr
 LinkingTo: 
     Rcpp

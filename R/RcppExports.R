@@ -39,7 +39,7 @@ samp_gametes <- function(x, p) {
 #' @author David Gerard
 #'
 #' @export
-gibbs_known <- function(x, alpha, B = 10000L, T = 100L, more = FALSE, lg = FALSE) {
+gibbs_known <- function(x, alpha, B = 10000L, T = 1000L, more = FALSE, lg = FALSE) {
     .Call(`_hwep_gibbs_known`, x, alpha, B, T, more, lg)
 }
 
@@ -144,7 +144,7 @@ mod_postmat <- function(postmat, gl, q) {
 #' gibbs_gl(gl = gl, alpha = rep(1, ploidy / 2 + 1), lg = TRUE)
 #'
 #' @export
-gibbs_gl <- function(gl, alpha, B = 10000L, T = 100L, more = FALSE, lg = FALSE) {
+gibbs_gl <- function(gl, alpha, B = 10000L, T = 1000L, more = FALSE, lg = FALSE) {
     .Call(`_hwep_gibbs_gl`, gl, alpha, B, T, more, lg)
 }
 
@@ -174,7 +174,7 @@ gibbs_gl <- function(gl, alpha, B = 10000L, T = 100L, more = FALSE, lg = FALSE) 
 #' gibbs_gl_alt(gl = gl, beta = rep(1, ploidy + 1), lg = TRUE)
 #'
 #' @export
-gibbs_gl_alt <- function(gl, beta, B = 10000L, T = 100L, more = FALSE, lg = FALSE) {
+gibbs_gl_alt <- function(gl, beta, B = 10000L, T = 1000L, more = FALSE, lg = FALSE) {
     .Call(`_hwep_gibbs_gl_alt`, gl, beta, B, T, more, lg)
 }
 

@@ -5,7 +5,7 @@
 \title{Gibbs sampler under the alternative of non-random mating using genotype
 log-likelihoods.}
 \usage{
-gibbs_gl_alt(gl, beta, B = 10000L, T = 100L, more = FALSE, lg = FALSE)
+gibbs_gl_alt(gl, beta, B = 10000L, T = 1000L, more = FALSE, lg = FALSE)
 }
 \arguments{
 \item{gl}{The matrix of genotype log-likelihoods. The columns index the

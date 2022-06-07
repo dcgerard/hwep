@@ -111,7 +111,7 @@ IntegerVector samp_gametes(const NumericVector& x,
 Rcpp::List gibbs_known(Rcpp::NumericVector x,
                        Rcpp::NumericVector alpha,
                        int B = 10000,
-                       int T = 100,
+                       int T = 1000,
                        bool more = false,
                        bool lg = false) {
   int ploidy = x.length() - 1;
@@ -350,7 +350,7 @@ void mod_postmat(NumericMatrix& postmat, NumericMatrix& gl, NumericVector& q) {
 Rcpp::List gibbs_gl(Rcpp::NumericMatrix& gl,
                     Rcpp::NumericVector alpha,
                     int B = 10000,
-                    int T = 100,
+                    int T = 1000,
                     bool more = false,
                     bool lg = false) {
   int ploidy = gl.ncol() - 1;
@@ -478,7 +478,7 @@ Rcpp::List gibbs_gl(Rcpp::NumericMatrix& gl,
 Rcpp::List gibbs_gl_alt(Rcpp::NumericMatrix& gl,
                         Rcpp::NumericVector beta,
                         int B = 10000,
-                        int T = 100,
+                        int T = 1000,
                         bool more = false,
                         bool lg = false) {
   int ploidy = gl.ncol() - 1;

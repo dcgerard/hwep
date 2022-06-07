@@ -36,15 +36,16 @@ under the alternative of no random mating. Should be length ploidy + 1.}
 Bayes test for random mating using genotype log-likelihoods
 }
 \examples{
+
+\dontrun{
 set.seed(1)
 ploidy <- 8
 
-## Simulate under the null
+## Simulate under the null ----
 p <- stats::runif(ploidy / 2 + 1)
 p <- p / sum(p)
 q <- stats::convolve(p, rev(p), type = "open")
 
-\dontrun{
 ## See BF increase
 nvec <- c(stats::rmultinom(n = 1, size = 100, prob = q))
 gl <- simgl(nvec = nvec)
@@ -54,7 +55,7 @@ nvec <- c(stats::rmultinom(n = 1, size = 1000, prob = q))
 gl <- simgl(nvec = nvec)
 rmbayesgl(gl = gl)
 
-## Simulate under the alternative
+## Simulate under the alternative ----
 q <- stats::runif(ploidy + 1)
 q <- q / sum(q)
 

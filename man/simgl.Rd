@@ -2,20 +2,32 @@
 % Please edit documentation in R/bayes.R
 \name{simgl}
 \alias{simgl}
-\title{Stupid simulator for genotype log-likelihoods}
+\title{Simulator for genotype likelihoods.}
 \usage{
-simgl(nvec, sig = 0.1)
+simgl(nvec, rdepth = 10, od = 0.01, bias = 1, seq = 0.01)
 }
 \arguments{
 \item{nvec}{The genotype counts. \code{nvec[k]} contains the number of
 individuals with genotype \code{k-1}.}
 
-\item{sig}{The standard deviation. Higher means more uncertainty. You should
-think of this as in units of dosages.}
+\item{rdepth}{The read depth. Lower means more uncertain.}
+
+\item{od}{The overdispersion parameter. Higher means more uncertain.}
+
+\item{bias}{The allele bias parameter. Further from 1 means more bias.
+Must greater than 0.}
+
+\item{seq}{The sequencing error rate. Higher means more uncertain.}
+}
+\value{
+A matrix. The genotype (natural) log likelihoods. The rows
+index the individuals and the columns index the dosage. So
+\code{gl[i,j]} is the genotype log-likelihood for individual i
+at dosage j - 1.
 }
 \description{
-Gets at the idea of genotype uncertainty, but don't use this for simulations.
-I just created this to help me debug.
+Uses the {updog} R package for simulating read counts and generating
+genotype log-likelihoods.
 }
 \author{
 David Gerard

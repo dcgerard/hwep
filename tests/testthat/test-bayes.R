@@ -162,7 +162,7 @@ test_that("gibbs sampler using genotype log-likelihoods give good estimates", {
 
   ## See BF increase
   nvec <- c(stats::rmultinom(n = 1, size = 10, prob = q))
-  gl <- simgl(nvec = nvec, sig = 0.01)
+  gl <- simgl(nvec = nvec, rdepth = 1000, od = 0, seq = 0, bias = 1)
 
   gout <- gibbs_gl(gl = gl, alpha = rep(1, ploidy / 2 + 1), more = TRUE, lg = TRUE)
 
@@ -200,7 +200,7 @@ test_that("alt gibbs sampler using genotype log-likelihoods give good estimates"
 
   ## See BF increase
   nvec <- c(stats::rmultinom(n = 1, size = 10000, prob = q))
-  gl <- simgl(nvec = nvec, sig = 0.2)
+  gl <- simgl(nvec = nvec)
 
   gout <- gibbs_gl_alt(gl = gl, beta = rep(1, ploidy + 1), more = TRUE, lg = TRUE)
 
@@ -240,7 +240,7 @@ test_that("sample_z() works", {
 
   ## See BF increase
   nvec <- c(stats::rmultinom(n = 1, size = 10, prob = q))
-  gl <- simgl(nvec = nvec, sig = 0.2)
+  gl <- simgl(nvec = nvec)
 
   sample_z(gl = gl, q = q)
 
@@ -463,3 +463,46 @@ test_that("rmbayesgl() works without errors", {
   beta <- conc_default(ploidy = 6)$beta
   expect_true(!is.na(rmbayesgl(gl = glshir, nburn = 2, niter = 5)))
 })
+
+test_that("gibbs_gl() and gibbs_gl_r() give same results", {
+  skip("takes too long")
+  set.seed(1)
+  ploidy <- 8
+
+  ## Simulate under the null
+  p <- stats::runif(ploidy / 2 + 1)
+  p <- p / sum(p)
+  q <- stats::convolve(p, rev(p), type = "open")
+
+  q <- stats::runif(ploidy + 1)
+  q <- q / sum(q)
+
+  nvec <- c(stats::rmultinom(n = 1, size = 100, prob = q))
+  gl <- simgl(nvec = nvec)
+  alpha <- rep(1, ploidy / 2 + 1)
+  beta <- rep(1, ploidy + 1)
+
+  system.time(
+    gfr <- gibbs_gl_r(gl = gl, alpha = alpha, lg = TRUE, nsamp = 100000, nburn = 10000)
+  )
+
+  system.time(
+    gfc <- gibbs_gl(gl = gl, alpha = alpha, lg = TRUE, B = 100000, T = 10000, more = FALSE)
+  )
+
+  gfr$mx
+  gfc$mx
+
+  system.time(
+    afr <- gibbs_gl_alt_r(gl = gl, beta = beta, lg = TRUE, nsamp = 100000, nburn = 10000)
+  )
+
+  system.time(
+    afc <- gibbs_gl_alt(gl = gl, beta = beta, lg = TRUE, B = 100000, T = 10000, more = FALSE)
+  )
+
+  afr$mx
+  afc$mx
+
+})
+

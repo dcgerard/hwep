@@ -376,15 +376,16 @@ gl_alt_marg <- function(gl, beta, lg = TRUE) {
 #' @inheritParams rmbayes
 #'
 #' @examples
+#'
+#' \dontrun{
 #' set.seed(1)
 #' ploidy <- 8
 #'
-#' ## Simulate under the null
+#' ## Simulate under the null ----
 #' p <- stats::runif(ploidy / 2 + 1)
 #' p <- p / sum(p)
 #' q <- stats::convolve(p, rev(p), type = "open")
 #'
-#' \dontrun{
 #' ## See BF increase
 #' nvec <- c(stats::rmultinom(n = 1, size = 100, prob = q))
 #' gl <- simgl(nvec = nvec)
@@ -394,7 +395,7 @@ gl_alt_marg <- function(gl, beta, lg = TRUE) {
 #' gl <- simgl(nvec = nvec)
 #' rmbayesgl(gl = gl)
 #'
-#' ## Simulate under the alternative
+#' ## Simulate under the alternative ----
 #' q <- stats::runif(ploidy + 1)
 #' q <- q / sum(q)
 #'
@@ -458,30 +459,182 @@ rmbayesgl <- function(gl,
   return(lbf)
 }
 
-#' Stupid simulator for genotype log-likelihoods
+#' Simulator for genotype likelihoods.
 #'
-#' Gets at the idea of genotype uncertainty, but don't use this for simulations.
-#' I just created this to help me debug.
+#' Uses the {updog} R package for simulating read counts and generating
+#' genotype log-likelihoods.
 #'
 #' @param nvec The genotype counts. \code{nvec[k]} contains the number of
 #'     individuals with genotype \code{k-1}.
-#' @param sig The standard deviation. Higher means more uncertainty. You should
-#'     think of this as in units of dosages.
+#' @param rdepth The read depth. Lower means more uncertain.
+#' @param od The overdispersion parameter. Higher means more uncertain.
+#' @param bias The allele bias parameter. Further from 1 means more bias.
+#'     Must greater than 0.
+#' @param seq The sequencing error rate. Higher means more uncertain.
+#'
+#' @return A matrix. The genotype (natural) log likelihoods. The rows
+#'     index the individuals and the columns index the dosage. So
+#'     \code{gl[i,j]} is the genotype log-likelihood for individual i
+#'     at dosage j - 1.
 #'
 #' @author David Gerard
 #'
 #' @export
-simgl <- function(nvec, sig = 0.1) {
+simgl <- function(nvec, rdepth = 10, od = 0.01, bias = 1, seq = 0.01) {
   ploidy <- length(nvec) - 1
-  z <- unlist(mapply(FUN = rep, x = 0:ploidy, each = nvec)) / ploidy
-  zsim <- stats::rnorm(n = length(z), mean = z, sd = sig / ploidy)
+  nind <- sum(nvec)
+  z <- unlist(mapply(FUN = rep, x = 0:ploidy, each = nvec))
 
-  f <- function(x, y) {
-    stats::dnorm(x = x, mean = y, sd = sig, log = TRUE)
+  sizevec <- rep(rdepth, length.out = nind)
+  refvec <- updog::rflexdog(sizevec = sizevec,
+                            geno = z,
+                            ploidy = ploidy,
+                            seq = seq,
+                            bias = bias,
+                            od = od)
+
+  fout <- updog::flexdog_full(refvec = refvec,
+                              sizevec = sizevec,
+                              ploidy = ploidy,
+                              model = "flex",
+                              verbose = FALSE,
+                              seq = seq,
+                              bias = bias,
+                              od = od,
+                              update_bias = FALSE,
+                              update_od = FALSE,
+                              update_seq = FALSE)
+
+  return(fout$genologlike)
+}
+
+#' R Implementation of gibbs_gl()
+#'
+#' @inheritParams gibbs_gl
+#'
+#' @author David Gerard
+#'
+#' @examples
+#' set.seed(1)
+#' ploidy <- 8
+#'
+#' ## Simulate under the null
+#' p <- stats::runif(ploidy / 2 + 1)
+#' p <- p / sum(p)
+#' q <- stats::convolve(p, rev(p), type = "open")
+#'
+#' nvec <- c(stats::rmultinom(n = 1, size = 100, prob = q))
+#' gl <- simgl(nvec = nvec)
+#' alpha <- rep(1, 5)
+#' gibbs_gl_r(gl = gl, alpha = alpha)
+#'
+#'
+#' @noRd
+gibbs_gl_r <- function(gl,
+                       alpha,
+                       nsamp = 10000,
+                       nburn = 1000,
+                       more = FALSE,
+                       lg = FALSE) {
+  ploidy <- ncol(gl) - 1
+  nind <- nrow(gl)
+
+  pvec <- rdirichlet1(alpha)
+  qvec <- stats::convolve(pvec, rev(pvec), type = "open")
+  ptilde <- pvec
+  qtilde <- qvec
+  lp <- ddirichlet(x = ptilde, alpha = alpha, lg = TRUE) + gl_alt_marg(gl = gl, beta = qtilde, lg = TRUE)
+  postval <- -Inf
+
+  for (i in seq_len(nburn + nsamp)) {
+    ## sample genotypes ----
+    postmat <- gl + rep(log(qvec), each = nind)
+    postmat <- exp(postmat - apply(postmat, 1, log_sum_exp))
+    zvec <- apply(postmat, 1, function(x) sample(x = 0:ploidy, size = 1, replace = FALSE, prob = x))
+
+    ## calculate genotype counts ----
+    xvec <- table(factor(zvec, levels = 0:ploidy))
+
+    ## sample y ----
+    yvec <- samp_gametes(x = xvec, p = pvec)
+
+    ## sample p ----
+    pvec <- rdirichlet1(alpha = yvec + alpha)
+
+    ## calculate q ---
+    qvec <- stats::convolve(pvec, rev(pvec), type = "open")
+
+    if (i <= nburn) {
+      lp_new <- ddirichlet(x = pvec, alpha = alpha, lg = TRUE) + gl_alt_marg(gl = gl, beta = qvec, lg = TRUE)
+      if (lp_new > lp) {
+        lp <- lp_new
+        ptilde <- pvec
+        qtilde <- qvec
+      }
+    } else {
+      postval <- log_sum_exp_2_cpp(postval, ddirichlet(x = ptilde, yvec + alpha, lg = TRUE))
+    }
+  }
+  postval <- postval - log(nsamp)
+
+  ## return ----
+  retlist <- list()
+  retlist$mx <- lp - postval
+
+  if (!lg) {
+    retlist$mx <- exp(retlist$mx)
   }
 
-  gl <- outer(X = zsim, Y = (0:ploidy) / ploidy, FUN = f)
+  return(retlist)
+}
 
-  return(gl)
+#' Implementation of gibbs_gl_alt() in R
+#'
+#' @inheritParams gibbs_gl_alt()
+#'
+#' @author David Gerard
+#'
+#' @noRd
+gibbs_gl_alt_r <- function(gl, beta, nsamp = 10000, nburn = 1000, more = FALSE, lg = FALSE) {
+  nind <- nrow(gl)
+  ploidy <- ncol(gl) - 1
+  qvec <- rdirichlet1(alpha = beta)
+  qtilde <- qvec
+  lp <- ddirichlet(x = qtilde, alpha = beta, lg = TRUE) + gl_alt_marg(gl = gl, beta = qtilde, lg = TRUE)
+  postval <- -Inf
+
+  for (i in seq_len(nburn + nsamp)) {
+    ## sample genotypes ----
+    postmat <- gl + rep(log(qvec), each = nind)
+    postmat <- exp(postmat - apply(postmat, 1, log_sum_exp))
+    zvec <- apply(postmat, 1, function(x) sample(x = 0:ploidy, size = 1, replace = FALSE, prob = x))
+
+    ## calculate genotype counts ----
+    xvec <- table(factor(zvec, levels = 0:ploidy))
+
+    ## sample q ----
+    qvec <- rdirichlet1(xvec + beta)
+
+    if (i <= nburn) {
+      lp_new <- ddirichlet(x = qvec, alpha = beta, lg = TRUE) + gl_alt_marg(gl = gl, beta = qvec, lg = TRUE)
+      if (lp_new > lp) {
+        lp <- lp_new
+        qtilde <- qvec
+      }
+    } else {
+      postval <- log_sum_exp_2_cpp(postval, ddirichlet(x = qtilde, alpha = xvec + beta, lg = TRUE))
+    }
+  }
+  postval <- postval - log(nsamp)
+
+  ## return ----
+  retlist <- list()
+  retlist$mx <- lp - postval
+
+  if (!lg) {
+    retlist$mx <- exp(retlist$mx)
+  }
+
+  return(retlist)
 }
 

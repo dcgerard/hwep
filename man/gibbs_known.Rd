@@ -4,7 +4,7 @@
 \alias{gibbs_known}
 \title{Gibbs sampler under random mating with known genotypes.}
 \usage{
-gibbs_known(x, alpha, B = 10000L, T = 100L, more = FALSE, lg = FALSE)
+gibbs_known(x, alpha, B = 10000L, T = 1000L, more = FALSE, lg = FALSE)
 }
 \arguments{
 \item{x}{The vector of genotype counts. x(i) is the number of
