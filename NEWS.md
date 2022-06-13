@@ -2,6 +2,7 @@
 
 - Added `rmbayes()` and associated functions for Bayes tests for random mating.
 - Multiple restarts in EM algorithm for `rmlike()` to fix issues with local convergence.
+- Added `glsim()` for genotype likelihood simulation.
 
 # hwep 0.0.2
 
