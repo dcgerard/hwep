@@ -1,3 +1,8 @@
+# hwep 2.0.0
+
+- Added `rmbayes()` and associated functions for Bayes tests for random mating.
+- Multiple restarts in EM algorithm for `rmlike()` to fix issues with local convergence.
+
 # hwep 0.0.2
 
 - New function, `qqpvalue()`: A QQ-plot function for $p$-values on the $-\log_{10}$-scale. 
