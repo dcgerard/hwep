@@ -4,7 +4,7 @@
 \alias{rmlike}
 \title{Likelihood inference for random mating}
 \usage{
-rmlike(nvec, thresh = 1)
+rmlike(nvec, thresh = 1, nstarts = 10)
 }
 \arguments{
 \item{nvec}{A vector containing the observed genotype counts,
@@ -13,6 +13,9 @@ where \code{nvec[[i]]} is the number of individuals with genotype
 
 \item{thresh}{All groups with counts less than \code{nvec} will
 be aggregated together.}
+
+\item{nstarts}{The number of random restarts to the EM algorithm. Set this
+to 0 for only one run.}
 }
 \value{
 A list with the following elements:

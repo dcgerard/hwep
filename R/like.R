@@ -58,6 +58,8 @@ llike <- function(nvec, pvec, addval = 0, which_keep = NULL) {
 #' @param addval The penalization applied to each genotype for the random
 #'     mating hypothesis. This corresponds to the number of counts each
 #'     genotype has \emph{a priori}.
+#' @param init Should we initialize according to the binomial density
+#'     (\code{"binom"}) or according to random draw (\code{"rand"})?
 #'
 #' @author David Gerard
 #'
@@ -77,17 +79,26 @@ llike <- function(nvec, pvec, addval = 0, which_keep = NULL) {
 #' pvec
 #'
 #' @noRd
-rmem <- function(nvec, tol = 10^-3, maxit = 100, addval = 1 / 100) {
+rmem <- function(nvec,
+                 tol = 10^-3,
+                 maxit = 100,
+                 addval = 1 / 100,
+                 init = c("binom", "rand")) {
   ploidy <- length(nvec) - 1
   stopifnot(ploidy %% 2 == 0)
   stopifnot(nvec >= 0)
   stopifnot(addval >= 0, length(addval) == 1)
+  init <- match.arg(init)
 
   ## Initialize under assumption of random mating with alpha = 0 (small penalty) ----
-  pvec <- stats::dbinom(x = 0:(ploidy / 2),
-                        size = ploidy / 2,
-                        prob = sum(nvec * 0:ploidy) / (sum(nvec) * ploidy)) + addval
-  pvec <- pvec / sum(pvec)
+  if (init == "binom") {
+    pvec <- stats::dbinom(x = 0:(ploidy / 2),
+                          size = ploidy / 2,
+                          prob = sum(nvec * 0:ploidy) / (sum(nvec) * ploidy)) + addval
+    pvec <- pvec / sum(pvec)
+  } else if (init == "rand") {
+    pvec <- rdirichlet1(alpha = rep(1, ploidy / 2 + 1))
+  }
   ll <- llike(nvec = nvec, pvec = pvec, addval = addval)
 
   ## Initialize parameters -----
@@ -153,6 +164,8 @@ rmem <- function(nvec, tol = 10^-3, maxit = 100, addval = 1 / 100) {
 #'     \code{i-1}. This should be of length \code{ploidy+1}.
 #' @param thresh All groups with counts less than \code{nvec} will
 #'     be aggregated together.
+#' @param nstarts The number of random restarts to the EM algorithm. Set this
+#'     to 0 for only one run.
 #'
 #' @return A list with the following elements:
 #' \describe{
@@ -185,7 +198,7 @@ rmem <- function(nvec, tol = 10^-3, maxit = 100, addval = 1 / 100) {
 #' ## Run rmlike()
 #' rmlike(nvec = nvec)
 #'
-rmlike <- function(nvec, thresh = 1) {
+rmlike <- function(nvec, thresh = 1, nstarts = 10) {
   ploidy <- length(nvec) - 1
   stopifnot(ploidy %% 2 == 0)
   stopifnot(nvec >= 0)
@@ -209,6 +222,16 @@ rmlike <- function(nvec, thresh = 1) {
 
   ## Estimate gametic frequencies ----
   hout <- rmem(nvec = nvec)
+  ll0 <- llike(nvec = nvec, pvec = hout, which_keep = which_keep)
+  for (rindex in seq_len(nstarts)) {
+    hout_temp <- rmem(nvec = nvec, init = "rand")
+    ll0_temp <- llike(nvec = nvec, pvec = hout_temp, which_keep = which_keep)
+    if (ll0_temp > ll0) {
+      hout <- hout_temp
+      ll0 <- ll0_temp
+    }
+  }
+
   names(hout) <- 0:(ploidy / 2)
 
   ## Get log-likelihood under null ----

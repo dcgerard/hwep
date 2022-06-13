@@ -22,7 +22,7 @@ test_that("random mating same for tetraploids", {
   nvec <- c(1, 4, 2, 3, 1)
 
   tout <- hwetetra(nvec = nvec)
-  rout <- rmlike(nvec = nvec)
+  rout <- rmlike(nvec = nvec, nstarts = 0)
 
   expect_equal(rout$chisq_rm, tout$chisq_rm)
 })
