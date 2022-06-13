@@ -101,7 +101,8 @@ IntegerVector samp_gametes(const NumericVector& x,
 //'   \item{\code{mx}: The estimate of the marginal likelihood}
 //'   \item{\code{p_tilde}: The value of p used to evaluate the posterior density}.
 //'   \item{\code{p}: The samples of the gamete frequencies}
-//'   \item{\code{post}: The samples of the full conditionals of p_tilde.}
+//'   \item{\code{post}: The likelihood times prior evaluated at current samples.}
+//'   \item{\code{ptilde_post}: The samples of the full conditionals of p_tilde.}
 //' }
 //'
 //' @author David Gerard
@@ -135,6 +136,7 @@ Rcpp::List gibbs_known(Rcpp::NumericVector x,
   }
   NumericMatrix pmat(nsamp, ploidy / 2 + 1);
   NumericVector postvec(nsamp);
+  NumericVector ptilde_postvec(nsamp);
 
   for (int i = 0; i < T + B; i++) {
     // sample y
@@ -159,7 +161,10 @@ Rcpp::List gibbs_known(Rcpp::NumericVector x,
       if (more) {
         NumericMatrix::Row crow = pmat(i - T, _);
         crow = p;
-        postvec(i - T) = ptilde_post;
+        ptilde_postvec(i - T) = ptilde_post;
+
+        q = conv_cpp(p, p);
+        postvec(i - T) = dmultinom_cpp(x, q, true) +  ddirichlet(p, alpha, true);
       }
 
     }
@@ -178,6 +183,7 @@ Rcpp::List gibbs_known(Rcpp::NumericVector x,
     retlist["p_tilde"] = p_tilde;
     retlist["p"] = pmat;
     retlist["post"] = postvec;
+    retlist["ptilde_post"] = ptilde_postvec;
   }
 
   return retlist;

@@ -29,7 +29,8 @@ A list with some or all of the following elements
 \item{\code{mx}: The estimate of the marginal likelihood}
 \item{\code{p_tilde}: The value of p used to evaluate the posterior density}.
 \item{\code{p}: The samples of the gamete frequencies}
-\item{\code{post}: The samples of the full conditionals of p_tilde.}
+\item{\code{post}: The likelihood times prior evaluated at current samples.}
+\item{\code{ptilde_post}: The samples of the full conditionals of p_tilde.}
 }
 }
 \description{
