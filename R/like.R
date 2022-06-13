@@ -231,11 +231,7 @@ rmlike <- function(nvec, thresh = 1, nstarts = 10) {
       ll0 <- ll0_temp
     }
   }
-
   names(hout) <- 0:(ploidy / 2)
-
-  ## Get log-likelihood under null ----
-  ll0 <- llike(nvec = nvec, pvec = hout, which_keep = which_keep)
 
   ## Get log-likelihood under alternative ----
   qmle <- nvec / sum(nvec)
