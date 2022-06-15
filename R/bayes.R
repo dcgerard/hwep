@@ -471,18 +471,31 @@ rmbayesgl <- function(gl,
 #' @param bias The allele bias parameter. Further from 1 means more bias.
 #'     Must greater than 0.
 #' @param seq The sequencing error rate. Higher means more uncertain.
+#' @param ret The return type. Should we just return the genotype
+#'     likelihoods (\code{"gl"}), just the genotype posteriors
+#'     (\code{"gp"}), or the entire updog output (\code{"all"})
 #'
-#' @return A matrix. The genotype (natural) log likelihoods. The rows
+#' @return By default, a matrix. The genotype (natural) log likelihoods. The rows
 #'     index the individuals and the columns index the dosage. So
 #'     \code{gl[i,j]} is the genotype log-likelihood for individual i
 #'     at dosage j - 1.
 #'
 #' @author David Gerard
 #'
+#' @examples
+#' set.seed(1)
+#' simgl(c(1, 2, 1, 0, 0))
+#'
 #' @export
-simgl <- function(nvec, rdepth = 10, od = 0.01, bias = 1, seq = 0.01) {
+simgl <- function(nvec,
+                  rdepth = 10,
+                  od = 0.01,
+                  bias = 1,
+                  seq = 0.01,
+                  ret = c("gl", "gp", "all")) {
   ploidy <- length(nvec) - 1
   nind <- sum(nvec)
+  ret <- match.arg(ret)
   z <- unlist(mapply(FUN = rep, x = 0:ploidy, each = nvec))
 
   sizevec <- rep(rdepth, length.out = nind)
@@ -505,7 +518,15 @@ simgl <- function(nvec, rdepth = 10, od = 0.01, bias = 1, seq = 0.01) {
                               update_od = FALSE,
                               update_seq = FALSE)
 
-  return(fout$genologlike)
+  if (ret == "gl") {
+    retval <- fout$genologlike
+  } else if (ret == "gp") {
+    retval <- fout$postmat
+  } else if (ret == "all") {
+    retval <- fout
+  }
+
+  return(retval)
 }
 
 #' R Implementation of gibbs_gl()
