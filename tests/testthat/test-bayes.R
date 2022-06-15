@@ -506,3 +506,7 @@ test_that("gibbs_gl() and gibbs_gl_r() give same results", {
 
 })
 
+test_that("rmbayes() works on nvec_hard", {
+  nvec <- readRDS("./nvec_hard.RDS")
+  expect_error(rmbayes(nvec), NA)
+})

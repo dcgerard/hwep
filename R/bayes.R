@@ -303,6 +303,7 @@ rmbayes <- function(nvec,
                     nburn = 10000,
                     niter = 10000) {
   ploidy <- length(nvec) - 1
+  nvec <- round(nvec)
 
   ## Default concentration parameters ----
   if (is.null(alpha) && !is.null(beta)) {

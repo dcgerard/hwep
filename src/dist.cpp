@@ -70,7 +70,7 @@ double dmultinom_cpp(NumericVector x, NumericVector p, bool lg = false) {
       sval += x(i) * log(p(i));
     }
   }
-  ret = std::lgamma(n + 1.0) - sum(lfactorial(x)) + sval;
+  ret = std::lgamma(n + 1.0) - sum(Rcpp::lgamma(x + 1.0)) + sval;
 
   if (!lg) {
     ret = std::exp(ret);

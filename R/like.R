@@ -200,6 +200,7 @@ rmem <- function(nvec,
 #'
 rmlike <- function(nvec, thresh = 1, nstarts = 10) {
   ploidy <- length(nvec) - 1
+  nvec <- round(nvec)
   stopifnot(ploidy %% 2 == 0)
   stopifnot(nvec >= 0)
   stopifnot(is.vector(nvec))
