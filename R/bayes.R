@@ -374,20 +374,30 @@ gl_alt_marg <- function(gl, beta, lg = TRUE) {
 #'     individuals and the columns index the genotypes. So \code{gl[i,k]}
 #'     is the genotype log-likelihood for individual \code{i} at
 #'     dosage \code{k-1}. We assume the \emph{natural} log is used (base e).
+#' @param chains Number of MCMC chains. Almost always 1 is enough, but we
+#'     use 2 as a default to be conservative.
+#' @param cores Number of cores to use.
+#' @param ... Control arguments passed to \code{\link[rstan]{sampling}()}.
+#'     The most common arguments are \code{iter},
+#'     \code{warmup}, and \code{thin}.
 #' @inheritParams rmbayes
 #'
 #' @examples
 #'
 #' \dontrun{
 #' set.seed(1)
-#' ploidy <- 8
+#' ploidy <- 6
 #'
 #' ## Simulate under the null ----
 #' p <- stats::runif(ploidy / 2 + 1)
 #' p <- p / sum(p)
 #' q <- stats::convolve(p, rev(p), type = "open")
 #'
-#' ## See BF increase
+#' ## See BF increases
+#' nvec <- c(stats::rmultinom(n = 1, size = 10, prob = q))
+#' gl <- simgl(nvec = nvec)
+#' rmbayesgl(gl = gl)
+#'
 #' nvec <- c(stats::rmultinom(n = 1, size = 100, prob = q))
 #' gl <- simgl(nvec = nvec)
 #' rmbayesgl(gl = gl)
@@ -400,7 +410,11 @@ gl_alt_marg <- function(gl, beta, lg = TRUE) {
 #' q <- stats::runif(ploidy + 1)
 #' q <- q / sum(q)
 #'
-#' ## See BF decrease
+#' ## See BF decreases
+#' nvec <- c(stats::rmultinom(n = 1, size = 10, prob = q))
+#' gl <- simgl(nvec = nvec)
+#' rmbayesgl(gl = gl)
+#'
 #' nvec <- c(stats::rmultinom(n = 1, size = 100, prob = q))
 #' gl <- simgl(nvec = nvec)
 #' rmbayesgl(gl = gl)
@@ -418,14 +432,20 @@ rmbayesgl <- function(gl,
                       lg = TRUE,
                       alpha = NULL,
                       beta = NULL,
-                      nburn = 100000,
-                      niter = 100000) {
-  ploidy <- ncol(gl) - 1
-  n <- nrow(gl)
-
+                      chains = 2,
+                      cores = 1,
+                      ...) {
   ## Remove rows with missing data ----
   which_row_na <- apply(is.na(gl), 1, any)
   gl <- gl[!which_row_na, , drop = FALSE]
+
+  ## dimensions
+  ploidy <- ncol(gl) - 1
+  n <- nrow(gl)
+
+  ## parallel processing
+  oldpar <- options(mc.cores = cores)
+  on.exit(options(oldpar))
 
   ## Default concentration parameters ----
   if (is.null(alpha) && !is.null(beta)) {
@@ -446,12 +466,35 @@ rmbayesgl <- function(gl,
     stopifnot(beta > 0)
   }
 
-  ## Get marginal likelihoods under null and alternative
-  mnull <- gibbs_gl(gl = gl, alpha = alpha, B = niter, T = nburn, more = FALSE, lg = TRUE)$mx
-  malt <- gibbs_gl_alt(gl = gl, beta = beta, B = niter, T = nburn, more = FALSE, lg = TRUE)$mx
+  ## Use stan to get Bayes factors.
+  dat_alt <- list(gl = gl,
+                  K = ploidy,
+                  N = n,
+                  beta = beta)
+  dat_null <- list(gl = gl,
+                   K = ploidy,
+                   N = n,
+                   alpha = alpha,
+                   khalf = ploidy / 2 + 1)
+  rmout_alt <- rstan::sampling(object = stanmodels$gl_alt,
+                               data = dat_alt,
+                               verbose = FALSE,
+                               show_messages = FALSE,
+                               chains = chains,
+                               ...)
+  rmout_null <- rstan::sampling(object = stanmodels$gl_null,
+                                data = dat_null,
+                                verbose = FALSE,
+                                show_messages = FALSE,
+                                chains = chains,
+                                ...)
+  balt <- bridgesampling::bridge_sampler(rmout_alt, verbose = FALSE, silent = TRUE)
+  bnull <- bridgesampling::bridge_sampler(rmout_null, verbose = FALSE, silent = TRUE)
+  lbf <- bridgesampling::bayes_factor(x1 = bnull, x2 = balt, log = TRUE)[[1]]
 
-  ## Bayes factor ----
-  lbf = mnull - malt
+  # mnull <- gibbs_gl(gl = gl, alpha = alpha, B = niter, T = nburn, more = FALSE, lg = TRUE)$mx
+  # malt <- gibbs_gl_alt(gl = gl, beta = beta, B = niter, T = nburn, more = FALSE, lg = TRUE)$mx
+  # lbf = mnull - malt
 
   if (!lg) {
     lbf <- exp(lbf)

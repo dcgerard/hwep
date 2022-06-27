@@ -4,14 +4,7 @@
 \alias{rmbayesgl}
 \title{Bayes test for random mating using genotype log-likelihoods}
 \usage{
-rmbayesgl(
-  gl,
-  lg = TRUE,
-  alpha = NULL,
-  beta = NULL,
-  nburn = 1e+05,
-  niter = 1e+05
-)
+rmbayesgl(gl, lg = TRUE, alpha = NULL, beta = NULL, chains = 2, cores = 1, ...)
 }
 \arguments{
 \item{gl}{A matrix of genotype log-likelihoods. The rows index the
@@ -28,9 +21,14 @@ under the null of random mating. Should be length ploidy/2 + 1.}
 \item{beta}{The concentration hyperparameters of the genotype frequencies
 under the alternative of no random mating. Should be length ploidy + 1.}
 
-\item{nburn}{The number of iterations in the Gibbs sampler to burn-in.}
+\item{chains}{Number of MCMC chains. Almost always 1 is enough, but we
+use 2 as a default to be conservative.}
 
-\item{niter}{The number of sampling iterations in the Gibbs sampler.}
+\item{cores}{Number of cores to use.}
+
+\item{...}{Control arguments passed to \code{\link[rstan]{sampling}()}.
+The most common arguments are \code{iter},
+\code{warmup}, and \code{thin}.}
 }
 \description{
 Bayes test for random mating using genotype log-likelihoods
@@ -39,14 +37,18 @@ Bayes test for random mating using genotype log-likelihoods
 
 \dontrun{
 set.seed(1)
-ploidy <- 8
+ploidy <- 6
 
 ## Simulate under the null ----
 p <- stats::runif(ploidy / 2 + 1)
 p <- p / sum(p)
 q <- stats::convolve(p, rev(p), type = "open")
 
-## See BF increase
+## See BF increases
+nvec <- c(stats::rmultinom(n = 1, size = 10, prob = q))
+gl <- simgl(nvec = nvec)
+rmbayesgl(gl = gl)
+
 nvec <- c(stats::rmultinom(n = 1, size = 100, prob = q))
 gl <- simgl(nvec = nvec)
 rmbayesgl(gl = gl)
@@ -59,7 +61,11 @@ rmbayesgl(gl = gl)
 q <- stats::runif(ploidy + 1)
 q <- q / sum(q)
 
-## See BF decrease
+## See BF decreases
+nvec <- c(stats::rmultinom(n = 1, size = 10, prob = q))
+gl <- simgl(nvec = nvec)
+rmbayesgl(gl = gl)
+
 nvec <- c(stats::rmultinom(n = 1, size = 100, prob = q))
 gl <- simgl(nvec = nvec)
 rmbayesgl(gl = gl)

@@ -461,7 +461,10 @@ test_that("beta_from_alpha more generally gives same BF", {
 test_that("rmbayesgl() works without errors", {
   load("./glshir.RData")
   beta <- conc_default(ploidy = 6)$beta
-  expect_true(!is.na(rmbayesgl(gl = glshir, nburn = 2, niter = 5)))
+  suppressWarnings(
+    rout <- rmbayesgl(gl = glshir, iter = 40, chains = 1)
+  )
+  expect_true(!is.na(rout))
 })
 
 test_that("gibbs_gl() and gibbs_gl_r() give same results", {
