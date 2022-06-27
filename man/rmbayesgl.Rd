@@ -9,8 +9,8 @@ rmbayesgl(
   lg = TRUE,
   alpha = NULL,
   beta = NULL,
-  nburn = 10000,
-  niter = 10000
+  nburn = 1e+05,
+  niter = 1e+05
 )
 }
 \arguments{

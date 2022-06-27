@@ -418,8 +418,8 @@ rmbayesgl <- function(gl,
                       lg = TRUE,
                       alpha = NULL,
                       beta = NULL,
-                      nburn = 10000,
-                      niter = 10000) {
+                      nburn = 100000,
+                      niter = 100000) {
   ploidy <- ncol(gl) - 1
   n <- nrow(gl)
 
