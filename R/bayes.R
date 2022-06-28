@@ -377,9 +377,11 @@ gl_alt_marg <- function(gl, beta, lg = TRUE) {
 #' @param chains Number of MCMC chains. Almost always 1 is enough, but we
 #'     use 2 as a default to be conservative.
 #' @param cores Number of cores to use.
+#' @param iter Total number of iterations.
+#' @param warmup Number of those iterations used in the burnin.
+#' @param method Should we use Stan (\code{"stan"}) or Gibbs sampling
+#'     (\code{"gibbs"})?
 #' @param ... Control arguments passed to \code{\link[rstan]{sampling}()}.
-#'     The most common arguments are \code{iter},
-#'     \code{warmup}, and \code{thin}.
 #' @inheritParams rmbayes
 #'
 #' @examples
@@ -397,14 +399,17 @@ gl_alt_marg <- function(gl, beta, lg = TRUE) {
 #' nvec <- c(stats::rmultinom(n = 1, size = 10, prob = q))
 #' gl <- simgl(nvec = nvec)
 #' rmbayesgl(gl = gl)
+#' rmbayesgl(gl = gl, method = "gibbs")
 #'
 #' nvec <- c(stats::rmultinom(n = 1, size = 100, prob = q))
 #' gl <- simgl(nvec = nvec)
 #' rmbayesgl(gl = gl)
+#' rmbayesgl(gl = gl, method = "gibbs")
 #'
 #' nvec <- c(stats::rmultinom(n = 1, size = 1000, prob = q))
 #' gl <- simgl(nvec = nvec)
 #' rmbayesgl(gl = gl)
+#' rmbayesgl(gl = gl, method = "gibbs")
 #'
 #' ## Simulate under the alternative ----
 #' q <- stats::runif(ploidy + 1)
@@ -414,14 +419,17 @@ gl_alt_marg <- function(gl, beta, lg = TRUE) {
 #' nvec <- c(stats::rmultinom(n = 1, size = 10, prob = q))
 #' gl <- simgl(nvec = nvec)
 #' rmbayesgl(gl = gl)
+#' rmbayesgl(gl = gl, method = "gibbs")
 #'
 #' nvec <- c(stats::rmultinom(n = 1, size = 100, prob = q))
 #' gl <- simgl(nvec = nvec)
 #' rmbayesgl(gl = gl)
+#' rmbayesgl(gl = gl, method = "gibbs")
 #'
 #' nvec <- c(stats::rmultinom(n = 1, size = 1000, prob = q))
 #' gl <- simgl(nvec = nvec)
 #' rmbayesgl(gl = gl)
+#' rmbayesgl(gl = gl, method = "gibbs")
 #'
 #' }
 #'
@@ -429,12 +437,17 @@ gl_alt_marg <- function(gl, beta, lg = TRUE) {
 #'
 #' @export
 rmbayesgl <- function(gl,
+                      method = c("stan", "gibbs"),
                       lg = TRUE,
                       alpha = NULL,
                       beta = NULL,
                       chains = 2,
                       cores = 1,
+                      iter = 2000,
+                      warmup = floor(iter / 2),
                       ...) {
+  method <- match.arg(method)
+
   ## Remove rows with missing data ----
   which_row_na <- apply(is.na(gl), 1, any)
   gl <- gl[!which_row_na, , drop = FALSE]
@@ -466,35 +479,51 @@ rmbayesgl <- function(gl,
     stopifnot(beta > 0)
   }
 
-  ## Use stan to get Bayes factors.
-  dat_alt <- list(gl = gl,
-                  K = ploidy,
-                  N = n,
-                  beta = beta)
-  dat_null <- list(gl = gl,
-                   K = ploidy,
-                   N = n,
-                   alpha = alpha,
-                   khalf = ploidy / 2 + 1)
-  rmout_alt <- rstan::sampling(object = stanmodels$gl_alt,
-                               data = dat_alt,
-                               verbose = FALSE,
-                               show_messages = FALSE,
-                               chains = chains,
-                               ...)
-  rmout_null <- rstan::sampling(object = stanmodels$gl_null,
-                                data = dat_null,
-                                verbose = FALSE,
-                                show_messages = FALSE,
-                                chains = chains,
-                                ...)
-  balt <- bridgesampling::bridge_sampler(rmout_alt, verbose = FALSE, silent = TRUE)
-  bnull <- bridgesampling::bridge_sampler(rmout_null, verbose = FALSE, silent = TRUE)
-  lbf <- bridgesampling::bayes_factor(x1 = bnull, x2 = balt, log = TRUE)[[1]]
-
-  # mnull <- gibbs_gl(gl = gl, alpha = alpha, B = niter, T = nburn, more = FALSE, lg = TRUE)$mx
-  # malt <- gibbs_gl_alt(gl = gl, beta = beta, B = niter, T = nburn, more = FALSE, lg = TRUE)$mx
-  # lbf = mnull - malt
+  if (method == "stan") {
+    ## Use stan to get Bayes factors.
+    dat_alt <- list(gl = gl,
+                    K = ploidy,
+                    N = n,
+                    beta = beta)
+    dat_null <- list(gl = gl,
+                     K = ploidy,
+                     N = n,
+                     alpha = alpha,
+                     khalf = ploidy / 2 + 1)
+    rmout_alt <- rstan::sampling(object = stanmodels$gl_alt,
+                                 data = dat_alt,
+                                 verbose = FALSE,
+                                 show_messages = FALSE,
+                                 chains = chains,
+                                 iter = iter,
+                                 warmup = warmup,
+                                 ...)
+    rmout_null <- rstan::sampling(object = stanmodels$gl_null,
+                                  data = dat_null,
+                                  verbose = FALSE,
+                                  show_messages = FALSE,
+                                  chains = chains,
+                                  iter = iter,
+                                  warmup = warmup,
+                                  ...)
+    balt <- bridgesampling::bridge_sampler(rmout_alt, verbose = FALSE, silent = TRUE)
+    bnull <- bridgesampling::bridge_sampler(rmout_null, verbose = FALSE, silent = TRUE)
+    lbf <- bridgesampling::bayes_factor(x1 = bnull, x2 = balt, log = TRUE)[[1]]
+  } else if (method == "gibbs") {
+    mnull <- gibbs_gl(gl = gl,
+                      alpha = alpha,
+                      B = iter - warmup,
+                      T = warmup,
+                      more = FALSE,
+                      lg = TRUE)$mx
+    malt <- gibbs_gl_alt(gl = gl,
+                         beta = beta,
+                         B = iter - warmup,
+                         T = warmup,
+                         more = FALSE,
+                         lg = TRUE)$mx
+    lbf = mnull - malt
+  }
 
   if (!lg) {
     lbf <- exp(lbf)

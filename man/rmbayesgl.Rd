@@ -4,13 +4,27 @@
 \alias{rmbayesgl}
 \title{Bayes test for random mating using genotype log-likelihoods}
 \usage{
-rmbayesgl(gl, lg = TRUE, alpha = NULL, beta = NULL, chains = 2, cores = 1, ...)
+rmbayesgl(
+  gl,
+  method = c("stan", "gibbs"),
+  lg = TRUE,
+  alpha = NULL,
+  beta = NULL,
+  chains = 2,
+  cores = 1,
+  iter = 2000,
+  warmup = floor(iter/2),
+  ...
+)
 }
 \arguments{
 \item{gl}{A matrix of genotype log-likelihoods. The rows index the
 individuals and the columns index the genotypes. So \code{gl[i,k]}
 is the genotype log-likelihood for individual \code{i} at
 dosage \code{k-1}. We assume the \emph{natural} log is used (base e).}
+
+\item{method}{Should we use Stan (\code{"stan"}) or Gibbs sampling
+(\code{"gibbs"})?}
 
 \item{lg}{A logical. Should we return the log Bayes factor (\code{TRUE})
 or the Bayes factor (\code{FALSE})?}
@@ -26,9 +40,11 @@ use 2 as a default to be conservative.}
 
 \item{cores}{Number of cores to use.}
 
-\item{...}{Control arguments passed to \code{\link[rstan]{sampling}()}.
-The most common arguments are \code{iter},
-\code{warmup}, and \code{thin}.}
+\item{iter}{Total number of iterations.}
+
+\item{warmup}{Number of those iterations used in the burnin.}
+
+\item{...}{Control arguments passed to \code{\link[rstan]{sampling}()}.}
 }
 \description{
 Bayes test for random mating using genotype log-likelihoods
