@@ -119,6 +119,7 @@ mod_postmat <- function(postmat, gl, q) {
 #'     or not (\code{FALSE}).
 #' @param lg Should we return the log marginal likelihood (true) or not
 #'     (false).
+#' @param verbose A logical. Should we print the progress?
 #'
 #' @return A list with some or all of the following elements
 #' \itemize{
@@ -145,8 +146,8 @@ mod_postmat <- function(postmat, gl, q) {
 #' gibbs_gl(gl = gl, alpha = rep(1, ploidy / 2 + 1), lg = TRUE)
 #'
 #' @export
-gibbs_gl <- function(gl, alpha, B = 10000L, T = 1000L, more = FALSE, lg = FALSE) {
-    .Call(`_hwep_gibbs_gl`, gl, alpha, B, T, more, lg)
+gibbs_gl <- function(gl, alpha, B = 10000L, T = 1000L, more = FALSE, lg = FALSE, verbose = TRUE) {
+    .Call(`_hwep_gibbs_gl`, gl, alpha, B, T, more, lg, verbose)
 }
 
 #' Gibbs sampler under the alternative of non-random mating using genotype
@@ -175,8 +176,8 @@ gibbs_gl <- function(gl, alpha, B = 10000L, T = 1000L, more = FALSE, lg = FALSE)
 #' gibbs_gl_alt(gl = gl, beta = rep(1, ploidy + 1), lg = TRUE)
 #'
 #' @export
-gibbs_gl_alt <- function(gl, beta, B = 10000L, T = 1000L, more = FALSE, lg = FALSE) {
-    .Call(`_hwep_gibbs_gl_alt`, gl, beta, B, T, more, lg)
+gibbs_gl_alt <- function(gl, beta, B = 10000L, T = 1000L, more = FALSE, lg = FALSE, verbose = TRUE) {
+    .Call(`_hwep_gibbs_gl_alt`, gl, beta, B, T, more, lg, verbose)
 }
 
 #' Random sample from Dirichlet distribution with n = 1.

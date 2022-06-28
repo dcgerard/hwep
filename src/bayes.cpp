@@ -326,6 +326,7 @@ void mod_postmat(NumericMatrix& postmat, NumericMatrix& gl, NumericVector& q) {
 //'     or not (\code{FALSE}).
 //' @param lg Should we return the log marginal likelihood (true) or not
 //'     (false).
+//' @param verbose A logical. Should we print the progress?
 //'
 //' @return A list with some or all of the following elements
 //' \itemize{
@@ -358,7 +359,8 @@ Rcpp::List gibbs_gl(Rcpp::NumericMatrix& gl,
                     int B = 10000,
                     int T = 1000,
                     bool more = false,
-                    bool lg = false) {
+                    bool lg = false,
+                    bool verbose = true) {
   int ploidy = gl.ncol() - 1;
   int n = gl.nrow();
   if (alpha.length() != (ploidy / 2 + 1)) {
@@ -387,7 +389,27 @@ Rcpp::List gibbs_gl(Rcpp::NumericMatrix& gl,
   NumericMatrix zmat(nsamp, n);
   NumericVector postvec(nsamp);
 
+  int modnum = std::floor(((double)B + (double)T) / 10);
+
+  if (verbose) {
+    Rcpp::Rcout << "Sampling for random mating model using genotype likelihoods"
+                << std::endl;
+  }
+
   for (int i = 0; i < T + B; i++) {
+
+    if (((i % modnum) == 0) && verbose) {
+      Rcpp::Rcout << "Iteration: "
+                  << i
+                  << " / "
+                  << T + B;
+      if (i < T) {
+        Rcpp::Rcout << " (Warmup)" << std::endl;
+      } else {
+        Rcpp::Rcout << " (Sampling)" << std::endl;
+      }
+    }
+
     // sample z
     mod_postmat(postmat, gl, q); // calculate posterior probabilities
     for (int j = 0; j < n; j++) {
@@ -486,7 +508,8 @@ Rcpp::List gibbs_gl_alt(Rcpp::NumericMatrix& gl,
                         int B = 10000,
                         int T = 1000,
                         bool more = false,
-                        bool lg = false) {
+                        bool lg = false,
+                        bool verbose = true) {
   int ploidy = gl.ncol() - 1;
   int n = gl.nrow();
   if (beta.length() != (ploidy + 1)) {
@@ -513,7 +536,27 @@ Rcpp::List gibbs_gl_alt(Rcpp::NumericMatrix& gl,
   NumericVector postvec(nsamp);
   NumericMatrix xmat(nsamp, ploidy + 1);
 
+  int modnum = std::floor(((double)B + (double)T) / 10);
+
+  if (verbose) {
+    Rcpp::Rcout << "Sampling for general model using genotype likelihoods"
+                << std::endl;
+  }
+
   for (int i = 0; i < T + B; i++) {
+
+    if (((i % modnum) == 0) && verbose) {
+      Rcpp::Rcout << "Iteration: "
+                  << i
+                  << " / "
+                  << T + B;
+      if (i < T) {
+        Rcpp::Rcout << " (Warmup)" << std::endl;
+      } else {
+        Rcpp::Rcout << " (Sampling)" << std::endl;
+      }
+    }
+
     // sample z
     mod_postmat(postmat, gl, q); // calculate posterior probabilities
     for (int j = 0; j < n; j++) {

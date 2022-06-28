@@ -5,7 +5,15 @@
 \title{Gibbs sampler under the alternative of non-random mating using genotype
 log-likelihoods.}
 \usage{
-gibbs_gl_alt(gl, beta, B = 10000L, T = 1000L, more = FALSE, lg = FALSE)
+gibbs_gl_alt(
+  gl,
+  beta,
+  B = 10000L,
+  T = 1000L,
+  more = FALSE,
+  lg = FALSE,
+  verbose = TRUE
+)
 }
 \arguments{
 \item{gl}{The matrix of genotype log-likelihoods. The columns index the
@@ -24,6 +32,8 @@ or not (\code{FALSE}).}
 
 \item{lg}{Should we return the log marginal likelihood (true) or not
 (false).}
+
+\item{verbose}{A logical. Should we print the progress?}
 }
 \value{
 A list with some or all of the following elements

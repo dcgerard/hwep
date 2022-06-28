@@ -88,8 +88,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // gibbs_gl
-Rcpp::List gibbs_gl(Rcpp::NumericMatrix& gl, Rcpp::NumericVector alpha, int B, int T, bool more, bool lg);
-RcppExport SEXP _hwep_gibbs_gl(SEXP glSEXP, SEXP alphaSEXP, SEXP BSEXP, SEXP TSEXP, SEXP moreSEXP, SEXP lgSEXP) {
+Rcpp::List gibbs_gl(Rcpp::NumericMatrix& gl, Rcpp::NumericVector alpha, int B, int T, bool more, bool lg, bool verbose);
+RcppExport SEXP _hwep_gibbs_gl(SEXP glSEXP, SEXP alphaSEXP, SEXP BSEXP, SEXP TSEXP, SEXP moreSEXP, SEXP lgSEXP, SEXP verboseSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -99,13 +99,14 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< int >::type T(TSEXP);
     Rcpp::traits::input_parameter< bool >::type more(moreSEXP);
     Rcpp::traits::input_parameter< bool >::type lg(lgSEXP);
-    rcpp_result_gen = Rcpp::wrap(gibbs_gl(gl, alpha, B, T, more, lg));
+    Rcpp::traits::input_parameter< bool >::type verbose(verboseSEXP);
+    rcpp_result_gen = Rcpp::wrap(gibbs_gl(gl, alpha, B, T, more, lg, verbose));
     return rcpp_result_gen;
 END_RCPP
 }
 // gibbs_gl_alt
-Rcpp::List gibbs_gl_alt(Rcpp::NumericMatrix& gl, Rcpp::NumericVector beta, int B, int T, bool more, bool lg);
-RcppExport SEXP _hwep_gibbs_gl_alt(SEXP glSEXP, SEXP betaSEXP, SEXP BSEXP, SEXP TSEXP, SEXP moreSEXP, SEXP lgSEXP) {
+Rcpp::List gibbs_gl_alt(Rcpp::NumericMatrix& gl, Rcpp::NumericVector beta, int B, int T, bool more, bool lg, bool verbose);
+RcppExport SEXP _hwep_gibbs_gl_alt(SEXP glSEXP, SEXP betaSEXP, SEXP BSEXP, SEXP TSEXP, SEXP moreSEXP, SEXP lgSEXP, SEXP verboseSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -115,7 +116,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< int >::type T(TSEXP);
     Rcpp::traits::input_parameter< bool >::type more(moreSEXP);
     Rcpp::traits::input_parameter< bool >::type lg(lgSEXP);
-    rcpp_result_gen = Rcpp::wrap(gibbs_gl_alt(gl, beta, B, T, more, lg));
+    Rcpp::traits::input_parameter< bool >::type verbose(verboseSEXP);
+    rcpp_result_gen = Rcpp::wrap(gibbs_gl_alt(gl, beta, B, T, more, lg, verbose));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -202,8 +204,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_hwep_sample_int", (DL_FUNC) &_hwep_sample_int, 1},
     {"_hwep_sample_z", (DL_FUNC) &_hwep_sample_z, 2},
     {"_hwep_mod_postmat", (DL_FUNC) &_hwep_mod_postmat, 3},
-    {"_hwep_gibbs_gl", (DL_FUNC) &_hwep_gibbs_gl, 6},
-    {"_hwep_gibbs_gl_alt", (DL_FUNC) &_hwep_gibbs_gl_alt, 6},
+    {"_hwep_gibbs_gl", (DL_FUNC) &_hwep_gibbs_gl, 7},
+    {"_hwep_gibbs_gl_alt", (DL_FUNC) &_hwep_gibbs_gl_alt, 7},
     {"_hwep_rdirichlet1", (DL_FUNC) &_hwep_rdirichlet1, 1},
     {"_hwep_ddirichlet", (DL_FUNC) &_hwep_ddirichlet, 3},
     {"_hwep_dmultinom_cpp", (DL_FUNC) &_hwep_dmultinom_cpp, 3},
