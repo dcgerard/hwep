@@ -64,14 +64,17 @@ q <- stats::convolve(p, rev(p), type = "open")
 nvec <- c(stats::rmultinom(n = 1, size = 10, prob = q))
 gl <- simgl(nvec = nvec)
 rmbayesgl(gl = gl)
+rmbayesgl(gl = gl, method = "gibbs")
 
 nvec <- c(stats::rmultinom(n = 1, size = 100, prob = q))
 gl <- simgl(nvec = nvec)
 rmbayesgl(gl = gl)
+rmbayesgl(gl = gl, method = "gibbs")
 
 nvec <- c(stats::rmultinom(n = 1, size = 1000, prob = q))
 gl <- simgl(nvec = nvec)
 rmbayesgl(gl = gl)
+rmbayesgl(gl = gl, method = "gibbs")
 
 ## Simulate under the alternative ----
 q <- stats::runif(ploidy + 1)
@@ -81,14 +84,17 @@ q <- q / sum(q)
 nvec <- c(stats::rmultinom(n = 1, size = 10, prob = q))
 gl <- simgl(nvec = nvec)
 rmbayesgl(gl = gl)
+rmbayesgl(gl = gl, method = "gibbs")
 
 nvec <- c(stats::rmultinom(n = 1, size = 100, prob = q))
 gl <- simgl(nvec = nvec)
 rmbayesgl(gl = gl)
+rmbayesgl(gl = gl, method = "gibbs")
 
 nvec <- c(stats::rmultinom(n = 1, size = 1000, prob = q))
 gl <- simgl(nvec = nvec)
 rmbayesgl(gl = gl)
+rmbayesgl(gl = gl, method = "gibbs")
 
 }
 
