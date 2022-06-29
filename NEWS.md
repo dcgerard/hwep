@@ -2,7 +2,9 @@
 
 - Added `rmbayes()` and associated functions for Bayes tests for random mating.
 - Multiple restarts in EM algorithm for `rmlike()` to fix issues with local convergence.
+- Added `rmbayesgl()` for Bayes test of random mating when using genotype likelihoods to account for genotype uncertainty. This uses the `{rstan}` package as a backend.
 - Added `glsim()` for genotype likelihood simulation.
+- `qqpvalue()` will now allow the user to return a ggplot object.
 
 # hwep 0.0.2
 

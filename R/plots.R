@@ -66,6 +66,8 @@ ts_bands <- function(n, nsamp = 1000, a = 0.05) {
 #'     strong dependence between order statistics, and if one is beyond
 #'     the pointwise bands, then likely lots are also beyond them.
 #' @param conf_level Confidence level for the bands.
+#' @param return_plot Should we return the plot? Only applicable if
+#'     \code{method == "ggplot2"}.
 #'
 #' @author David Gerard
 #'
@@ -92,7 +94,8 @@ ts_bands <- function(n, nsamp = 1000, a = 0.05) {
 qqpvalue <- function(pvals,
                      method = c("ggplot2", "base"),
                      band_type = c("ts", "pointwise"),
-                     conf_level = 0.95) {
+                     conf_level = 0.95,
+                     return_plot = FALSE) {
   method <- match.arg(method)
   band_type <- match.arg(band_type)
   stopifnot(conf_level >= 0, conf_level <= 1)
@@ -148,8 +151,12 @@ qqpvalue <- function(pvals,
       ggplot2::coord_cartesian(xlim = c(0, max_limval),
                                ylim = c(0, max_limval)) +
       ggplot2::theme_bw()
-    print(pl)
-    return(invisible(pvals))
+    if (return_plot) {
+      return(pl)
+    } else {
+      print(pl)
+      return(invisible(pvals))
+    }
   } else {
     oldpar <- graphics::par(pch = 16,
                             mar = c(3, 3, 0.5, 0.5),

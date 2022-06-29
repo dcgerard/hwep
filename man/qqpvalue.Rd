@@ -8,7 +8,8 @@ qqpvalue(
   pvals,
   method = c("ggplot2", "base"),
   band_type = c("ts", "pointwise"),
-  conf_level = 0.95
+  conf_level = 0.95,
+  return_plot = FALSE
 )
 }
 \arguments{
@@ -22,6 +23,9 @@ strong dependence between order statistics, and if one is beyond
 the pointwise bands, then likely lots are also beyond them.}
 
 \item{conf_level}{Confidence level for the bands.}
+
+\item{return_plot}{Should we return the plot? Only applicable if
+\code{method == "ggplot2"}.}
 }
 \description{
 This will create a QQ-plot for p-values, comparing them to a uniform
