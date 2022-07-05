@@ -70,6 +70,7 @@
 #' @import Rcpp
 #' @import methods
 #' @importFrom rstan sampling
+#' @importFrom rstantools use_rstan
 #' @importFrom RcppParallel defaultNumThreads
 #'
 #' @docType package
