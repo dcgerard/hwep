@@ -5,6 +5,7 @@
 - Added `rmbayesgl()` for Bayes test of random mating when using genotype likelihoods to account for genotype uncertainty. This uses the `{rstan}` package as a backend.
 - Added `glsim()` for genotype likelihood simulation.
 - `qqpvalue()` will now allow the user to return a ggplot object.
+- Added `menbayesgl()` for testing Mendelian segregation frequencies from S1 and F1 populations.
 
 # hwep 0.0.2
 
