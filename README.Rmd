@@ -57,6 +57,9 @@ The main functions for inference are:
   
 - `rmbayesgl()`: Bayesian test for random mating, accounting for genotype
   uncertainty using genotype likelihoods.
+  
+- `menbayesgl()`: Bayesian test for Mendelian segregation frequencies in
+  S1 or F1 populations using genotype likelihoods.
 
 Functions are provided for calculating genotype frequencies for individuals and gametes:
 

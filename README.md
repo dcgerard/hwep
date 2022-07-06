@@ -19,7 +19,7 @@ stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://
 
 Inference concerning equilibrium and random mating in autopolyploids.
 Methods are available to test for equilibrium and random mating at any
-even ploidy level (>2) in the presence of double reduction at biallelic
+even ploidy level (\>2) in the presence of double reduction at biallelic
 loci. For autopolyploid populations in equilibrium, methods are
 available to estimate the degree of double reduction. We also provide
 functions to calculate genotype frequencies at equilibrium, or after one
@@ -58,6 +58,9 @@ The main functions for inference are:
 
 -   `rmbayesgl()`: Bayesian test for random mating, accounting for
     genotype uncertainty using genotype likelihoods.
+
+-   `menbayesgl()`: Bayesian test for Mendelian segregation frequencies
+    in S1 or F1 populations using genotype likelihoods.
 
 Functions are provided for calculating genotype frequencies for
 individuals and gametes:

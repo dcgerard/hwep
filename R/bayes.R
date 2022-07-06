@@ -388,7 +388,7 @@ gl_alt_marg <- function(gl, beta, lg = TRUE) {
 #'
 #' \dontrun{
 #' set.seed(1)
-#' ploidy <- 6
+#' ploidy <- 4
 #'
 #' ## Simulate under the null ----
 #' p <- stats::runif(ploidy / 2 + 1)
@@ -732,3 +732,142 @@ gibbs_gl_alt_r <- function(gl, beta, nsamp = 10000, nburn = 1000, more = FALSE, 
   return(retlist)
 }
 
+##############################################################################
+## F1 / S1 test
+##############################################################################
+
+#' Bayes test for F1/S1 genotype frequencies using genotype likelihoods
+#'
+#' Uses \code{\link[updog]{get_q_array}()} from the updog R package to
+#' calculate segregation probabilities (assuming no double reduction) and
+#' tests that offspring genotypes follow this distribution.
+#'
+#' @inheritParams rmbayesgl
+#' @param method Should we test for F1 proportions (\code{"f1"}) or
+#'     S1 proportions (\code{"s1"})?
+#' @param p1gl A vector of genotype log-likelihoods for parent 1.
+#'     \code{p1gl[k]} is the log-likelihood of parent 1's data given
+#'     their genotype is \code{k}.
+#' @param p2gl A vector of genotype log-likelihoods for parent 2.
+#'     \code{p2gl[k]} is the log-likelihood of parent 2's data given
+#'     their genotype is \code{k}.
+#'
+#' @author David Gerard
+#'
+#' @examples
+#' \dontrun{
+#' set.seed(1)
+#' ploidy <- 4
+#'
+#' ## Simulate under the null ----
+#' q <- updog::get_q_array(ploidy = 4)[3, 3, ]
+#'
+#' ## See BF increases
+#' nvec <- c(stats::rmultinom(n = 1, size = 10, prob = q))
+#' gl <- simgl(nvec = nvec)
+#' menbayesgl(gl = gl, method = "f1")
+#'
+#' nvec <- c(stats::rmultinom(n = 1, size = 100, prob = q))
+#' gl <- simgl(nvec = nvec)
+#' menbayesgl(gl = gl, method = "f1")
+#'
+#' nvec <- c(stats::rmultinom(n = 1, size = 1000, prob = q))
+#' gl <- simgl(nvec = nvec)
+#' menbayesgl(gl = gl, method = "f1")
+#'
+#' ## Simulate under the alternative ----
+#' q <- stats::runif(ploidy + 1)
+#' q <- q / sum(q)
+#'
+#' ## See BF decreases
+#' nvec <- c(stats::rmultinom(n = 1, size = 10, prob = q))
+#' gl <- simgl(nvec = nvec)
+#' menbayesgl(gl = gl, method = "f1")
+#'
+#' nvec <- c(stats::rmultinom(n = 1, size = 100, prob = q))
+#' gl <- simgl(nvec = nvec)
+#' menbayesgl(gl = gl, method = "f1")
+#'
+#' nvec <- c(stats::rmultinom(n = 1, size = 1000, prob = q))
+#' gl <- simgl(nvec = nvec)
+#' menbayesgl(gl = gl, method = "f1")
+#'
+#' }
+#'
+#' @export
+menbayesgl <- function(gl,
+                       method = c("f1", "s1"),
+                       p1gl = NULL,
+                       p2gl = NULL,
+                       lg = TRUE,
+                       beta = NULL,
+                       chains = 2,
+                       cores = 1,
+                       iter = 2000,
+                       warmup = floor(iter / 2),
+                       ...) {
+  ## Remove rows with missing data ----
+  which_row_na <- apply(is.na(gl), 1, any)
+  gl <- gl[!which_row_na, , drop = FALSE]
+
+  ## Check input ----
+  ploidy <- ncol(gl) - 1
+  nind <- nrow(gl)
+  method <- match.arg(method)
+
+  if (is.null(p1gl)) {
+    p1gl <- rep(0, ploidy + 1)
+  }
+  if (is.null(p2gl) && method == "f1") {
+    p2gl <- rep(0, ploidy + 1)
+  }
+  if (!is.null(p2gl) && method == "s1") {
+    warning("p2gl is not used because method = 's1'")
+  }
+  if (is.null(beta)) {
+    beta <- rep(1, ploidy + 1)
+  }
+
+  ## Get alternative marginal likelihood
+  dat_alt <- list(gl = gl,
+                  K = ploidy,
+                  N = nind,
+                  beta = beta)
+  rmout_alt <- rstan::sampling(object = stanmodels$gl_alt,
+                               data = dat_alt,
+                               verbose = FALSE,
+                               show_messages = FALSE,
+                               chains = chains,
+                               iter = iter,
+                               warmup = warmup,
+                               ...)
+  balt <- bridgesampling::bridge_sampler(rmout_alt, verbose = FALSE, silent = TRUE)
+
+  ## Get null marginal likelihood
+  qarray <- updog::get_q_array(ploidy = ploidy)
+
+  if (method == "s1") {
+    p1post <- p1gl - log_sum_exp_cpp(p1gl)
+    bnull <- -Inf
+    for (k in 0:ploidy) {
+      bnull <- log_sum_exp_2_cpp(bnull, p1post[[k + 1]] + plq(gl = gl, beta = qarray[k + 1, k + 1, ], lg = TRUE))
+    }
+  } else if (method == "f1") {
+    p1post <- p1gl - log_sum_exp(p1gl)
+    p2post <- p2gl - log_sum_exp(p2gl)
+    bnull <- -Inf
+    for (k1 in 0:ploidy) {
+      for (k2 in 0:ploidy) {
+        bnull <- log_sum_exp_2_cpp(bnull, p1post[[k1 + 1]] + p2post[[k2 + 1]] + plq(gl = gl, beta = qarray[k1 + 1, k2 + 1, ], lg = TRUE))
+      }
+    }
+  }
+
+  lbf <- bnull - balt[[1]]
+
+  if (!lg) {
+    lbf <- exp(lbf)
+  }
+
+  return(lbf)
+}
