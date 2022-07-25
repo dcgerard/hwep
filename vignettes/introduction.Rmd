@@ -17,7 +17,7 @@ set.seed(997)
 
 # Introduction
 
-This vignette covers the basic usage of the `hwep` package. The methods implemented here are described in detail in Gerard (2021). We will cover:
+This vignette covers the basic usage of the `hwep` package. The methods implemented here are described in detail in Gerard (2022). We will cover:
 
 1. Functions for calculating segregation probabilities.
 2. Functions for calculating equilibrium genotype frequencies.
@@ -174,7 +174,7 @@ The other values of "type" run different procedures:
 
 - Fisher, R. A., & Mather, K. (1943). The inheritance of style length in *Lythrum salicaria*. *Annals of Eugenics*, 12(1), 1-23. doi: 10.1111/j.1469-1809.1943.tb02307.x
 
-- Gerard, D. (2021). Double reduction estimation and equilibrium tests in natural autopolyploid populations.  *bioRxiv*. doi: 10.1101/2021.09.24.461731
+- Gerard D (2022). "Double reduction estimation and equilibrium tests in natural autopolyploid populations." *Biometrics* (In press). doi:10.1111/biom.13722
 
 - Huang, K., Wang, T., Dunn, D. W., Zhang, P., Cao, X., Liu, R., & Li, B. (2019). Genotypic frequencies at equilibrium for polysomic inheritance under double-reduction. *G3: Genes | Genomes | Genetics*, 9(5), 1693-1706. doi: 10.1534/g3.119.400132
 

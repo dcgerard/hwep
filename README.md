@@ -107,9 +107,9 @@ devtools::install_github("dcgerard/hwep")
 
 To cite hwep in publications use:
 
-> Gerard D (2021). “Double reduction estimation and equilibrium tests in
-> natural autopolyploid populations.” *bioRxiv*.
-> [doi:10.1101/2021.09.24.461731](https://doi.org/10.1101/2021.09.24.461731).
+> Gerard D (2022). “Double reduction estimation and equilibrium tests in
+> natural autopolyploid populations.” *Biometrics* (In press).
+> [doi:10.1111/biom.13722](https://doi.org/10.1111/biom.13722).
 
 A BibTeX entry for LaTeX users is
 
@@ -117,9 +117,10 @@ A BibTeX entry for LaTeX users is
 @Article{,
   title = {Double reduction estimation and equilibrium tests in natural autopolyploid populations},
   author = {David Gerard},
-  journal = {bioRxiv},
-  year = {2021},
-  doi = {10.1101/2021.09.24.461731}
+  journal = {Biometrics},
+  year = {2022},
+  doi = {10.1111/biom.13722},
+  volume = {In press},
 }
 ```
 
