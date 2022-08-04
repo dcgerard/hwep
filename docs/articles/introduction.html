@@ -6,6 +6,12 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Introduction to the `hwep` package • hwep</title>
+<!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png">
+<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png">
+<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png">
+<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png">
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../bootstrap-toc.css">
 <script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
@@ -13,6 +19,7 @@
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
 <script src="../pkgdown.js"></script><meta property="og:title" content="Introduction to the `hwep` package">
 <meta property="og:description" content="hwep">
+<meta property="og:image" content="/logo.png">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
@@ -33,7 +40,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">hwep</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.0</span>
       </span>
     </div>
 
@@ -78,7 +85,8 @@
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1 data-toc-skip>Introduction to the <code>hwep</code> package</h1>
+      <h1 data-toc-skip>Introduction to the <code>hwep</code>
+package</h1>
             
       
       <small class="dont-index">Source: <a href="https://github.com/dcgerard/hwep/blob/HEAD/vignettes/introduction.Rmd" class="external-link"><code>vignettes/introduction.Rmd</code></a></small>
@@ -91,7 +99,9 @@
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p>This vignette covers the basic usage of the <code>hwep</code> package. The methods implemented here are described in detail in Gerard (2021). We will cover:</p>
+<p>This vignette covers the basic usage of the <code>hwep</code>
+package. The methods implemented here are described in detail in Gerard
+(2022). We will cover:</p>
 <ol style="list-style-type: decimal">
 <li>Functions for calculating segregation probabilities.</li>
 <li>Functions for calculating equilibrium genotype frequencies.</li>
@@ -99,218 +109,300 @@
 </ol>
 <p>Let’s load the package so we can begin.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dcgerard.github.io/hwep/" class="external-link">hwep</a></span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dcgerard.github.io/hwep/" class="external-link">hwep</a></span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="the-double-reduction-parameter-">The double reduction parameter.<a class="anchor" aria-label="anchor" href="#the-double-reduction-parameter-"></a>
 </h2>
-<p>Throughout this vignette, we will discuss the “double reduction parameter”, which we should briefly clarify. This parameter is a vector of probabilities of length <code>floor(ploidy / 4)</code>, where <code>ploidy</code> is the ploidy of the species. Element <code>i</code> of this vector is the probability that an offspring will have exactly <code>i</code> copies of identical-by-double-reduction (IBDR) alleles. If <code>alpha</code> is this parameter vector, than <code>1 - sum(alpha)</code> is the probability that an offspring has no IBDR alleles.</p>
-<p>The double reduction parameter is known to have an upper bound, based on the model for meiosis considered. The largest bound typically assumed in the literature is derived from the “complete equational segregation model”, introduced by Mather (1935) and later generalized in Huang et al. (2019). These bounds can be calculated by the <code><a href="../reference/drbounds.html">drbounds()</a></code> function for different ploidies.</p>
+<p>Throughout this vignette, we will discuss the “double reduction
+parameter”, which we should briefly clarify. This parameter is a vector
+of probabilities of length <code>floor(ploidy / 4)</code>, where
+<code>ploidy</code> is the ploidy of the species. Element <code>i</code>
+of this vector is the probability that an offspring will have exactly
+<code>i</code> copies of identical-by-double-reduction (IBDR) alleles.
+If <code>alpha</code> is this parameter vector, than
+<code>1 - sum(alpha)</code> is the probability that an offspring has no
+IBDR alleles.</p>
+<p>The double reduction parameter is known to have an upper bound, based
+on the model for meiosis considered. The largest bound typically assumed
+in the literature is derived from the “complete equational segregation
+model”, introduced by Mather (1935) and later generalized in Huang et
+al. (2019). These bounds can be calculated by the
+<code><a href="../reference/drbounds.html">drbounds()</a></code> function for different ploidies.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/drbounds.html">drbounds</a></span><span class="op">(</span>ploidy <span class="op">=</span> <span class="fl">4</span><span class="op">)</span>
-<span class="co">#&gt; [1] 0.1666667</span>
-<span class="fu"><a href="../reference/drbounds.html">drbounds</a></span><span class="op">(</span>ploidy <span class="op">=</span> <span class="fl">6</span><span class="op">)</span>
-<span class="co">#&gt; [1] 0.3</span>
-<span class="fu"><a href="../reference/drbounds.html">drbounds</a></span><span class="op">(</span>ploidy <span class="op">=</span> <span class="fl">8</span><span class="op">)</span>
-<span class="co">#&gt; [1] 0.38571429 0.02142857</span>
-<span class="fu"><a href="../reference/drbounds.html">drbounds</a></span><span class="op">(</span>ploidy <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>
-<span class="co">#&gt; [1] 0.43650794 0.05952381</span>
-<span class="fu"><a href="../reference/drbounds.html">drbounds</a></span><span class="op">(</span>ploidy <span class="op">=</span> <span class="fl">12</span><span class="op">)</span>
-<span class="co">#&gt; [1] 0.462662338 0.105519481 0.002705628</span></code></pre></div>
-<p>During our analysis procedures, we typically assume that the double reduction parameter is between 0 and these upper bounds.</p>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/drbounds.html">drbounds</a></span><span class="op">(</span>ploidy <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 0.1666667</span></span>
+<span><span class="fu"><a href="../reference/drbounds.html">drbounds</a></span><span class="op">(</span>ploidy <span class="op">=</span> <span class="fl">6</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 0.3</span></span>
+<span><span class="fu"><a href="../reference/drbounds.html">drbounds</a></span><span class="op">(</span>ploidy <span class="op">=</span> <span class="fl">8</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 0.38571429 0.02142857</span></span>
+<span><span class="fu"><a href="../reference/drbounds.html">drbounds</a></span><span class="op">(</span>ploidy <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 0.43650794 0.05952381</span></span>
+<span><span class="fu"><a href="../reference/drbounds.html">drbounds</a></span><span class="op">(</span>ploidy <span class="op">=</span> <span class="fl">12</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 0.462662338 0.105519481 0.002705628</span></span></code></pre></div>
+<p>During our analysis procedures, we typically assume that the double
+reduction parameter is between 0 and these upper bounds.</p>
 </div>
 <div class="section level2">
 <h2 id="segregation-probabilities">Segregation probabilities<a class="anchor" aria-label="anchor" href="#segregation-probabilities"></a>
 </h2>
-<p>This package comes with a few functions to calculate the probabilities of gamete and offspring dosages given parental dosages. These generalize classical Mendelian inheritance to include rates of double reduction. We use the specific model derived by Fisher &amp; Mather (1943), and later generalized by Huang et al. (2019).</p>
+<p>This package comes with a few functions to calculate the
+probabilities of gamete and offspring dosages given parental dosages.
+These generalize classical Mendelian inheritance to include rates of
+double reduction. We use the specific model derived by Fisher &amp;
+Mather (1943), and later generalized by Huang et al. (2019).</p>
 <ul>
 <li>
-<p><code><a href="../reference/dgamete.html">dgamete()</a></code>: This function will calculate gamete dosage probabilities given the parental genotype. So, if we want to calculate the probability of gametes having dosage 0, 1, and 2 when the parent has a dosage of 3, the double reduction rate is 0.1, and the ploidy is 4, we would run:</p>
+<p><code><a href="../reference/dgamete.html">dgamete()</a></code>: This function will calculate gamete
+dosage probabilities given the parental genotype. So, if we want to
+calculate the probability of gametes having dosage 0, 1, and 2 when the
+parent has a dosage of 3, the double reduction rate is 0.1, and the
+ploidy is 4, we would run:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/dgamete.html">dgamete</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">0</span><span class="op">:</span><span class="fl">2</span>, alpha <span class="op">=</span> <span class="fl">0.1</span>, G <span class="op">=</span> <span class="fl">3</span>, ploidy <span class="op">=</span> <span class="fl">4</span><span class="op">)</span>
-<span class="co">#&gt; [1] 0.025 0.450 0.525</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/dgamete.html">dgamete</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">0</span><span class="op">:</span><span class="fl">2</span>, alpha <span class="op">=</span> <span class="fl">0.1</span>, G <span class="op">=</span> <span class="fl">3</span>, ploidy <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 0.025 0.450 0.525</span></span></code></pre></div>
 </li>
 <li>
-<p><code><a href="../reference/gsegmat.html">gsegmat()</a></code>: Given a ploidy level and a double reduction rate, this function will calculate all possible gamete dosage probabilities for each possible parental genotype. The rows index the parental genotypes and the columns index the gamete genotypes.</p>
+<p><code><a href="../reference/gsegmat.html">gsegmat()</a></code>: Given a ploidy level and a double
+reduction rate, this function will calculate all possible gamete dosage
+probabilities for each possible parental genotype. The rows index the
+parental genotypes and the columns index the gamete genotypes.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/gsegmat.html">gsegmat</a></span><span class="op">(</span>alpha <span class="op">=</span> <span class="fl">0.1</span>, ploidy <span class="op">=</span> <span class="fl">4</span><span class="op">)</span>
-<span class="co">#&gt;       0    1     2</span>
-<span class="co">#&gt; 0 1.000 0.00 0.000</span>
-<span class="co">#&gt; 1 0.525 0.45 0.025</span>
-<span class="co">#&gt; 2 0.200 0.60 0.200</span>
-<span class="co">#&gt; 3 0.025 0.45 0.525</span>
-<span class="co">#&gt; 4 0.000 0.00 1.000</span></code></pre></div>
-<p>From the above matrix, the probability of a gamete having dosage 1 when the parental dosage is 2 is 0.6.</p>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/gsegmat.html">gsegmat</a></span><span class="op">(</span>alpha <span class="op">=</span> <span class="fl">0.1</span>, ploidy <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span>
+<span><span class="co">#&gt;       0    1     2</span></span>
+<span><span class="co">#&gt; 0 1.000 0.00 0.000</span></span>
+<span><span class="co">#&gt; 1 0.525 0.45 0.025</span></span>
+<span><span class="co">#&gt; 2 0.200 0.60 0.200</span></span>
+<span><span class="co">#&gt; 3 0.025 0.45 0.525</span></span>
+<span><span class="co">#&gt; 4 0.000 0.00 1.000</span></span></code></pre></div>
+<p>From the above matrix, the probability of a gamete having dosage 1
+when the parental dosage is 2 is 0.6.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/gsegmat.html">gsegmat</a></span><span class="op">(</span>alpha <span class="op">=</span> <span class="fl">0.1</span>, ploidy <span class="op">=</span> <span class="fl">4</span><span class="op">)</span><span class="op">[</span><span class="fl">3</span>, <span class="fl">2</span><span class="op">]</span>
-<span class="co">#&gt; [1] 0.6</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/gsegmat.html">gsegmat</a></span><span class="op">(</span>alpha <span class="op">=</span> <span class="fl">0.1</span>, ploidy <span class="op">=</span> <span class="fl">4</span><span class="op">)</span><span class="op">[</span><span class="fl">3</span>, <span class="fl">2</span><span class="op">]</span></span>
+<span><span class="co">#&gt; [1] 0.6</span></span></code></pre></div>
 </li>
 <li>
-<p><code><a href="../reference/gsegmat_symb.html">gsegmat_symb()</a></code>: This function provides a symbolic representation of the gamete segregation probabilities. In the output <code>a</code> represents the probability of exactly zero copies of IBDR alleles, <code>b</code> represents the probability of exactly one copy of IBDR alleles, <code>c</code> represents the probability of exactly two copies of IBDR alleles, etc…</p>
+<p><code><a href="../reference/gsegmat_symb.html">gsegmat_symb()</a></code>: This function provides a symbolic
+representation of the gamete segregation probabilities. In the output
+<code>a</code> represents the probability of exactly zero copies of IBDR
+alleles, <code>b</code> represents the probability of exactly one copy
+of IBDR alleles, <code>c</code> represents the probability of exactly
+two copies of IBDR alleles, etc…</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/gsegmat_symb.html">gsegmat_symb</a></span><span class="op">(</span>ploidy <span class="op">=</span> <span class="fl">4</span><span class="op">)</span>
-<span class="co">#&gt;   0               1        2              </span>
-<span class="co">#&gt; 0 "a+b"           "0"      "0"            </span>
-<span class="co">#&gt; 1 "(1/2)a+(3/4)b" "(1/2)a" "(1/4)b"       </span>
-<span class="co">#&gt; 2 "(1/6)a+(1/2)b" "(2/3)a" "(1/6)a+(1/2)b"</span>
-<span class="co">#&gt; 3 "(1/4)b"        "(1/2)a" "(1/2)a+(3/4)b"</span>
-<span class="co">#&gt; 4 "0"             "0"      "a+b"</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/gsegmat_symb.html">gsegmat_symb</a></span><span class="op">(</span>ploidy <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span>
+<span><span class="co">#&gt;   0               1        2              </span></span>
+<span><span class="co">#&gt; 0 "a+b"           "0"      "0"            </span></span>
+<span><span class="co">#&gt; 1 "(1/2)a+(3/4)b" "(1/2)a" "(1/4)b"       </span></span>
+<span><span class="co">#&gt; 2 "(1/6)a+(1/2)b" "(2/3)a" "(1/6)a+(1/2)b"</span></span>
+<span><span class="co">#&gt; 3 "(1/4)b"        "(1/2)a" "(1/2)a+(3/4)b"</span></span>
+<span><span class="co">#&gt; 4 "0"             "0"      "a+b"</span></span></code></pre></div>
 </li>
 <li>
-<p><code><a href="../reference/zsegarray.html">zsegarray()</a></code>: Instead of considering gamete dosages, this function will calculate <em>zygote</em> dosage probabilities given both parental genotypes. It will do this for each possible offspring dosage and each possible parental genotype.</p>
+<p><code><a href="../reference/zsegarray.html">zsegarray()</a></code>: Instead of considering gamete dosages,
+this function will calculate <em>zygote</em> dosage probabilities given
+both parental genotypes. It will do this for each possible offspring
+dosage and each possible parental genotype.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">sega</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/zsegarray.html">zsegarray</a></span><span class="op">(</span>alpha <span class="op">=</span> <span class="fl">0.1</span>, ploidy <span class="op">=</span> <span class="fl">4</span><span class="op">)</span>
-<span class="va">sega</span>
-<span class="co">#&gt; , , offspring = 0</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;        parent2</span>
-<span class="co">#&gt; parent1     0        1     2            3            4</span>
-<span class="co">#&gt;       0 1.000 0.525000 0.200 2.500000e-02 4.440892e-17</span>
-<span class="co">#&gt;       1 0.525 0.275625 0.105 1.312500e-02 6.661338e-17</span>
-<span class="co">#&gt;       2 0.200 0.105000 0.040 5.000000e-03 3.330669e-17</span>
-<span class="co">#&gt;       3 0.025 0.013125 0.005 6.250000e-04 2.220446e-17</span>
-<span class="co">#&gt;       4 0.000 0.000000 0.000 4.440892e-17 4.440892e-17</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; , , offspring = 1</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;        parent2</span>
-<span class="co">#&gt; parent1            0      1     2      3           4</span>
-<span class="co">#&gt;       0 6.661338e-17 0.4500 0.600 0.4500 0.00000e+00</span>
-<span class="co">#&gt;       1 4.500000e-01 0.4725 0.405 0.2475 1.94289e-17</span>
-<span class="co">#&gt;       2 6.000000e-01 0.4050 0.240 0.1050 0.00000e+00</span>
-<span class="co">#&gt;       3 4.500000e-01 0.2475 0.105 0.0225 0.00000e+00</span>
-<span class="co">#&gt;       4 0.000000e+00 0.0000 0.000 0.0000 0.00000e+00</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; , , offspring = 2</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;        parent2</span>
-<span class="co">#&gt; parent1            0       1    2       3     4</span>
-<span class="co">#&gt;       0 6.661338e-17 0.02500 0.20 0.52500 1.000</span>
-<span class="co">#&gt;       1 2.500000e-02 0.22875 0.38 0.47875 0.525</span>
-<span class="co">#&gt;       2 2.000000e-01 0.38000 0.44 0.38000 0.200</span>
-<span class="co">#&gt;       3 5.250000e-01 0.47875 0.38 0.22875 0.025</span>
-<span class="co">#&gt;       4 1.000000e+00 0.52500 0.20 0.02500 0.000</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; , , offspring = 3</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;        parent2</span>
-<span class="co">#&gt; parent1            0            1     2      3    4</span>
-<span class="co">#&gt;       0 6.661338e-17 2.220446e-17 0.000 0.0000 0.00</span>
-<span class="co">#&gt;       1 1.110223e-16 2.250000e-02 0.105 0.2475 0.45</span>
-<span class="co">#&gt;       2 6.661338e-17 1.050000e-01 0.240 0.4050 0.60</span>
-<span class="co">#&gt;       3 8.881784e-17 2.475000e-01 0.405 0.4725 0.45</span>
-<span class="co">#&gt;       4 8.881784e-17 4.500000e-01 0.600 0.4500 0.00</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; , , offspring = 4</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;        parent2</span>
-<span class="co">#&gt; parent1            0            1     2            3     4</span>
-<span class="co">#&gt;       0 6.661338e-17 4.440892e-17 0.000 4.440892e-17 0.000</span>
-<span class="co">#&gt;       1 0.000000e+00 6.250000e-04 0.005 1.312500e-02 0.025</span>
-<span class="co">#&gt;       2 4.440892e-17 5.000000e-03 0.040 1.050000e-01 0.200</span>
-<span class="co">#&gt;       3 4.440892e-17 1.312500e-02 0.105 2.756250e-01 0.525</span>
-<span class="co">#&gt;       4 4.440892e-17 2.500000e-02 0.200 5.250000e-01 1.000</span></code></pre></div>
-<p>Thus, the probability of an offspring dosage of 3 when parental dosages are 2 and 4, is</p>
+<code class="sourceCode R"><span><span class="va">sega</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/zsegarray.html">zsegarray</a></span><span class="op">(</span>alpha <span class="op">=</span> <span class="fl">0.1</span>, ploidy <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span>
+<span><span class="va">sega</span></span>
+<span><span class="co">#&gt; , , offspring = 0</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;        parent2</span></span>
+<span><span class="co">#&gt; parent1     0        1     2            3            4</span></span>
+<span><span class="co">#&gt;       0 1.000 0.525000 0.200 2.500000e-02 4.440892e-17</span></span>
+<span><span class="co">#&gt;       1 0.525 0.275625 0.105 1.312500e-02 6.661338e-17</span></span>
+<span><span class="co">#&gt;       2 0.200 0.105000 0.040 5.000000e-03 3.330669e-17</span></span>
+<span><span class="co">#&gt;       3 0.025 0.013125 0.005 6.250000e-04 2.220446e-17</span></span>
+<span><span class="co">#&gt;       4 0.000 0.000000 0.000 4.440892e-17 4.440892e-17</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; , , offspring = 1</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;        parent2</span></span>
+<span><span class="co">#&gt; parent1            0      1     2      3           4</span></span>
+<span><span class="co">#&gt;       0 6.661338e-17 0.4500 0.600 0.4500 0.00000e+00</span></span>
+<span><span class="co">#&gt;       1 4.500000e-01 0.4725 0.405 0.2475 1.94289e-17</span></span>
+<span><span class="co">#&gt;       2 6.000000e-01 0.4050 0.240 0.1050 0.00000e+00</span></span>
+<span><span class="co">#&gt;       3 4.500000e-01 0.2475 0.105 0.0225 0.00000e+00</span></span>
+<span><span class="co">#&gt;       4 0.000000e+00 0.0000 0.000 0.0000 0.00000e+00</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; , , offspring = 2</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;        parent2</span></span>
+<span><span class="co">#&gt; parent1            0       1    2       3     4</span></span>
+<span><span class="co">#&gt;       0 6.661338e-17 0.02500 0.20 0.52500 1.000</span></span>
+<span><span class="co">#&gt;       1 2.500000e-02 0.22875 0.38 0.47875 0.525</span></span>
+<span><span class="co">#&gt;       2 2.000000e-01 0.38000 0.44 0.38000 0.200</span></span>
+<span><span class="co">#&gt;       3 5.250000e-01 0.47875 0.38 0.22875 0.025</span></span>
+<span><span class="co">#&gt;       4 1.000000e+00 0.52500 0.20 0.02500 0.000</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; , , offspring = 3</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;        parent2</span></span>
+<span><span class="co">#&gt; parent1            0            1     2      3    4</span></span>
+<span><span class="co">#&gt;       0 6.661338e-17 2.220446e-17 0.000 0.0000 0.00</span></span>
+<span><span class="co">#&gt;       1 1.110223e-16 2.250000e-02 0.105 0.2475 0.45</span></span>
+<span><span class="co">#&gt;       2 6.661338e-17 1.050000e-01 0.240 0.4050 0.60</span></span>
+<span><span class="co">#&gt;       3 8.881784e-17 2.475000e-01 0.405 0.4725 0.45</span></span>
+<span><span class="co">#&gt;       4 8.881784e-17 4.500000e-01 0.600 0.4500 0.00</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; , , offspring = 4</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;        parent2</span></span>
+<span><span class="co">#&gt; parent1            0            1     2            3     4</span></span>
+<span><span class="co">#&gt;       0 6.661338e-17 4.440892e-17 0.000 4.440892e-17 0.000</span></span>
+<span><span class="co">#&gt;       1 0.000000e+00 6.250000e-04 0.005 1.312500e-02 0.025</span></span>
+<span><span class="co">#&gt;       2 4.440892e-17 5.000000e-03 0.040 1.050000e-01 0.200</span></span>
+<span><span class="co">#&gt;       3 4.440892e-17 1.312500e-02 0.105 2.756250e-01 0.525</span></span>
+<span><span class="co">#&gt;       4 4.440892e-17 2.500000e-02 0.200 5.250000e-01 1.000</span></span></code></pre></div>
+<p>Thus, the probability of an offspring dosage of 3 when parental
+dosages are 2 and 4, is</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">sega</span><span class="op">[</span><span class="fl">4</span>, <span class="fl">3</span>, <span class="fl">5</span><span class="op">]</span>
-<span class="co">#&gt; [1] 0.105</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">sega</span><span class="op">[</span><span class="fl">4</span>, <span class="fl">3</span>, <span class="fl">5</span><span class="op">]</span></span>
+<span><span class="co">#&gt; [1] 0.105</span></span></code></pre></div>
 </li>
 </ul>
 </div>
 <div class="section level2">
 <h2 id="equilibrium-genotype-frequencies">Equilibrium genotype frequencies<a class="anchor" aria-label="anchor" href="#equilibrium-genotype-frequencies"></a>
 </h2>
-<p>Equilibrium frequencies can be generated with <code><a href="../reference/hwefreq.html">hwefreq()</a></code> for arbitrary (even) ploidy levels.</p>
+<p>Equilibrium frequencies can be generated with <code><a href="../reference/hwefreq.html">hwefreq()</a></code>
+for arbitrary (even) ploidy levels.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">hout</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/hwefreq.html">hwefreq</a></span><span class="op">(</span>r <span class="op">=</span> <span class="fl">0.1</span>, alpha <span class="op">=</span> <span class="fl">0.1</span>, ploidy <span class="op">=</span> <span class="fl">6</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">hout</span>, digits <span class="op">=</span> <span class="fl">5</span><span class="op">)</span>
-<span class="co">#&gt; [1] 0.55062 0.32437 0.10232 0.01998 0.00250 0.00019 0.00001</span></code></pre></div>
-<p>Alternatively, you can control the number of iterations of random mating before stopping. The population begins in a state where <code>r</code> proportion of individuals have genotype <code>ploidy</code> and <code>1-r</code> proportion has genotype <code>0</code>. It then updates each generation’s genotype frequencies using <code><a href="../reference/freqnext.html">freqnext()</a></code>. E.g., for <code>r=0.1</code> and <code>alpha=0.1</code>, after the first round of random mating, we have:</p>
+<code class="sourceCode R"><span><span class="va">hout</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/hwefreq.html">hwefreq</a></span><span class="op">(</span>r <span class="op">=</span> <span class="fl">0.1</span>, alpha <span class="op">=</span> <span class="fl">0.1</span>, ploidy <span class="op">=</span> <span class="fl">6</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">hout</span>, digits <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 0.55062 0.32437 0.10232 0.01998 0.00250 0.00019 0.00001</span></span></code></pre></div>
+<p>Alternatively, you can control the number of iterations of random
+mating before stopping. The population begins in a state where
+<code>r</code> proportion of individuals have genotype
+<code>ploidy</code> and <code>1-r</code> proportion has genotype
+<code>0</code>. It then updates each generation’s genotype frequencies
+using <code><a href="../reference/freqnext.html">freqnext()</a></code>. E.g., for <code>r=0.1</code> and
+<code>alpha=0.1</code>, after the first round of random mating, we
+have:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/freqnext.html">freqnext</a></span><span class="op">(</span>freq <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.9</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0.1</span><span class="op">)</span>, alpha <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span>
-<span class="co">#&gt; [1] 8.100000e-01 6.106227e-17 1.800000e-01 4.440892e-17 1.000000e-02</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/freqnext.html">freqnext</a></span><span class="op">(</span>freq <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.9</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0.1</span><span class="op">)</span>, alpha <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 8.100000e-01 6.106227e-17 1.800000e-01 4.440892e-17 1.000000e-02</span></span></code></pre></div>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/hwefreq.html">hwefreq</a></span><span class="op">(</span>r <span class="op">=</span> <span class="fl">0.1</span>, alpha <span class="op">=</span> <span class="fl">0.1</span>, niter <span class="op">=</span> <span class="fl">1</span>, ploidy <span class="op">=</span> <span class="fl">4</span><span class="op">)</span>
-<span class="co">#&gt; [1] 8.100000e-01 6.106227e-17 1.800000e-01 4.440892e-17 1.000000e-02</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/hwefreq.html">hwefreq</a></span><span class="op">(</span>r <span class="op">=</span> <span class="fl">0.1</span>, alpha <span class="op">=</span> <span class="fl">0.1</span>, niter <span class="op">=</span> <span class="fl">1</span>, ploidy <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 8.100000e-01 6.106227e-17 1.800000e-01 4.440892e-17 1.000000e-02</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="testing-for-equilibrium-and-random-mating">Testing for equilibrium and random mating<a class="anchor" aria-label="anchor" href="#testing-for-equilibrium-and-random-mating"></a>
 </h2>
-<p>The main function for this package is <code><a href="../reference/hwefit.html">hwefit()</a></code>, which implements various tests for random mating and equilibrium. This function has parallelization support through the future package. We’ll demonstrate using the future package assuming at least two cores are available.</p>
+<p>The main function for this package is <code><a href="../reference/hwefit.html">hwefit()</a></code>, which
+implements various tests for random mating and equilibrium. This
+function has parallelization support through the future package. We’ll
+demonstrate using the future package assuming at least two cores are
+available.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://future.futureverse.org" class="external-link">future</a></span><span class="op">)</span>
-<span class="fu"><a href="https://future.futureverse.org/reference/re-exports.html" class="external-link">availableCores</a></span><span class="op">(</span><span class="op">)</span>
-<span class="co">#&gt; system </span>
-<span class="co">#&gt;      8</span>
-<span class="fu"><a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan</a></span><span class="op">(</span><span class="va">multisession</span>, workers <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></code></pre></div>
-<p>Let’s simulate some data at equilibrium to demonstrate our methods:</p>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://future.futureverse.org" class="external-link">future</a></span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://parallelly.futureverse.org/reference/availableCores.html" class="external-link">availableCores</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; system </span></span>
+<span><span class="co">#&gt;     16</span></span>
+<span><span class="fu"><a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan</a></span><span class="op">(</span><span class="va">multisession</span>, workers <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
+<p>Let’s simulate some data at equilibrium to demonstrate our
+methods:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">geno_freq</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/hwefreq.html">hwefreq</a></span><span class="op">(</span>r <span class="op">=</span> <span class="fl">0.5</span>, alpha <span class="op">=</span> <span class="fl">0.1</span>, ploidy <span class="op">=</span> <span class="fl">6</span><span class="op">)</span>
-<span class="va">nmat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Multinom.html" class="external-link">rmultinom</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">1000</span>, size <span class="op">=</span> <span class="fl">100</span>, prob <span class="op">=</span> <span class="va">geno_freq</span><span class="op">)</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">nmat</span><span class="op">)</span>
-<span class="co">#&gt;      [,1] [,2] [,3] [,4] [,5] [,6] [,7]</span>
-<span class="co">#&gt; [1,]    0   10   28   22   23   12    5</span>
-<span class="co">#&gt; [2,]    1    7   25   35   15   15    2</span>
-<span class="co">#&gt; [3,]    2   10   23   26   22   14    3</span>
-<span class="co">#&gt; [4,]    3   12   18   26   19   15    7</span>
-<span class="co">#&gt; [5,]    2    8   26   27   25   10    2</span>
-<span class="co">#&gt; [6,]    0   11   19   31   26   10    3</span></code></pre></div>
-<p><code><a href="../reference/hwefit.html">hwefit()</a></code> expects a matrix of genotype counts, where the rows index the loci and the columns index the genotype. So <code>nmat[i, j]</code> is the count of the number of individuals that have dosage <code>j-1</code> at locus <code>i</code>.</p>
-<p>You control the type of test via the <code>type</code> argument. Using <code>type = "ustat"</code> will use the <span class="math inline">\(U\)</span>-statistic approach to test for equilibrium, as implemented in <code><a href="../reference/hweustat.html">hweustat()</a></code>.</p>
+<code class="sourceCode R"><span><span class="va">geno_freq</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/hwefreq.html">hwefreq</a></span><span class="op">(</span>r <span class="op">=</span> <span class="fl">0.5</span>, alpha <span class="op">=</span> <span class="fl">0.1</span>, ploidy <span class="op">=</span> <span class="fl">6</span><span class="op">)</span></span>
+<span><span class="va">nmat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Multinom.html" class="external-link">rmultinom</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">1000</span>, size <span class="op">=</span> <span class="fl">100</span>, prob <span class="op">=</span> <span class="va">geno_freq</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">nmat</span><span class="op">)</span></span>
+<span><span class="co">#&gt;      [,1] [,2] [,3] [,4] [,5] [,6] [,7]</span></span>
+<span><span class="co">#&gt; [1,]    0   10   28   22   23   12    5</span></span>
+<span><span class="co">#&gt; [2,]    1    7   25   35   15   15    2</span></span>
+<span><span class="co">#&gt; [3,]    2   10   23   26   22   14    3</span></span>
+<span><span class="co">#&gt; [4,]    3   12   18   26   19   15    7</span></span>
+<span><span class="co">#&gt; [5,]    2    8   26   27   25   10    2</span></span>
+<span><span class="co">#&gt; [6,]    0   11   19   31   26   10    3</span></span></code></pre></div>
+<p><code><a href="../reference/hwefit.html">hwefit()</a></code> expects a matrix of genotype counts, where the
+rows index the loci and the columns index the genotype. So
+<code>nmat[i, j]</code> is the count of the number of individuals that
+have dosage <code>j-1</code> at locus <code>i</code>.</p>
+<p>You control the type of test via the <code>type</code> argument.
+Using <code>type = "ustat"</code> will use the <span class="math inline">\(U\)</span>-statistic approach to test for
+equilibrium, as implemented in <code><a href="../reference/hweustat.html">hweustat()</a></code>.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">uout</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/hwefit.html">hwefit</a></span><span class="op">(</span>nmat <span class="op">=</span> <span class="va">nmat</span>, type <span class="op">=</span> <span class="st">"ustat"</span><span class="op">)</span>
-<span class="co">#&gt; Using 2 worker(s) to run hwefit() on 1000 loci...</span>
-<span class="co">#&gt; Done!</span>
-<span class="co">#&gt; Don't forget to shut down your workers with:</span>
-<span class="co">#&gt;   future::plan(future::sequential)</span></code></pre></div>
-<p>The output is a list-like object that contains the estimates of double reduction (<code>alpha</code>), the <span class="math inline">\(p\)</span>-values for the test against the null of equilibrium (<code>p_hwe</code>), as well as the test-statistics (<code>chisq_hwe</code>) and degrees of freedom (<code>df_hwe</code>) of this test.</p>
+<code class="sourceCode R"><span><span class="va">uout</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/hwefit.html">hwefit</a></span><span class="op">(</span>nmat <span class="op">=</span> <span class="va">nmat</span>, type <span class="op">=</span> <span class="st">"ustat"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Using 2 worker(s) to run hwefit() on 1000 loci...</span></span>
+<span><span class="co">#&gt; Done!</span></span>
+<span><span class="co">#&gt; Don't forget to shut down your workers with:</span></span>
+<span><span class="co">#&gt;   future::plan(future::sequential)</span></span></code></pre></div>
+<p>The output is a list-like object that contains the estimates of
+double reduction (<code>alpha</code>), the <span class="math inline">\(p\)</span>-values for the test against the null of
+equilibrium (<code>p_hwe</code>), as well as the test-statistics
+(<code>chisq_hwe</code>) and degrees of freedom (<code>df_hwe</code>) of
+this test.</p>
 <p>On average, we obtain good estimates of the double reduction rate</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">uout</span><span class="op">$</span><span class="va">alpha1</span><span class="op">)</span>
-<span class="co">#&gt; [1] 0.1109858</span></code></pre></div>
-<p>But the sampling properties of this estimator are highly variable, even for such a large sample size:</p>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">uout</span><span class="op">$</span><span class="va">alpha1</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 0.1109858</span></span></code></pre></div>
+<p>But the sampling properties of this estimator are highly variable,
+even for such a large sample size:</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/hist.html" class="external-link">hist</a></span><span class="op">(</span><span class="va">uout</span><span class="op">$</span><span class="va">alpha1</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/hist.html" class="external-link">hist</a></span><span class="op">(</span><span class="va">uout</span><span class="op">$</span><span class="va">alpha1</span><span class="op">)</span></span></code></pre></div>
 <p><img src="introduction_files/figure-html/unnamed-chunk-16-1.png" width="700"></p>
-<p>This highlights the difficulty in estimating double reduction using just a single biallelic locus.</p>
-<p>The p-values are generally uniformly distributed, as they should be since we generated data under the null of equilibrium.</p>
+<p>This highlights the difficulty in estimating double reduction using
+just a single biallelic locus.</p>
+<p>The p-values are generally uniformly distributed, as they should be
+since we generated data under the null of equilibrium.</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/hist.html" class="external-link">hist</a></span><span class="op">(</span><span class="va">uout</span><span class="op">$</span><span class="va">p_hwe</span>, breaks <span class="op">=</span> <span class="fl">10</span>, xlab <span class="op">=</span> <span class="st">"P-values"</span>, main <span class="op">=</span> <span class="st">""</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/hist.html" class="external-link">hist</a></span><span class="op">(</span><span class="va">uout</span><span class="op">$</span><span class="va">p_hwe</span>, breaks <span class="op">=</span> <span class="fl">10</span>, xlab <span class="op">=</span> <span class="st">"P-values"</span>, main <span class="op">=</span> <span class="st">""</span><span class="op">)</span></span></code></pre></div>
 <p><img src="introduction_files/figure-html/unnamed-chunk-17-1.png" width="700"></p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/qqnorm.html" class="external-link">qqplot</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/ppoints.html" class="external-link">ppoints</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">uout</span><span class="op">$</span><span class="va">p_hwe</span><span class="op">)</span><span class="op">)</span>, 
-       y <span class="op">=</span> <span class="va">uout</span><span class="op">$</span><span class="va">p_hwe</span>, 
-       xlab <span class="op">=</span> <span class="st">"Theoretical Quantiles"</span>,
-       ylab <span class="op">=</span> <span class="st">"Empirical Quantiles"</span>,
-       main <span class="op">=</span> <span class="st">"QQ-plot"</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/abline.html" class="external-link">abline</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, lty <span class="op">=</span> <span class="fl">2</span>, col <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/qqnorm.html" class="external-link">qqplot</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/ppoints.html" class="external-link">ppoints</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">uout</span><span class="op">$</span><span class="va">p_hwe</span><span class="op">)</span><span class="op">)</span>, </span>
+<span>       y <span class="op">=</span> <span class="va">uout</span><span class="op">$</span><span class="va">p_hwe</span>, </span>
+<span>       xlab <span class="op">=</span> <span class="st">"Theoretical Quantiles"</span>,</span>
+<span>       ylab <span class="op">=</span> <span class="st">"Empirical Quantiles"</span>,</span>
+<span>       main <span class="op">=</span> <span class="st">"QQ-plot"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/abline.html" class="external-link">abline</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, lty <span class="op">=</span> <span class="fl">2</span>, col <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
 <p><img src="introduction_files/figure-html/unnamed-chunk-17-2.png" width="700"></p>
-<p>You can view this QQ-plot on the <span class="math inline">\(-log_{10}\)</span>-scale using <code><a href="../reference/qqpvalue.html">qqpvalue()</a></code>. This plot will also show the simultaneous confidence bands for the QQ-plot from Aldor-Noiman et al. (2013), which can also be calculated using <code><a href="../reference/ts_bands.html">ts_bands()</a></code>.</p>
+<p>You can view this QQ-plot on the <span class="math inline">\(-log_{10}\)</span>-scale using
+<code><a href="../reference/qqpvalue.html">qqpvalue()</a></code>. This plot will also show the simultaneous
+confidence bands for the QQ-plot from Aldor-Noiman et al. (2013), which
+can also be calculated using <code><a href="../reference/ts_bands.html">ts_bands()</a></code>.</p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/qqpvalue.html">qqpvalue</a></span><span class="op">(</span>pvals <span class="op">=</span> <span class="va">uout</span><span class="op">$</span><span class="va">p_hwe</span>, method <span class="op">=</span> <span class="st">"base"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/qqpvalue.html">qqpvalue</a></span><span class="op">(</span>pvals <span class="op">=</span> <span class="va">uout</span><span class="op">$</span><span class="va">p_hwe</span>, method <span class="op">=</span> <span class="st">"base"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="introduction_files/figure-html/unnamed-chunk-18-1.png" width="700"></p>
 <p>Make sure to shut down your workers after you are done:</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan</a></span><span class="op">(</span><span class="st">"sequential"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan</a></span><span class="op">(</span><span class="st">"sequential"</span><span class="op">)</span></span></code></pre></div>
 <p>The other values of “type” run different procedures:</p>
 <ul>
 <li>
-<code>"mle"</code>: Runs likelihood procedures to test for equilibrium and estimate double reduction. Only available for (even) ploidies less than or equal to 10. This generally behaves similarly to the <span class="math inline">\(U\)</span>-statistic approach. This is implemented by the <code><a href="../reference/hwelike.html">hwelike()</a></code> function.</li>
+<code>"mle"</code>: Runs likelihood procedures to test for
+equilibrium and estimate double reduction. Only available for (even)
+ploidies less than or equal to 10. This generally behaves similarly to
+the <span class="math inline">\(U\)</span>-statistic approach. This is
+implemented by the <code><a href="../reference/hwelike.html">hwelike()</a></code> function.</li>
 <li>
-<code>"rm"</code>: Runs likelihood procedures to test for random mating. This is implemented by the <code><a href="../reference/rmlike.html">rmlike()</a></code> function.</li>
+<code>"rm"</code>: Runs likelihood procedures to test for random
+mating. This is implemented by the <code><a href="../reference/rmlike.html">rmlike()</a></code> function.</li>
 <li>
-<code>"nodr"</code>: Runs likelihood procedures to test for equilibrium assuming no double reduction. This is implemented by the <code><a href="../reference/hwenodr.html">hwenodr()</a></code> function.</li>
+<code>"nodr"</code>: Runs likelihood procedures to test for
+equilibrium assuming no double reduction. This is implemented by the
+<code><a href="../reference/hwenodr.html">hwenodr()</a></code> function.</li>
 </ul>
 </div>
 <div class="section level2">
 <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
 <ul>
-<li><p>Aldor-Noiman, S., Brown, L. D., Buja, A., Rolke, W., &amp; Stine, R. A. (2013). The power to see: A new graphical test of normality. The American Statistician, 67(4), 249-260. doi: 10.1080/00031305.2013.847865</p></li>
-<li><p>Fisher, R. A., &amp; Mather, K. (1943). The inheritance of style length in <em>Lythrum salicaria</em>. <em>Annals of Eugenics</em>, 12(1), 1-23. doi: 10.1111/j.1469-1809.1943.tb02307.x</p></li>
-<li><p>Gerard, D. (2021). Double reduction estimation and equilibrium tests in natural autopolyploid populations. <em>bioRxiv</em>. doi: 10.1101/2021.09.24.461731</p></li>
-<li><p>Huang, K., Wang, T., Dunn, D. W., Zhang, P., Cao, X., Liu, R., &amp; Li, B. (2019). Genotypic frequencies at equilibrium for polysomic inheritance under double-reduction. <em>G3: Genes | Genomes | Genetics</em>, 9(5), 1693-1706. doi: 10.1534/g3.119.400132</p></li>
-<li><p>Mather, K. (1935). Reductional and equational separation of the chromosomes in bivalents and multivalents. <em>Journal of Genetics</em>, 30(1), 53-78. doi: 10.1007/BF02982205</p></li>
+<li><p>Aldor-Noiman, S., Brown, L. D., Buja, A., Rolke, W., &amp; Stine,
+R. A. (2013). The power to see: A new graphical test of normality. The
+American Statistician, 67(4), 249-260. doi:
+10.1080/00031305.2013.847865</p></li>
+<li><p>Fisher, R. A., &amp; Mather, K. (1943). The inheritance of style
+length in <em>Lythrum salicaria</em>. <em>Annals of Eugenics</em>,
+12(1), 1-23. doi: 10.1111/j.1469-1809.1943.tb02307.x</p></li>
+<li><p>Gerard D (2022). “Double reduction estimation and equilibrium
+tests in natural autopolyploid populations.” <em>Biometrics</em> (In
+press). <a href="doi:10.1111/biom.13722" class="uri">doi:10.1111/biom.13722</a></p></li>
+<li><p>Huang, K., Wang, T., Dunn, D. W., Zhang, P., Cao, X., Liu, R.,
+&amp; Li, B. (2019). Genotypic frequencies at equilibrium for polysomic
+inheritance under double-reduction. <em>G3: Genes | Genomes |
+Genetics</em>, 9(5), 1693-1706. doi: 10.1534/g3.119.400132</p></li>
+<li><p>Mather, K. (1935). Reductional and equational separation of the
+chromosomes in bivalents and multivalents. <em>Journal of Genetics</em>,
+30(1), 53-78. doi: 10.1007/BF02982205</p></li>
 </ul>
 </div>
   </div>
@@ -332,7 +424,7 @@
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer>
