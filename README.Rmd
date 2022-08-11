@@ -96,7 +96,7 @@ devtools::install_github("dcgerard/hwep")
 
 To cite hwep in publications use:
 
-> Gerard D (2022). "Double reduction estimation and equilibrium tests in natural autopolyploid populations." _Biometrics_ (In press). [doi:10.1111/biom.13722](https://doi.org/10.1111/biom.13722).
+> Gerard D (2022). "Double reduction estimation and equilibrium tests in natural autopolyploid populations." _Biometrics_ In press. [doi:10.1111/biom.13722](https://doi.org/10.1111/biom.13722).
 
 A BibTeX entry for LaTeX users is
 
