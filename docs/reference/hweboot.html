@@ -19,7 +19,7 @@ of no equilibrium."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/aj
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">hwep</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.0</span>
       </span>
     </div>
 
@@ -67,7 +67,7 @@ of no equilibrium.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">hweboot</span><span class="op">(</span><span class="va">n</span>, nboot <span class="op">=</span> <span class="fl">2000</span>, more <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">hweboot</span><span class="op">(</span><span class="va">n</span>, nboot <span class="op">=</span> <span class="fl">2000</span>, more <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -83,16 +83,23 @@ is the posterior probability that individual i has ploidy j-1.</p></dd>
 
 
 </dl></dd>
+
+
 <dt>nboot</dt>
 <dd><p>The number of bootstrap samples to run.</p></dd>
+
+
 <dt>more</dt>
 <dd><p>A logical. Should we return the bootstrap replicates
 (<code>FALSE</code>) or just the p-value, with 95% confidence interval
 of the p-value (<code>TRUE</code>).</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A list with some or all of the following elements</p><dl><dt><code>p_hwe</code></dt>
+    
+
+<p>A list with some or all of the following elements</p><dl><dt><code>p_hwe</code></dt>
 <dd><p>The bootstrap p-value against the null of equilibrium.</p></dd>
 
 <dt><code>p_ci</code></dt>
@@ -114,24 +121,24 @@ parameter.</p></dd>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">ploidy</span> <span class="op">&lt;-</span> <span class="fl">6</span></span>
-<span class="r-in"><span class="va">size</span> <span class="op">&lt;-</span> <span class="fl">100</span></span>
-<span class="r-in"><span class="va">r</span> <span class="op">&lt;-</span> <span class="fl">0.5</span></span>
-<span class="r-in"><span class="va">alpha</span> <span class="op">&lt;-</span> <span class="fl">0.1</span></span>
-<span class="r-in"><span class="va">qvec</span> <span class="op">&lt;-</span> <span class="fu"><a href="hwefreq.html">hwefreq</a></span><span class="op">(</span>r <span class="op">=</span> <span class="va">r</span>, alpha <span class="op">=</span> <span class="va">alpha</span>, ploidy <span class="op">=</span> <span class="va">ploidy</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">nvec</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Multinom.html" class="external-link">rmultinom</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">1</span>, size <span class="op">=</span> <span class="va">size</span>, prob <span class="op">=</span> <span class="va">qvec</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">bout</span> <span class="op">&lt;-</span> <span class="fu">hweboot</span><span class="op">(</span>n <span class="op">=</span> <span class="va">nvec</span>, more <span class="op">=</span> <span class="cn">TRUE</span>, nboot <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">bout</span><span class="op">$</span><span class="va">p_hwe</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">ploidy</span> <span class="op">&lt;-</span> <span class="fl">6</span></span></span>
+<span class="r-in"><span><span class="va">size</span> <span class="op">&lt;-</span> <span class="fl">100</span></span></span>
+<span class="r-in"><span><span class="va">r</span> <span class="op">&lt;-</span> <span class="fl">0.5</span></span></span>
+<span class="r-in"><span><span class="va">alpha</span> <span class="op">&lt;-</span> <span class="fl">0.1</span></span></span>
+<span class="r-in"><span><span class="va">qvec</span> <span class="op">&lt;-</span> <span class="fu"><a href="hwefreq.html">hwefreq</a></span><span class="op">(</span>r <span class="op">=</span> <span class="va">r</span>, alpha <span class="op">=</span> <span class="va">alpha</span>, ploidy <span class="op">=</span> <span class="va">ploidy</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">nvec</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Multinom.html" class="external-link">rmultinom</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">1</span>, size <span class="op">=</span> <span class="va">size</span>, prob <span class="op">=</span> <span class="va">qvec</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">bout</span> <span class="op">&lt;-</span> <span class="fu">hweboot</span><span class="op">(</span>n <span class="op">=</span> <span class="va">nvec</span>, more <span class="op">=</span> <span class="cn">TRUE</span>, nboot <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">bout</span><span class="op">$</span><span class="va">p_hwe</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.746</span>
-<span class="r-in"><span class="va">bout</span><span class="op">$</span><span class="va">p_ci</span></span>
+<span class="r-in"><span><span class="va">bout</span><span class="op">$</span><span class="va">p_ci</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.7178207 0.7727228</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"conf.level")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.95</span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/hist.html" class="external-link">hist</a></span><span class="op">(</span><span class="va">bout</span><span class="op">$</span><span class="va">test_boot</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/abline.html" class="external-link">abline</a></span><span class="op">(</span>v <span class="op">=</span> <span class="va">bout</span><span class="op">$</span><span class="va">test_stat</span>, lty <span class="op">=</span> <span class="fl">2</span>, col <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/hist.html" class="external-link">hist</a></span><span class="op">(</span><span class="va">bout</span><span class="op">$</span><span class="va">test_boot</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/abline.html" class="external-link">abline</a></span><span class="op">(</span>v <span class="op">=</span> <span class="va">bout</span><span class="op">$</span><span class="va">test_stat</span>, lty <span class="op">=</span> <span class="fl">2</span>, col <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="hweboot-1.png" alt="" width="700" height="433"></span>
-<span class="r-in"></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -146,7 +153,7 @@ parameter.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

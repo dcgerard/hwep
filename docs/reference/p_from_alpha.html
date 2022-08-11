@@ -18,7 +18,7 @@ function will calculate the gametic frequencies."><!-- mathjax --><script src="h
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">hwep</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.0</span>
       </span>
     </div>
 
@@ -65,7 +65,7 @@ function will calculate the gametic frequencies.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">p_from_alpha</span><span class="op">(</span><span class="va">alpha</span>, <span class="va">p</span>, <span class="va">ploidy</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">p_from_alpha</span><span class="op">(</span><span class="va">alpha</span>, <span class="va">p</span>, <span class="va">ploidy</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -77,14 +77,21 @@ vector of length <code>floor(ploidy/4)</code> where <code>alpha[i]</code>
 is the probability of exactly <code>i</code> pairs of IBDR alleles
 being in the gamete. Note that <code>sum(alpha)</code> should be less than
 1, as <code>1 - sum(alpha)</code> is the probability of no double reduction.</p></dd>
+
+
 <dt>p</dt>
 <dd><p>The allele frequency of the major allele.</p></dd>
+
+
 <dt>ploidy</dt>
 <dd><p>The ploidy of the species.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A numeric vector of length <code>ploidy / 2 + 1</code>, where element
+    
+
+<p>A numeric vector of length <code>ploidy / 2 + 1</code>, where element
 <code>i</code> is the probability that a gamete carries <code>i-1</code> copies of
 the major allele.</p>
     </div>
@@ -95,9 +102,9 @@ the major allele.</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu">p_from_alpha</span><span class="op">(</span><span class="fl">0.2</span>, <span class="fl">0.5</span>, <span class="fl">4</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">p_from_alpha</span><span class="op">(</span><span class="fl">0.2</span>, <span class="fl">0.5</span>, <span class="fl">4</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.3181818 0.3636364 0.3181818</span>
-<span class="r-in"></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -112,7 +119,7 @@ the major allele.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

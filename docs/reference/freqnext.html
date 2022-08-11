@@ -18,7 +18,7 @@ frequencies."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/lib
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">hwep</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.0</span>
       </span>
     </div>
 
@@ -65,7 +65,7 @@ frequencies.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">freqnext</span><span class="op">(</span><span class="va">freq</span>, <span class="va">alpha</span>, segmat <span class="op">=</span> <span class="cn">NULL</span>, more <span class="op">=</span> <span class="cn">FALSE</span>, check <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">freqnext</span><span class="op">(</span><span class="va">freq</span>, <span class="va">alpha</span>, segmat <span class="op">=</span> <span class="cn">NULL</span>, more <span class="op">=</span> <span class="cn">FALSE</span>, check <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -75,6 +75,8 @@ frequencies.</p>
 vector of length K+1, where K is the ploidy of the species.
 <code>freq[i]</code> could contain the proportion of individuals
 that have genotype <code>i-1</code>.</p></dd>
+
+
 <dt>alpha</dt>
 <dd><p>A numeric vector containing the double reduction parameter(s).
 This should be a
@@ -82,20 +84,29 @@ vector of length <code>floor(ploidy/4)</code> where <code>alpha[i]</code>
 is the probability of exactly <code>i</code> pairs of IBDR alleles
 being in the gamete. Note that <code>sum(alpha)</code> should be less than
 1, as <code>1 - sum(alpha)</code> is the probability of no double reduction.</p></dd>
+
+
 <dt>segmat</dt>
 <dd><p>You can provide your own segregation matrix.
 <code>segmat[i, j]</code> is the probability that a parent with
 dosage <code>i-1</code> produces a gamete with dosage <code>j-1</code>.</p></dd>
+
+
 <dt>more</dt>
 <dd><p>A logical. Should we return more output (<code>TRUE</code>) or
 less (<code>FALSE</code>). See the Value section for details.</p></dd>
+
+
 <dt>check</dt>
 <dd><p>Should we correct for minor numerical issues? Defaults
 to <code>TRUE</code>.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>If <code>more = FALSE</code>, then returns a vector of length
+    
+
+<p>If <code>more = FALSE</code>, then returns a vector of length
 <code>length(freq)</code> that contains the updated genotype frequencies
 after one generation of random mating. If <code>more = TRUE</code>, then
 returns a list with these genotype frequencies (<code>q</code>) as well as the
@@ -108,10 +119,10 @@ parental gamete frequencies (<code>p</code>).</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">freq</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0.5</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu">freqnext</span><span class="op">(</span>freq <span class="op">=</span> <span class="va">freq</span>, alpha <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">freq</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0.5</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">freqnext</span><span class="op">(</span>freq <span class="op">=</span> <span class="va">freq</span>, alpha <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2.500000e-01 0.000000e+00 5.000000e-01 4.440892e-17 2.500000e-01</span>
-<span class="r-in"></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -126,7 +137,7 @@ parental gamete frequencies (<code>p</code>).</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

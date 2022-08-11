@@ -25,6 +25,9 @@
     <loc>/news/index.html</loc>
   </url>
   <url>
+    <loc>/reference/all_multinom.html</loc>
+  </url>
+  <url>
     <loc>/reference/dgamete.html</loc>
   </url>
   <url>
@@ -35,6 +38,15 @@
   </url>
   <url>
     <loc>/reference/freqnext.html</loc>
+  </url>
+  <url>
+    <loc>/reference/gibbs_gl.html</loc>
+  </url>
+  <url>
+    <loc>/reference/gibbs_gl_alt.html</loc>
+  </url>
+  <url>
+    <loc>/reference/gibbs_known.html</loc>
   </url>
   <url>
     <loc>/reference/gsegmat.html</loc>
@@ -67,13 +79,25 @@
     <loc>/reference/index.html</loc>
   </url>
   <url>
+    <loc>/reference/menbayesgl.html</loc>
+  </url>
+  <url>
     <loc>/reference/p_from_alpha.html</loc>
   </url>
   <url>
     <loc>/reference/qqpvalue.html</loc>
   </url>
   <url>
+    <loc>/reference/rmbayes.html</loc>
+  </url>
+  <url>
+    <loc>/reference/rmbayesgl.html</loc>
+  </url>
+  <url>
     <loc>/reference/rmlike.html</loc>
+  </url>
+  <url>
+    <loc>/reference/simgl.html</loc>
   </url>
   <url>
     <loc>/reference/ts_bands.html</loc>

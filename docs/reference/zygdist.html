@@ -20,7 +20,7 @@ species (ploidy), and the double reduction parameter
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">hwep</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.0</span>
       </span>
     </div>
 
@@ -69,7 +69,7 @@ species (<code>ploidy</code>), and the double reduction parameter
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">zygdist</span><span class="op">(</span><span class="va">alpha</span>, <span class="va">G1</span>, <span class="va">G2</span>, <span class="va">ploidy</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">zygdist</span><span class="op">(</span><span class="va">alpha</span>, <span class="va">G1</span>, <span class="va">G2</span>, <span class="va">ploidy</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -81,19 +81,28 @@ vector of length <code>floor(ploidy/4)</code> where <code>alpha[i]</code>
 is the probability of exactly <code>i</code> pairs of IBDR alleles
 being in the gamete. Note that <code>sum(alpha)</code> should be less than
 1, as <code>1 - sum(alpha)</code> is the probability of no double reduction.</p></dd>
+
+
 <dt>G1</dt>
 <dd><p>The dosage of parent 1. Should be an integer between <code>0</code>
 and <code>ploidy</code>.</p></dd>
+
+
 <dt>G2</dt>
 <dd><p>The dosage of parent 2. Should be an integer between <code>0</code>
 and <code>ploidy</code>.</p></dd>
+
+
 <dt>ploidy</dt>
 <dd><p>The ploidy of the species. This should be an even positive
 integer.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A vector of probabilities. The <code>i</code>th element is the
+    
+
+<p>A vector of probabilities. The <code>i</code>th element is the
 probability that the offspring will have dosage <code>i-1</code>.</p>
     </div>
     <div id="author">
@@ -103,10 +112,10 @@ probability that the offspring will have dosage <code>i-1</code>.</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu">zygdist</span><span class="op">(</span>alpha <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">0.1</span><span class="op">)</span>, G1 <span class="op">=</span> <span class="fl">4</span>, G2 <span class="op">=</span> <span class="fl">5</span>, ploidy <span class="op">=</span> <span class="fl">8</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">zygdist</span><span class="op">(</span>alpha <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">0.1</span><span class="op">)</span>, G1 <span class="op">=</span> <span class="fl">4</span>, G2 <span class="op">=</span> <span class="fl">5</span>, ploidy <span class="op">=</span> <span class="fl">8</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.001234694 0.012010204 0.058142857 0.158510204 0.266122449 0.269479592</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [7] 0.166867347 0.057979592 0.009653061</span>
-<span class="r-in"></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -121,7 +130,7 @@ probability that the offspring will have dosage <code>i-1</code>.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

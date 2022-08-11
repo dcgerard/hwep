@@ -18,7 +18,7 @@ and runs a likelihood ratio test for random mating."><!-- mathjax --><script src
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">hwep</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.0</span>
       </span>
     </div>
 
@@ -65,7 +65,7 @@ and runs a likelihood ratio test for random mating.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">rmlike</span><span class="op">(</span><span class="va">nvec</span>, thresh <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">rmlike</span><span class="op">(</span><span class="va">nvec</span>, thresh <span class="op">=</span> <span class="fl">1</span>, nstarts <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -74,13 +74,23 @@ and runs a likelihood ratio test for random mating.</p>
 <dd><p>A vector containing the observed genotype counts,
 where <code>nvec[[i]]</code> is the number of individuals with genotype
 <code>i-1</code>. This should be of length <code>ploidy+1</code>.</p></dd>
+
+
 <dt>thresh</dt>
 <dd><p>All groups with counts less than <code>nvec</code> will
 be aggregated together.</p></dd>
+
+
+<dt>nstarts</dt>
+<dd><p>The number of random restarts to the EM algorithm. Set this
+to 0 for only one run.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A list with the following elements:</p><dl><dt><code>p</code></dt>
+    
+
+<p>A list with the following elements:</p><dl><dt><code>p</code></dt>
 <dd><p>The estimated gamete genotype frequencies. <code>p[[i]]</code>
 is the estimated frequency for gamete genotype <code>i-1</code>.</p></dd>
 
@@ -111,34 +121,34 @@ this hypothesis using likelihood inference, while estimating <code>p</code>.</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co">## Randomly generate gamete frequencies</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">ploidy</span> <span class="op">&lt;-</span> <span class="fl">10</span></span>
-<span class="r-in"><span class="va">pvec</span> <span class="op">&lt;-</span> <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">ploidy</span> <span class="op">/</span> <span class="fl">2</span> <span class="op">+</span> <span class="fl">1</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">pvec</span> <span class="op">&lt;-</span> <span class="va">pvec</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">pvec</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## Genotype frequencies from gamete frequencies under random mating</span></span>
-<span class="r-in"><span class="va">qvec</span> <span class="op">&lt;-</span> <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/convolve.html" class="external-link">convolve</a></span><span class="op">(</span><span class="va">pvec</span>, <span class="fu"><a href="https://rdrr.io/r/base/rev.html" class="external-link">rev</a></span><span class="op">(</span><span class="va">pvec</span><span class="op">)</span>, type <span class="op">=</span> <span class="st">"open"</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## Generate data</span></span>
-<span class="r-in"><span class="va">nvec</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/Multinom.html" class="external-link">rmultinom</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">1</span>, size <span class="op">=</span> <span class="fl">100</span>, prob <span class="op">=</span> <span class="va">qvec</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## Run rmlike()</span></span>
-<span class="r-in"><span class="fu">rmlike</span><span class="op">(</span>nvec <span class="op">=</span> <span class="va">nvec</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co">## Randomly generate gamete frequencies</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">ploidy</span> <span class="op">&lt;-</span> <span class="fl">10</span></span></span>
+<span class="r-in"><span><span class="va">pvec</span> <span class="op">&lt;-</span> <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">ploidy</span> <span class="op">/</span> <span class="fl">2</span> <span class="op">+</span> <span class="fl">1</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">pvec</span> <span class="op">&lt;-</span> <span class="va">pvec</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">pvec</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## Genotype frequencies from gamete frequencies under random mating</span></span></span>
+<span class="r-in"><span><span class="va">qvec</span> <span class="op">&lt;-</span> <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/convolve.html" class="external-link">convolve</a></span><span class="op">(</span><span class="va">pvec</span>, <span class="fu"><a href="https://rdrr.io/r/base/rev.html" class="external-link">rev</a></span><span class="op">(</span><span class="va">pvec</span><span class="op">)</span>, type <span class="op">=</span> <span class="st">"open"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## Generate data</span></span></span>
+<span class="r-in"><span><span class="va">nvec</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/Multinom.html" class="external-link">rmultinom</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">1</span>, size <span class="op">=</span> <span class="fl">100</span>, prob <span class="op">=</span> <span class="va">qvec</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## Run rmlike()</span></span></span>
+<span class="r-in"><span><span class="fu">rmlike</span><span class="op">(</span>nvec <span class="op">=</span> <span class="va">nvec</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $p</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>          0          1          2          3          4          5 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 0.09112755 0.13039847 0.13159274 0.24313111 0.07189886 0.33185126 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 0.09091247 0.13330033 0.13045867 0.23919892 0.07263341 0.33349620 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $chisq_rm</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 5.616609</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 5.611122</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $df_rm</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 5</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $p_rm</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.3453286</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.3459148</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in"></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -153,7 +163,7 @@ this hypothesis using likelihood inference, while estimating <code>p</code>.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

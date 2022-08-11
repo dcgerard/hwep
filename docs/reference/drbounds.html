@@ -19,7 +19,7 @@ Huang et. al. (2019) for details."><!-- mathjax --><script src="https://cdnjs.cl
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">hwep</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.0</span>
       </span>
     </div>
 
@@ -67,17 +67,20 @@ Huang et. al. (2019) for details.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">drbounds</span><span class="op">(</span><span class="va">ploidy</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">drbounds</span><span class="op">(</span><span class="va">ploidy</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>ploidy</dt>
 <dd><p>The ploidy of the species. Should be even and at least 4.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A vector of length <code>floor(ploidy/4)</code>. Element <code>i</code> is
+    
+
+<p>A vector of length <code>floor(ploidy/4)</code>. Element <code>i</code> is
 the upper bound on the probability of <code>i</code> pairs of
 identical-by-double-reduction alleles being in an individual.</p>
     </div>
@@ -93,21 +96,21 @@ identical-by-double-reduction alleles being in an individual.</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu">drbounds</span><span class="op">(</span><span class="fl">4</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">drbounds</span><span class="op">(</span><span class="fl">4</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.1666667</span>
-<span class="r-in"><span class="fu">drbounds</span><span class="op">(</span><span class="fl">6</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu">drbounds</span><span class="op">(</span><span class="fl">6</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.3</span>
-<span class="r-in"><span class="fu">drbounds</span><span class="op">(</span><span class="fl">8</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu">drbounds</span><span class="op">(</span><span class="fl">8</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.38571429 0.02142857</span>
-<span class="r-in"><span class="fu">drbounds</span><span class="op">(</span><span class="fl">10</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu">drbounds</span><span class="op">(</span><span class="fl">10</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.43650794 0.05952381</span>
-<span class="r-in"><span class="fu">drbounds</span><span class="op">(</span><span class="fl">12</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu">drbounds</span><span class="op">(</span><span class="fl">12</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.462662338 0.105519481 0.002705628</span>
-<span class="r-in"><span class="fu">drbounds</span><span class="op">(</span><span class="fl">14</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu">drbounds</span><span class="op">(</span><span class="fl">14</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.47115385 0.15297203 0.01019814</span>
-<span class="r-in"><span class="fu">drbounds</span><span class="op">(</span><span class="fl">16</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu">drbounds</span><span class="op">(</span><span class="fl">16</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.4669386169 0.1978438228 0.0231157731 0.0003399378</span>
-<span class="r-in"></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -122,7 +125,7 @@ identical-by-double-reduction alleles being in an individual.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

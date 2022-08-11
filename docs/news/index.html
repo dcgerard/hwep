@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">hwep</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.0</span>
       </span>
     </div>
 
@@ -58,7 +58,17 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.0.2" id="hwep-002">hwep 0.0.2<a class="anchor" aria-label="anchor" href="#hwep-002"></a></h2>
+<h2 class="page-header" data-toc-text="2.0.0" id="hwep-200">hwep 2.0.0<a class="anchor" aria-label="anchor" href="#hwep-200"></a></h2>
+<ul><li>Added <code><a href="../reference/rmbayes.html">rmbayes()</a></code> and associated functions for Bayes tests for random mating.</li>
+<li>Multiple restarts in EM algorithm for <code><a href="../reference/rmlike.html">rmlike()</a></code> to fix issues with local convergence.</li>
+<li>Added <code><a href="../reference/rmbayesgl.html">rmbayesgl()</a></code> for Bayes test of random mating when using genotype likelihoods to account for genotype uncertainty. This uses the <a href="https://mc-stan.org/rstan/" class="external-link">rstan</a> package as a backend.</li>
+<li>Added <code>glsim()</code> for genotype likelihood simulation.</li>
+<li>
+<code><a href="../reference/qqpvalue.html">qqpvalue()</a></code> will now allow the user to return a ggplot object.</li>
+<li>Added <code><a href="../reference/menbayesgl.html">menbayesgl()</a></code> for testing Mendelian segregation frequencies from S1 and F1 populations.</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="0.0.2" id="hwep-002">hwep 0.0.2<small>2022-05-02</small><a class="anchor" aria-label="anchor" href="#hwep-002"></a></h2>
 <ul><li>New function, <code><a href="../reference/qqpvalue.html">qqpvalue()</a></code>: A QQ-plot function for <span class="math inline"><em>p</em></span>-values on the <span class="math inline"> − log<sub>10</sub></span>-scale.</li>
 <li>New function, <code><a href="../reference/ts_bands.html">ts_bands()</a></code>: Calculates simultaneous confidence bands for uniform quantiles.</li>
 <li>New function, <code><a href="../reference/f1dr.html">f1dr()</a></code>: Estimates the double reduction rate from an F1 population via maximum likelihood.</li>
@@ -66,7 +76,8 @@
 </ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.0.1" id="hwep-001">hwep 0.0.1<small>2021-09-28</small><a class="anchor" aria-label="anchor" href="#hwep-001"></a></h2>
-<ul><li>Initial release.</li></ul></div>
+<ul><li>Initial release.</li>
+</ul></div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -81,7 +92,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

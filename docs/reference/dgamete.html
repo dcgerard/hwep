@@ -19,7 +19,7 @@ parameter (alpha). This is for biallelic loci."><!-- mathjax --><script src="htt
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">hwep</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.0</span>
       </span>
     </div>
 
@@ -67,7 +67,7 @@ parameter (<code>alpha</code>). This is for biallelic loci.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">dgamete</span><span class="op">(</span><span class="va">x</span>, <span class="va">alpha</span>, <span class="va">G</span>, <span class="va">ploidy</span>, log_p <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">dgamete</span><span class="op">(</span><span class="va">x</span>, <span class="va">alpha</span>, <span class="va">G</span>, <span class="va">ploidy</span>, log_p <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -75,6 +75,8 @@ parameter (<code>alpha</code>). This is for biallelic loci.</p>
     <dl><dt>x</dt>
 <dd><p>A vector of numerics in <code>seq(0, ploidy/2)</code>. The dosage of the
 gametes.</p></dd>
+
+
 <dt>alpha</dt>
 <dd><p>A numeric vector containing the double reduction parameter(s).
 This should be a
@@ -82,19 +84,28 @@ vector of length <code>floor(ploidy/4)</code> where <code>alpha[i]</code>
 is the probability of exactly <code>i</code> pairs of IBDR alleles
 being in the gamete. Note that <code>sum(alpha)</code> should be less than
 1, as <code>1 - sum(alpha)</code> is the probability of no double reduction.</p></dd>
+
+
 <dt>G</dt>
 <dd><p>The dosage of the parent. Should be an integer between <code>0</code>
 and <code>ploidy</code>.</p></dd>
+
+
 <dt>ploidy</dt>
 <dd><p>The ploidy of the species. This should be an even positive
 integer.</p></dd>
+
+
 <dt>log_p</dt>
 <dd><p>A logical. Should we return the log-probability (<code>TRUE</code>)
 or not (<code>FALSE</code>)? Defaults to <code>FALSE</code>.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A vector of length <code>length(x)</code>, containing the (log)
+    
+
+<p>A vector of length <code>length(x)</code>, containing the (log)
 probabilities of a gamete carrying a dosage of <code>x</code> from a
 parent of dosage <code>G</code> who has ploidy <code>ploidy</code> and a
 double reduction rate <code>alpha</code>.</p>
@@ -106,9 +117,9 @@ double reduction rate <code>alpha</code>.</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu">dgamete</span><span class="op">(</span>x <span class="op">=</span> <span class="fl">0</span><span class="op">:</span><span class="fl">2</span>, alpha <span class="op">=</span> <span class="fl">0</span>, G <span class="op">=</span> <span class="fl">2</span>, ploidy <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">dgamete</span><span class="op">(</span>x <span class="op">=</span> <span class="fl">0</span><span class="op">:</span><span class="fl">2</span>, alpha <span class="op">=</span> <span class="fl">0</span>, G <span class="op">=</span> <span class="fl">2</span>, ploidy <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.1666667 0.6666667 0.1666667</span>
-<span class="r-in"></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -123,7 +134,7 @@ double reduction rate <code>alpha</code>.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>
