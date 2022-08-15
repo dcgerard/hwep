@@ -1,17 +1,34 @@
-bibentry(
-  bibtype  = "Article",
-  title    = "Double reduction estimation and equilibrium tests in natural autopolyploid populations",
-  author   = person(given  = "David",
-                    family = "Gerard",
-                    email  = "gerard.1787@gmail.com",
-                    comment = c(ORCID = "0000-0001-9450-5023")),
-  journal  = "Biometrics",
-  year     = "2022",
-  doi      = "10.1111/biom.13722",
-  volume   = "In press",
-  number   = "",
-  pages    = "",
-  url      = "",
-  header   = "To cite hwep in publications use:"
+c(
+  bibentry(
+    bibtype  = "Article",
+    title    = "Double reduction estimation and equilibrium tests in natural autopolyploid populations",
+    author   = person(given  = "David",
+                      family = "Gerard",
+                      email  = "gerard.1787@gmail.com",
+                      comment = c(ORCID = "0000-0001-9450-5023")),
+    journal  = "Biometrics",
+    year     = "2022",
+    doi      = "10.1111/biom.13722",
+    volume   = "In press",
+    number   = "",
+    pages    = "",
+    url      = "",
+    header   = "To cite hwep in publications use:"
+  ),
+  bibentry(
+    bibtype  = "Article",
+    title    = "Bayesian Tests for Random Mating in Autopolyploids",
+    author   = person(given  = "David",
+                      family = "Gerard",
+                      email  = "gerard.1787@gmail.com",
+                      comment = c(ORCID = "0000-0001-9450-5023")),
+    journal  = "bioRxiv",
+    year     = "2022",
+    doi      = "10.1101/2022.08.11.503635",
+    volume   = "",
+    number   = "",
+    pages    = "",
+    url      = "",
+    header   = "If you use our Bayesian methods, please also cite:"
+  )
 )
-

@@ -295,6 +295,11 @@ hexa_rm_marg <- function(x, alpha, lg = FALSE) {
 #'
 #' @author David Gerard
 #'
+#' @references
+#' \itemize{
+#'   \item{Gerard D (2022). "Bayesian tests for random mating in autopolyploids." \emph{bioRxiv}. \doi{10.1101/2022.08.11.503635}.}
+#' }
+#'
 #' @export
 rmbayes <- function(nvec,
                     lg = TRUE,
@@ -434,6 +439,11 @@ gl_alt_marg <- function(gl, beta, lg = TRUE) {
 #' }
 #'
 #' @author David Gerard
+#'
+#' @references
+#' \itemize{
+#'   \item{Gerard D (2022). "Bayesian tests for random mating in autopolyploids." \emph{bioRxiv}. \doi{10.1101/2022.08.11.503635}.}
+#' }
 #'
 #' @export
 rmbayesgl <- function(gl,
@@ -792,6 +802,11 @@ gibbs_gl_alt_r <- function(gl, beta, nsamp = 10000, nburn = 1000, more = FALSE, 
 #' gl <- simgl(nvec = nvec)
 #' menbayesgl(gl = gl, method = "f1")
 #'
+#' }
+#'
+#' @references
+#' \itemize{
+#'   \item{Gerard D (2022). "Bayesian tests for random mating in autopolyploids." \emph{bioRxiv}. \doi{10.1101/2022.08.11.503635}.}
 #' }
 #'
 #' @export

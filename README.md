@@ -124,6 +124,26 @@ A BibTeX entry for LaTeX users is
 }
 ```
 
+If you use `rmbayes()`, `rmbayesgl()`, or `menbayeslg()`, then please
+also cite
+
+> Gerard D (2022). “Bayesian tests for random mating in autopolyploids.”
+> *bioRxiv*.
+> [doi:10.1101/2022.08.11.503635](https://doi.org/10.1101/2022.08.11.503635).
+
+A BibTeX entry for LaTeX users is
+
+``` tex
+@article{,
+    author = {Gerard, David},
+    title = {Bayesian Tests for Random Mating in Autopolyploids},
+    year = {2022},
+    doi = {10.1101/2022.08.11.503635},
+    publisher = {Cold Spring Harbor Laboratory},
+    journal = {bioRxiv}
+}
+```
+
 ## Acknowledgments
 
 This material is based upon work supported by the National Science

@@ -98,6 +98,11 @@ menbayesgl(gl = gl, method = "f1")
 }
 
 }
+\references{
+\itemize{
+\item{Gerard D (2022). "Bayesian tests for random mating in autopolyploids." \emph{bioRxiv}. \doi{10.1101/2022.08.11.503635}.}
+}
+}
 \author{
 David Gerard
 }
