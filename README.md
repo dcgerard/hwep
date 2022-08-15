@@ -24,7 +24,10 @@ loci. For autopolyploid populations in equilibrium, methods are
 available to estimate the degree of double reduction. We also provide
 functions to calculate genotype frequencies at equilibrium, or after one
 or several rounds of random mating, given rates of double reduction. For
-details of these methods, see Gerard (2021).
+details of these methods, see Gerard (2022a)
+\<[doi:10.1111/biom.13722](https://doi.org/10.1111/biom.13722)\> and
+Gerard (2022b)
+\<[doi:10.1101/2022.08.11.503635](https://doi.org/10.1101/2022.08.11.503635)\>.
 
 The main functions for inference are:
 

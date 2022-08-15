@@ -12,7 +12,8 @@
 #' findings, and conclusions or recommendations expressed are those of
 #' the author and do not necessarily reflect the views of the National
 #' Science Foundation. For details of these methods, see
-#' Gerard (2021) \doi{10.1101/2021.09.24.461731}.
+#' see Gerard (2022a) \doi{10.1111/biom.13722} and
+#' Gerard (2022b) \doi{10.1101/2022.08.11.503635}.
 #'
 #' @section Main Functions:
 #' \describe{
