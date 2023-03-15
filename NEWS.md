@@ -1,6 +1,6 @@
 # hwep 2.0.1
 
-- Updates package for compatability with newer version of rstan.
+- Updates package for compatibility with newer version of rstan.
 
 # hwep 2.0.0
 
