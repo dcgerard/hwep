@@ -1,3 +1,7 @@
+# hwep 2.0.1
+
+- Updates package for compatability with newer version of rstan.
+
 # hwep 2.0.0
 
 - Added `rmbayes()` and associated functions for Bayes tests for random mating.

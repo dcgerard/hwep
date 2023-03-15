@@ -6,11 +6,16 @@
 #'
 #' @param x The vector of counts.
 #' @param alpha The vector of concentration parameters.
-#' @param lg A logical. Should we log the density (TRUE) or not (FALSE)
+#' @param lg A logical. Should we log the density (\code{TRUE}) or not
+#'     (\code{FALSE})?
 #'
 #' @author David Gerard
 #'
-#' @noRd
+#' @examples
+#' ddirmult(c(1, 2, 3), c(1, 1, 1))
+#' ddirmult(c(2, 2, 2), c(1, 1, 1))
+#'
+#' @export
 ddirmult <- function(x, alpha, lg = FALSE) {
   stopifnot(length(x) == length(alpha))
   stopifnot(all(alpha > 0))
