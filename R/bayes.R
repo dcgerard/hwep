@@ -562,9 +562,15 @@ rmbayesgl <- function(gl,
 #' @param ret The return type. Should we just return the genotype
 #'     likelihoods (\code{"gl"}), just the genotype posteriors
 #'     (\code{"gp"}), or the entire updog output (\code{"all"})
+#' @param est A logical. Estimate the updog likelihood parameters while
+#'     genotype (\code{TRUE}) or fix them at the true values (\code{FALSE})?
+#'     More realistic simulations would set this to \code{TRUE}, but it makes
+#'     the method much slower.
+#' @param ... Additional arguments to pass to
+#'     \code{\link[updog]{flexdog_full}()}.
 #'
-#' @return By default, a matrix. The genotype (natural) log likelihoods. The rows
-#'     index the individuals and the columns index the dosage. So
+#' @return By default, a matrix. The genotype (natural) log likelihoods.
+#'     The rows index the individuals and the columns index the dosage. So
 #'     \code{gl[i,j]} is the genotype log-likelihood for individual i
 #'     at dosage j - 1.
 #'
@@ -580,7 +586,10 @@ simgl <- function(nvec,
                   od = 0.01,
                   bias = 1,
                   seq = 0.01,
-                  ret = c("gl", "gp", "all")) {
+                  ret = c("gl", "gp", "all"),
+                  est = FALSE,
+                  ...) {
+  stopifnot(is.logical(est), length(est) == 1)
   ploidy <- length(nvec) - 1
   nind <- sum(nvec)
   ret <- match.arg(ret)
@@ -594,17 +603,28 @@ simgl <- function(nvec,
                             bias = bias,
                             od = od)
 
-  fout <- updog::flexdog_full(refvec = refvec,
-                              sizevec = sizevec,
-                              ploidy = ploidy,
-                              model = "flex",
-                              verbose = FALSE,
-                              seq = seq,
-                              bias = bias,
-                              od = od,
-                              update_bias = FALSE,
-                              update_od = FALSE,
-                              update_seq = FALSE)
+  if (est) {
+    fout <- updog::flexdog_full(refvec = refvec,
+                                sizevec = sizevec,
+                                ploidy = ploidy,
+                                model = "flex",
+                                verbose = FALSE,
+                                seq = seq,
+                                bias = bias,
+                                od = od)
+  } else {
+    fout <- updog::flexdog_full(refvec = refvec,
+                                sizevec = sizevec,
+                                ploidy = ploidy,
+                                model = "flex",
+                                verbose = FALSE,
+                                seq = seq,
+                                bias = bias,
+                                od = od,
+                                update_bias = FALSE,
+                                update_od = FALSE,
+                                update_seq = FALSE)
+  }
 
   if (ret == "gl") {
     retval <- fout$genologlike

@@ -10,7 +10,9 @@ simgl(
   od = 0.01,
   bias = 1,
   seq = 0.01,
-  ret = c("gl", "gp", "all")
+  ret = c("gl", "gp", "all"),
+  est = FALSE,
+  ...
 )
 }
 \arguments{
@@ -29,10 +31,18 @@ Must greater than 0.}
 \item{ret}{The return type. Should we just return the genotype
 likelihoods (\code{"gl"}), just the genotype posteriors
 (\code{"gp"}), or the entire updog output (\code{"all"})}
+
+\item{est}{A logical. Estimate the updog likelihood parameters while
+genotype (\code{TRUE}) or fix them at the true values (\code{FALSE})?
+More realistic simulations would set this to \code{TRUE}, but it makes
+the method much slower.}
+
+\item{...}{Additional arguments to pass to
+\code{\link[updog]{flexdog_full}()}.}
 }
 \value{
-By default, a matrix. The genotype (natural) log likelihoods. The rows
-index the individuals and the columns index the dosage. So
+By default, a matrix. The genotype (natural) log likelihoods.
+The rows index the individuals and the columns index the dosage. So
 \code{gl[i,j]} is the genotype log-likelihood for individual i
 at dosage j - 1.
 }
