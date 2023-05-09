@@ -1,3 +1,8 @@
+# hwep 2.0.2
+
+- Add more options to `simgl()` to increase the flexibility of the simulations.
+- Added an allopolyploid prior to the random mating tests.
+
 # hwep 2.0.1
 
 - Updates package for compatibility with newer version of rstan.

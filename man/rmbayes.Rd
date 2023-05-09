@@ -10,7 +10,8 @@ rmbayes(
   alpha = NULL,
   beta = NULL,
   nburn = 10000,
-  niter = 10000
+  niter = 10000,
+  type = c("auto", "allo")
 )
 }
 \arguments{
@@ -30,6 +31,10 @@ under the alternative of no random mating. Should be length ploidy + 1.}
 \item{nburn}{The number of iterations in the Gibbs sampler to burn-in.}
 
 \item{niter}{The number of sampling iterations in the Gibbs sampler.}
+
+\item{type}{If \code{alpha} is \code{NULL}, then the default priors depend
+on if you have autopolyploids (\code{"auto"}) or allopolyploids
+(\code{"allo"}).}
 }
 \description{
 Bayes test for random mating with known genotypes

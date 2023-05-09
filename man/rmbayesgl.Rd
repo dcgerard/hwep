@@ -10,6 +10,7 @@ rmbayesgl(
   lg = TRUE,
   alpha = NULL,
   beta = NULL,
+  type = c("auto", "allo"),
   chains = 2,
   cores = 1,
   iter = 2000,
@@ -34,6 +35,10 @@ under the null of random mating. Should be length ploidy/2 + 1.}
 
 \item{beta}{The concentration hyperparameters of the genotype frequencies
 under the alternative of no random mating. Should be length ploidy + 1.}
+
+\item{type}{If \code{alpha} is \code{NULL}, then the default priors depend
+on if you have autopolyploids (\code{"auto"}) or allopolyploids
+(\code{"allo"}).}
 
 \item{chains}{Number of MCMC chains. Almost always 1 is enough, but we
 use 2 as a default to be conservative.}

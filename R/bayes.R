@@ -65,7 +65,7 @@ beta_from_alpha <- function(alpha) {
 #'
 #' @return A list of length two. Element \code{alpha} are the concentration
 #'     parameters of the gamete frequencies under the null of random mating.
-#'     Element \code{beta} are the conentration parameters of the genotype
+#'     Element \code{beta} are the concentration parameters of the genotype
 #'     frequencies under the alternative of non-random mating.
 #'
 #' @author David Gerard
@@ -75,6 +75,26 @@ conc_default <- function(ploidy) {
   alpha <- rep(1, ploidy / 2 + 1)
   beta <- pmin(floor(0:ploidy / 2), floor((ploidy - 0:ploidy) / 2)) + 1
   beta <- beta * (ploidy + 1) / sum(beta)
+  return(list(alpha = alpha, beta = beta))
+}
+
+#' Default concentration hyperparameters for the dirichlet priors for allopolyploids.
+#'
+#' Thi sis used in \code{\link{rmbayes}()} and \code{\link{rmbayesgl}()}.
+#'
+#' @param ploidy The ploidy of the species
+#'
+#' @return A list of length two. Element \code{alpha} are the concentration
+#'     parameters of the gamete frequencies under the null of random mating.
+#'     Element \code{beta} are the concentration parameters of the genotype
+#'     frequencies under the alternative of non-random mating.
+#'
+#' @author David Gerard
+#'
+#' @noRd
+conc_allo <- function(ploidy) {
+  alpha <- exp(lchoose(ploidy / 2, 0:(ploidy / 2)) + log(ploidy + 2) - (ploidy / 2 + 1) * log(2))
+  beta <- beta_from_alpha(alpha = alpha)
   return(list(alpha = alpha, beta = beta))
 }
 
@@ -264,6 +284,9 @@ hexa_rm_marg <- function(x, alpha, lg = FALSE) {
 #'     under the alternative of no random mating. Should be length ploidy + 1.
 #' @param nburn The number of iterations in the Gibbs sampler to burn-in.
 #' @param niter The number of sampling iterations in the Gibbs sampler.
+#' @param type If \code{alpha} is \code{NULL}, then the default priors depend
+#'     on if you have autopolyploids (\code{"auto"}) or allopolyploids
+#'     (\code{"allo"}).
 #'
 #' @examples
 #' set.seed(1)
@@ -311,9 +334,11 @@ rmbayes <- function(nvec,
                     alpha = NULL,
                     beta = NULL,
                     nburn = 10000,
-                    niter = 10000) {
+                    niter = 10000,
+                    type = c("auto", "allo")) {
   ploidy <- length(nvec) - 1
   nvec <- round(nvec)
+  type <- match.arg(type)
 
   ## Default concentration parameters ----
   if (is.null(alpha) && !is.null(beta)) {
@@ -323,8 +348,12 @@ rmbayes <- function(nvec,
 
   if (is.null(beta) && !is.null(alpha)) {
     beta <- beta_from_alpha(alpha = alpha)
-  } else if (is.null(alpha) || is.null(beta)) {
-    clist = conc_default(ploidy = ploidy)
+  } else if (is.null(alpha) && type == "auto") {
+    clist <- conc_default(ploidy = ploidy)
+    alpha <- clist$alpha
+    beta <- clist$beta
+  } else if (is.null(alpha) && type == "allo") {
+    clist <- conc_allo(ploidy = ploidy)
     alpha <- clist$alpha
     beta <- clist$beta
   } else {
@@ -456,12 +485,14 @@ rmbayesgl <- function(gl,
                       lg = TRUE,
                       alpha = NULL,
                       beta = NULL,
+                      type = c("auto", "allo"),
                       chains = 2,
                       cores = 1,
                       iter = 2000,
                       warmup = floor(iter / 2),
                       ...) {
   method <- match.arg(method)
+  type <- match.arg(type)
 
   ## Remove rows with missing data ----
   which_row_na <- apply(is.na(gl), 1, any)
@@ -483,8 +514,12 @@ rmbayesgl <- function(gl,
 
   if (is.null(beta) && !is.null(alpha)) {
     beta <- beta_from_alpha(alpha = alpha)
-  } else if (is.null(alpha) || is.null(beta)) {
-    clist = conc_default(ploidy = ploidy)
+  } else if (is.null(alpha) && type == "auto") {
+    clist <- conc_default(ploidy = ploidy)
+    alpha <- clist$alpha
+    beta <- clist$beta
+  } else if (is.null(alpha) && type == "allo") {
+    clist <- conc_allo(ploidy = ploidy)
     alpha <- clist$alpha
     beta <- clist$beta
   } else {
