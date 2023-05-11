@@ -613,7 +613,8 @@ rmbayesgl <- function(gl,
 #'
 #' @examples
 #' set.seed(1)
-#' simgl(c(1, 2, 1, 0, 0))
+#' simgl(c(1, 2, 1, 0, 0), model = "norm", est = TRUE)
+#' simgl(c(1, 2, 1, 0, 0), model = "norm", est = FALSE)
 #'
 #' @export
 simgl <- function(nvec,
@@ -642,23 +643,23 @@ simgl <- function(nvec,
     fout <- updog::flexdog_full(refvec = refvec,
                                 sizevec = sizevec,
                                 ploidy = ploidy,
-                                model = "flex",
                                 verbose = FALSE,
                                 seq = seq,
                                 bias = bias,
-                                od = od)
+                                od = od,
+                                ...)
   } else {
     fout <- updog::flexdog_full(refvec = refvec,
                                 sizevec = sizevec,
                                 ploidy = ploidy,
-                                model = "flex",
                                 verbose = FALSE,
                                 seq = seq,
                                 bias = bias,
                                 od = od,
                                 update_bias = FALSE,
                                 update_od = FALSE,
-                                update_seq = FALSE)
+                                update_seq = FALSE,
+                                ...)
   }
 
   if (ret == "gl") {

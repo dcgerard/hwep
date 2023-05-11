@@ -52,7 +52,8 @@ genotype log-likelihoods.
 }
 \examples{
 set.seed(1)
-simgl(c(1, 2, 1, 0, 0))
+simgl(c(1, 2, 1, 0, 0), model = "norm", est = TRUE)
+simgl(c(1, 2, 1, 0, 0), model = "norm", est = FALSE)
 
 }
 \author{
