@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
 # hwep <img src="man/figures/logo.png" align="right" height="139" />
 
 <!-- badges: start -->
-[![NSF-2132247](https://img.shields.io/badge/NSF-2132247-blue.svg)](https://nsf.gov/awardsearch/showAward?AWD_ID=2132247)
+[![NSF-2132247](https://img.shields.io/badge/NSF-2132247-blue.svg)](https://www.nsf.gov/awardsearch/showAward?AWD_ID=2132247)
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![](http://cranlogs.r-pkg.org/badges/grand-total/hwep)](https://cran.r-project.org/package=hwep)
 [![CRAN status](https://www.r-pkg.org/badges/version/hwep)](https://CRAN.R-project.org/package=hwep)

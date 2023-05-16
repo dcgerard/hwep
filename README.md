@@ -5,7 +5,7 @@
 
 <!-- badges: start -->
 
-[![NSF-2132247](https://img.shields.io/badge/NSF-2132247-blue.svg)](https://nsf.gov/awardsearch/showAward?AWD_ID=2132247)
+[![NSF-2132247](https://img.shields.io/badge/NSF-2132247-blue.svg)](https://www.nsf.gov/awardsearch/showAward?AWD_ID=2132247)
 [![License: GPL
 v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![](http://cranlogs.r-pkg.org/badges/grand-total/hwep)](https://cran.r-project.org/package=hwep)
@@ -31,57 +31,57 @@ Gerard (2022b)
 
 The main functions for inference are:
 
--   `hwefit()`: Fit either `hwelike()`,`rmlike()`, `hweustat()`,
-    `hwenodr()`, or `hweboot()` across many loci. Parallelization is
-    supported through the
-    [future](https://cran.r-project.org/package=future) package.
+- `hwefit()`: Fit either `hwelike()`,`rmlike()`, `hweustat()`,
+  `hwenodr()`, or `hweboot()` across many loci. Parallelization is
+  supported through the
+  [future](https://cran.r-project.org/package=future) package.
 
--   `hwelike()`: Likelihood inference for equilibrium. This function
-    estimates the rate of double reduction given equilibrium, and tests
-    for at most small deviations from equilibrium.
+- `hwelike()`: Likelihood inference for equilibrium. This function
+  estimates the rate of double reduction given equilibrium, and tests
+  for at most small deviations from equilibrium.
 
--   `rmlike()`: Likelihood inference for random mating in polyploids.
-    This function tests for random mating and estimates gametic
-    frequencies given random mating. This function does not assume a
-    model for meiosis.
+- `rmlike()`: Likelihood inference for random mating in polyploids. This
+  function tests for random mating and estimates gametic frequencies
+  given random mating. This function does not assume a model for
+  meiosis.
 
--   `hweustat()`: U-statistic approach for equilibrium and double
-    reduction. This function tests for equilibrium given double
-    reduction rates and estimates these rates given equilibrium.
+- `hweustat()`: U-statistic approach for equilibrium and double
+  reduction. This function tests for equilibrium given double reduction
+  rates and estimates these rates given equilibrium.
 
--   `hwenodr()`: Implements a likelihood ratio test that tests for
-    Hardy-Weinberg equilibrium in autopolyploids given no double
-    reduction.
+- `hwenodr()`: Implements a likelihood ratio test that tests for
+  Hardy-Weinberg equilibrium in autopolyploids given no double
+  reduction.
 
--   `hweboot()`: Implements a bootstrap approach to test for equilibrium
-    which is more appropriate for small samples and uncertain genotypes.
+- `hweboot()`: Implements a bootstrap approach to test for equilibrium
+  which is more appropriate for small samples and uncertain genotypes.
 
--   `rmbayes()`: Implements a Bayesian test for random mating in
-    autopolyploids for any ploidy level.
+- `rmbayes()`: Implements a Bayesian test for random mating in
+  autopolyploids for any ploidy level.
 
--   `rmbayesgl()`: Bayesian test for random mating, accounting for
-    genotype uncertainty using genotype likelihoods.
+- `rmbayesgl()`: Bayesian test for random mating, accounting for
+  genotype uncertainty using genotype likelihoods.
 
--   `menbayesgl()`: Bayesian test for Mendelian segregation frequencies
-    in S1 or F1 populations using genotype likelihoods.
+- `menbayesgl()`: Bayesian test for Mendelian segregation frequencies in
+  S1 or F1 populations using genotype likelihoods.
 
 Functions are provided for calculating genotype frequencies for
 individuals and gametes:
 
--   `gsegmat()`: Produces the segregation probabilities for gamete
-    dosages given parental dosages and the double reduction rate.
+- `gsegmat()`: Produces the segregation probabilities for gamete dosages
+  given parental dosages and the double reduction rate.
 
--   `gsegmat_symb()`: Provides a symbolic representation of the output
-    of `gsegmat()`.
+- `gsegmat_symb()`: Provides a symbolic representation of the output of
+  `gsegmat()`.
 
--   `zsegarray()`: Obtains offspring genotype probabilities given
-    parental probabilities, the ploidy of the species, and the
-    overdispersion parameter, for all possible parental genotypes.
+- `zsegarray()`: Obtains offspring genotype probabilities given parental
+  probabilities, the ploidy of the species, and the overdispersion
+  parameter, for all possible parental genotypes.
 
--   `freqnext()`: Updates the genotype frequencies after one generation
-    of random mating.
+- `freqnext()`: Updates the genotype frequencies after one generation of
+  random mating.
 
--   `hwefreq()`: Calculate genotype frequencies at equilibrium.
+- `hwefreq()`: Calculate genotype frequencies at equilibrium.
 
 The bounds on the double reduction rate under the complete equational
 segregation model are provided by `drbounds()`.
