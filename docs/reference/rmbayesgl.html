@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">hwep</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.2</span>
       </span>
     </div>
 
@@ -69,6 +69,7 @@
 <span>  lg <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  alpha <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  beta <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"auto"</span>, <span class="st">"allo"</span><span class="op">)</span>,</span>
 <span>  chains <span class="op">=</span> <span class="fl">2</span>,</span>
 <span>  cores <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  iter <span class="op">=</span> <span class="fl">2000</span>,</span>
@@ -104,6 +105,12 @@ under the null of random mating. Should be length ploidy/2 + 1.</p></dd>
 <dt>beta</dt>
 <dd><p>The concentration hyperparameters of the genotype frequencies
 under the alternative of no random mating. Should be length ploidy + 1.</p></dd>
+
+
+<dt>type</dt>
+<dd><p>If <code>alpha</code> is <code>NULL</code>, then the default priors depend
+on if you have autopolyploids (<code>"auto"</code>) or allopolyploids
+(<code>"allo"</code>).</p></dd>
 
 
 <dt>chains</dt>
