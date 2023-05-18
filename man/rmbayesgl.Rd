@@ -106,7 +106,7 @@ rmbayesgl(gl = gl, method = "gibbs")
 }
 \references{
 \itemize{
-\item{Gerard D (2022). "Bayesian tests for random mating in autopolyploids." \emph{bioRxiv}. \doi{10.1101/2022.08.11.503635}.}
+\item{Gerard D (2022). "Bayesian tests for random mating in polyploids." \emph{bioRxiv}. \doi{10.1101/2022.08.11.503635}.}
 }
 }
 \author{

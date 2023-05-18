@@ -17,7 +17,7 @@ c(
   ),
   bibentry(
     bibtype  = "Article",
-    title    = "Bayesian Tests for Random Mating in Autopolyploids",
+    title    = "Bayesian Tests for Random Mating in Polyploids",
     author   = person(given  = "David",
                       family = "Gerard",
                       email  = "gerard.1787@gmail.com",

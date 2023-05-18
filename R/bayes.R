@@ -325,7 +325,7 @@ hexa_rm_marg <- function(x, alpha, lg = FALSE) {
 #'
 #' @references
 #' \itemize{
-#'   \item{Gerard D (2022). "Bayesian tests for random mating in autopolyploids." \emph{bioRxiv}. \doi{10.1101/2022.08.11.503635}.}
+#'   \item{Gerard D (2022). "Bayesian tests for random mating in polyploids." \emph{bioRxiv}. \doi{10.1101/2022.08.11.503635}.}
 #' }
 #'
 #' @export
@@ -476,7 +476,7 @@ gl_alt_marg <- function(gl, beta, lg = TRUE) {
 #'
 #' @references
 #' \itemize{
-#'   \item{Gerard D (2022). "Bayesian tests for random mating in autopolyploids." \emph{bioRxiv}. \doi{10.1101/2022.08.11.503635}.}
+#'   \item{Gerard D (2022). "Bayesian tests for random mating in polyploids." \emph{bioRxiv}. \doi{10.1101/2022.08.11.503635}.}
 #' }
 #'
 #' @export
@@ -867,7 +867,7 @@ gibbs_gl_alt_r <- function(gl, beta, nsamp = 10000, nburn = 1000, more = FALSE, 
 #'
 #' @references
 #' \itemize{
-#'   \item{Gerard D (2022). "Bayesian tests for random mating in autopolyploids." \emph{bioRxiv}. \doi{10.1101/2022.08.11.503635}.}
+#'   \item{Gerard D (2022). "Bayesian tests for random mating in polyploids." \emph{bioRxiv}. \doi{10.1101/2022.08.11.503635}.}
 #' }
 #'
 #' @export
