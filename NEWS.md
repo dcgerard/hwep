@@ -1,3 +1,8 @@
+# hwep 2.0.3
+
+- Updates citations to published version of Gerard (2023a) and in press 
+  version of Gerard (2023b).
+
 # hwep 2.0.2
 
 - Add more options to `simgl()` to increase the flexibility of the simulations.

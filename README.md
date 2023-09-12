@@ -24,10 +24,10 @@ loci. For autopolyploid populations in equilibrium, methods are
 available to estimate the degree of double reduction. We also provide
 functions to calculate genotype frequencies at equilibrium, or after one
 or several rounds of random mating, given rates of double reduction. For
-details of these methods, see Gerard (2022a)
+details of these methods, see Gerard (2023a)
 \<[doi:10.1111/biom.13722](https://doi.org/10.1111/biom.13722)\> and
-Gerard (2022b)
-\<[doi:10.1101/2022.08.11.503635](https://doi.org/10.1101/2022.08.11.503635)\>.
+Gerard (2023b)
+\<[doi:10.1111/1755-0998.13856](https://doi.org/10.1111/1755-0998.13856)\>.
 
 The main functions for inference are:
 
@@ -110,8 +110,8 @@ devtools::install_github("dcgerard/hwep")
 
 To cite hwep in publications use:
 
-> Gerard D (2022). “Double reduction estimation and equilibrium tests in
-> natural autopolyploid populations.” *Biometrics* In press.
+> Gerard D (2023). “Double reduction estimation and equilibrium tests in
+> natural autopolyploid populations.” *Biometrics*, *79*(3), 2143–2156.
 > [doi:10.1111/biom.13722](https://doi.org/10.1111/biom.13722).
 
 A BibTeX entry for LaTeX users is
@@ -121,29 +121,31 @@ A BibTeX entry for LaTeX users is
   title = {Double reduction estimation and equilibrium tests in natural autopolyploid populations},
   author = {David Gerard},
   journal = {Biometrics},
-  year = {2022},
+  year = {2023},
   doi = {10.1111/biom.13722},
-  volume = {In press},
+  volume = {79},
+  number = {3},
+  pages = {2143--2156},
 }
 ```
 
 If you use `rmbayes()`, `rmbayesgl()`, or `menbayeslg()`, then please
 also cite
 
-> Gerard D (2022). “Bayesian tests for random mating in polyploids.”
-> *bioRxiv*.
-> [doi:10.1101/2022.08.11.503635](https://doi.org/10.1101/2022.08.11.503635).
+> Gerard D (2023). “Bayesian tests for random mating in polyploids.”
+> *Molecular Ecology Resources*, *In press*.
+> [doi:10.1111/1755-0998.13856](https://doi.org/10.1111/1755-0998.13856).
 
 A BibTeX entry for LaTeX users is
 
 ``` tex
-@article{,
-    author = {Gerard, David},
-    title = {Bayesian Tests for Random Mating in Polyploids},
-    year = {2022},
-    doi = {10.1101/2022.08.11.503635},
-    publisher = {Cold Spring Harbor Laboratory},
-    journal = {bioRxiv}
+@Article{,
+  title = {Bayesian Tests for Random Mating in Polyploids},
+  author = {David Gerard},
+  journal = {Molecular Ecology Resources},
+  year = {2023},
+  doi = {10.1111/1755-0998.13856},
+  volume = {In press},
 }
 ```
 

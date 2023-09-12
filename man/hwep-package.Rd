@@ -18,8 +18,8 @@ National Science Foundation under Grant No. 2132247. The opinions,
 findings, and conclusions or recommendations expressed are those of
 the author and do not necessarily reflect the views of the National
 Science Foundation. For details of these methods, see
-see Gerard (2022a) \doi{10.1111/biom.13722} and
-Gerard (2022b) \doi{10.1101/2022.08.11.503635}.
+see Gerard (2023a) \doi{10.1111/biom.13722} and
+Gerard (2023b) \doi{10.1111/1755-0998.13856}.
 }
 \section{Main Functions}{
 
