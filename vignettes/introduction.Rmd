@@ -134,25 +134,29 @@ On average, we obtain good estimates of the double reduction rate
 mean(uout$alpha1)
 ```
 But the sampling properties of this estimator are highly variable, even for such a large sample size:
-```{r}
+```{r, fig.alt="Bimodal histogram of double reduction rate estimates."}
 hist(uout$alpha1)
 ```
 
 This highlights the difficulty in estimating double reduction using just a single biallelic locus.
 
 The p-values are generally uniformly distributed, as they should be since we generated data under the null of equilibrium.
-```{r}
+```{r, fig.alt="Histogram of p-values showing they are uniformly distributed."}
 hist(uout$p_hwe, breaks = 10, xlab = "P-values", main = "")
-qqplot(x = ppoints(length(uout$p_hwe)), 
-       y = uout$p_hwe, 
-       xlab = "Theoretical Quantiles",
-       ylab = "Empirical Quantiles",
-       main = "QQ-plot")
+```
+```{r, fig.alt="Quantile-quantile plot of p-values showing they are uniformly distributed."}
+qqplot(
+  x = ppoints(length(uout$p_hwe)), 
+  y = uout$p_hwe, 
+  xlab = "Theoretical Quantiles",
+  ylab = "Empirical Quantiles",
+  main = "QQ-plot"
+)
 abline(0, 1, lty = 2, col = 2)
 ```
 
 You can view this QQ-plot on the $-log_{10}$-scale using `qqpvalue()`. This plot will also show the simultaneous confidence bands for the QQ-plot from Aldor-Noiman et al. (2013), which can also be calculated using `ts_bands()`.
-```{r}
+```{r, fig.alt="Quantile-quantile plot on the negative log base ten scale showing the p-values are uniformly distributed."}
 qqpvalue(pvals = uout$p_hwe, method = "base")
 ```
 
