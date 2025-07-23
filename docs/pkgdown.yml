@@ -3,7 +3,7 @@ pkgdown: 2.1.3
 pkgdown_sha: ~
 articles:
   introduction: introduction.html
-last_built: 2025-07-23T14:39Z
+last_built: 2025-07-23T14:56Z
 urls:
   reference: https://dcgerard.github.io/hwep/reference
   article: https://dcgerard.github.io/hwep/articles

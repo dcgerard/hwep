@@ -58,12 +58,13 @@
 #' qvec <- hwefreq(r = r, alpha = alpha, ploidy = ploidy)
 #' nmat <- t(rmultinom(n = nloc, size = size, prob = qvec))
 #'
-#' ## Run the analysis in parallel on the local computer with two workers
-#' future::plan(future::multisession, workers = 2)
+#' ## Uncomment to run the analysis in parallel on the local
+#' ## computer with two workers
+#' # future::plan(future::multisession, workers = 2)
 #' hout <- hwefit(nmat = nmat, type = "ustat")
 #'
 #' ## Shut down parallel workers
-#' future::plan("sequential")
+#' future::plan(sequential)
 #'
 #' ## Show that p-values are uniform
 #'

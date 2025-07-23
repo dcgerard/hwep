@@ -109,7 +109,12 @@ The main function for this package is `hwefit()`, which implements various tests
 ```{r}
 library(future)
 availableCores()
+```
+```{r, echo=TRUE, eval=FALSE}
 plan(multisession, workers = 2)
+```
+```{r, echo=FALSE, eval=TRUE}
+plan(sequential)
 ```
 
 Let's simulate some data at equilibrium to demonstrate our methods:
@@ -163,7 +168,7 @@ qqpvalue(pvals = uout$p_hwe, method = "base")
 
 Make sure to shut down your workers after you are done:
 ```{r}
-plan("sequential")
+plan(sequential)
 ```
 
 The other values of "type" run different procedures:
