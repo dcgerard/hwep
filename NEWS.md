@@ -1,7 +1,8 @@
 # hwep 2.0.3
 
-- Updates citations to published version of Gerard (2023a) and in press 
-  version of Gerard (2023b).
+- Updates citations to published versions of Gerard (2023a) and Gerard (2023b).
+- Fixes some CRAN check notes about package links.
+- Uses "_PACKAGE" for roxygen.
 
 # hwep 2.0.2
 

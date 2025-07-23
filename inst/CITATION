@@ -25,9 +25,9 @@ c(
     journal  = "Molecular Ecology Resources",
     year     = "2023",
     doi      = "10.1111/1755-0998.13856",
-    volume   = "In press",
-    number   = "",
-    pages    = "",
+    volume   = "23",
+    number   = "8",
+    pages    = "1812--1822",
     url      = "",
     header   = "If you use our Bayesian methods, please also cite:"
   )

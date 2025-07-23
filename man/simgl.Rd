@@ -47,7 +47,7 @@ The rows index the individuals and the columns index the dosage. So
 at dosage j - 1.
 }
 \description{
-Uses the {updog} R package for simulating read counts and generating
+Uses the updog R package for simulating read counts and generating
 genotype log-likelihoods.
 }
 \examples{

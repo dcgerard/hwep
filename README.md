@@ -133,7 +133,7 @@ If you use `rmbayes()`, `rmbayesgl()`, or `menbayeslg()`, then please
 also cite
 
 > Gerard D (2023). “Bayesian tests for random mating in polyploids.”
-> *Molecular Ecology Resources*, *In press*.
+> *Molecular Ecology Resources*, *23*(8), 1812–1822.
 > [doi:10.1111/1755-0998.13856](https://doi.org/10.1111/1755-0998.13856).
 
 A BibTeX entry for LaTeX users is
@@ -145,7 +145,9 @@ A BibTeX entry for LaTeX users is
   journal = {Molecular Ecology Resources},
   year = {2023},
   doi = {10.1111/1755-0998.13856},
-  volume = {In press},
+  volume = {23},
+  number = {8},
+  pages = {1812--1822}
 }
 ```
 

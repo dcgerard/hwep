@@ -325,7 +325,7 @@ hexa_rm_marg <- function(x, alpha, lg = FALSE) {
 #'
 #' @references
 #' \itemize{
-#'   \item{Gerard D (2023). "Bayesian tests for random mating in polyploids." \emph{Molecular Ecology Resources}, In press. \doi{10.1111/1755-0998.13856}.}
+#'   \item{Gerard D (2023). "Bayesian tests for random mating in polyploids." \emph{Molecular Ecology Resources}, \emph{23}(8), 1812--1822. \doi{10.1111/1755-0998.13856}.}
 #' }
 #'
 #' @export
@@ -476,7 +476,7 @@ gl_alt_marg <- function(gl, beta, lg = TRUE) {
 #'
 #' @references
 #' \itemize{
-#'   \item{Gerard D (2023). "Bayesian tests for random mating in polyploids." \emph{Molecular Ecology Resources}, In press. \doi{10.1111/1755-0998.13856}.}
+#'   \item{Gerard D (2023). "Bayesian tests for random mating in polyploids." \emph{Molecular Ecology Resources}, \emph{23}(8), 1812--1822. \doi{10.1111/1755-0998.13856}.}
 #' }
 #'
 #' @export
@@ -584,7 +584,7 @@ rmbayesgl <- function(gl,
 
 #' Simulator for genotype likelihoods.
 #'
-#' Uses the {updog} R package for simulating read counts and generating
+#' Uses the updog R package for simulating read counts and generating
 #' genotype log-likelihoods.
 #'
 #' @param nvec The genotype counts. \code{nvec[k]} contains the number of
@@ -867,7 +867,7 @@ gibbs_gl_alt_r <- function(gl, beta, nsamp = 10000, nburn = 1000, more = FALSE, 
 #'
 #' @references
 #' \itemize{
-#'   \item{Gerard D (2023). "Bayesian tests for random mating in polyploids." \emph{Molecular Ecology Resources}, In press. \doi{10.1111/1755-0998.13856}.}
+#'   \item{Gerard D (2023). "Bayesian tests for random mating in polyploids." \emph{Molecular Ecology Resources}, \emph{23}(8), 1812--1822. \doi{10.1111/1755-0998.13856}.}
 #' }
 #'
 #' @export
